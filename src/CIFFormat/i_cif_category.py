@@ -3,6 +3,7 @@ import abc
 from .i_cif_column import ICIFColumn
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
 
+
 class ICIFCategory(IJsonSerializable, abc.ABC):
     @abc.abstractmethod
     def name(self) -> str:
@@ -17,13 +18,12 @@ class ICIFCategory(IJsonSerializable, abc.ABC):
         pass
 
     @abc.abstractmethod
-    def column_names(self) -> [str]:
+    def column_names(self) -> list[str]:
         pass
 
     @abc.abstractmethod
     def get_column(self, name: str) -> ICIFColumn:
         pass
-
 
     # Extracts a  matrix from a category from a specified row_index.
     #
@@ -32,6 +32,7 @@ class ICIFCategory(IJsonSerializable, abc.ABC):
     # ....
     # _category.matrix[rows][cols]: vRowsCols
     #
+
     @abc.abstractmethod
     def get_matrix(self, field: str, rows: int, cols: int, row_index: int):
         pass
@@ -44,5 +45,5 @@ class ICIFCategory(IJsonSerializable, abc.ABC):
     # _category.matrix[rows][cols]: vRowsCols
     #
     @abc.abstractmethod
-    def get_vector(self, field: str, rows: int, cols: int, row_index: int) -> [int]:
+    def get_vector(self, field: str, rows: int, cols: int, row_index: int) -> list[int]:
         pass

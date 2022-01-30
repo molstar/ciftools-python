@@ -3,6 +3,7 @@ import abc
 from .EValuePresence import EValuePresence
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
 
+
 class ICIFColumn(IJsonSerializable, abc.ABC):
     @abc.abstractmethod
     def is_defined(self) -> bool:

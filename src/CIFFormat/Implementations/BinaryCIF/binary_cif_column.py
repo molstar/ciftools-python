@@ -1,4 +1,4 @@
-from __future__ import annotations #supposed to be in python 3.10 but reverted; maybe in python 3.11?
+from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
 from pydantic import BaseModel
 
@@ -7,6 +7,10 @@ from ...i_cif_column import ICIFColumn
 
 
 class BinaryCIFColumn(ICIFColumn, BaseModel):
+
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def from_json(json: str) -> BinaryCIFColumn:
         return BinaryCIFColumn.parse_raw(json)
