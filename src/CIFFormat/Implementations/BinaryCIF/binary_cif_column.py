@@ -1,16 +1,18 @@
 from __future__ import annotations #supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
+from pydantic import BaseModel
+
 from ...EValuePresence import EValuePresence
 from ...i_cif_column import ICIFColumn
 
 
-class BinaryCIFColumn(ICIFColumn):
+class BinaryCIFColumn(ICIFColumn, BaseModel):
     @staticmethod
     def from_json(json: str) -> BinaryCIFColumn:
-        pass
+        return BinaryCIFColumn.parse_raw(json)
 
     def to_json(self) -> str:
-        pass
+        return self.json()
 
     def is_defined(self) -> bool:
         pass
