@@ -1,33 +1,34 @@
-import abc
+from __future__ import annotations #supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from .EValuePresence import EValuePresence
-from ..JsonSerialization.i_json_serializable import IJsonSerializable
+from ...EValuePresence import EValuePresence
+from ...i_cif_column import ICIFColumn
 
-class ICIFColumn(IJsonSerializable, abc.ABC):
-    @abc.abstractmethod
+
+class BinaryCIFColumn(ICIFColumn):
+    @staticmethod
+    def from_json(json: str) -> BinaryCIFColumn:
+        pass
+
+    def to_json(self) -> str:
+        pass
+
     def is_defined(self) -> bool:
         pass
 
-    @abc.abstractmethod
     def get_string(self, row: int) -> str:
         pass
 
-    @abc.abstractmethod
     def get_integer(self, row: int) -> int:
         pass
 
-    @abc.abstractmethod
     def get_float(self, row: int) -> float:
         pass
 
-    @abc.abstractmethod
     def get_value_presence(self, row: int) -> EValuePresence:
         pass
 
-    @abc.abstractmethod
     def are_values_equal(self, row_a: int, row_b: int) -> bool:
         pass
 
-    @abc.abstractmethod
     def string_equals(self, row: int, value: str) -> bool:
         pass

@@ -3,7 +3,7 @@ import abc
 from .i_cif_column import ICIFColumn
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
 
-class ICIFCategory(abc.ABC, IJsonSerializable):
+class ICIFCategory(IJsonSerializable, abc.ABC):
     @abc.abstractmethod
     def name(self) -> str:
         pass
