@@ -10,7 +10,7 @@ class ICIFDataBlock(IJsonSerializable, abc.ABC):
         pass
 
     @abc.abstractmethod
-    def categories(self) -> list[ICIFCategory]:
+    def categories(self) -> dict[str, ICIFCategory]:
         pass
 
     @abc.abstractmethod

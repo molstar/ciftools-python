@@ -1,24 +1,30 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
+from typing import Union, TypedDict
+
 from pydantic import BaseModel
 
 from .binary_cif_category import BinaryCIFCategory
-from ...Encoding.encoded_cif_data_block import EncodedCIFDataBlock
-from ...i_cif_category import ICIFCategory
-from ...i_cif_data_block import ICIFDataBlock
+from src.CIFFormat.EncodedCif.encoded_cif_data_block import EncodedCIFDataBlock
+from src.CIFFormat.i_cif_category import ICIFCategory
+from src.CIFFormat.i_cif_data_block import ICIFDataBlock
 
 
-class BinaryCIFDataBlock(ICIFDataBlock, BaseModel):
+class BinaryCIFDataBlock(ICIFDataBlock):
 
-    def __init__(self, encoded_data_block: EncodedCIFDataBlock):
-        super().__init__()
-        self._header: str = encoded_data_block.header
-        self._categories: list[BinaryCIFCategory] = []
-        self._category_map: dict[str, BinaryCIFCategory] = dict()
-        for encoded_category in encoded_data_block.categories:
-            category = BinaryCIFCategory(encoded_category)
-            self._categories.append(category)
-            self._category_map[category.name()] = category
+    def __getattr__(self, name: str) -> object:
+        return self._categories[name]
+
+    def __getitem__(self, name: str) -> BinaryCIFCategory:
+        return self._categories[name]
+
+    def __contains__(self, key: str):
+        return key in self._categories
+
+    def __init__(self, header: str, categories: dict[str, BinaryCIFCategory]):
+        self.header = header
+        self._categories = categories
+        self._additional_data: dict[str, object] = dict()
 
     @staticmethod
     def from_json(json: str) -> BinaryCIFDataBlock:
@@ -28,16 +34,16 @@ class BinaryCIFDataBlock(ICIFDataBlock, BaseModel):
         return self.json()
 
     def header(self) -> str:
-        pass
+        return self._header
 
-    def categories(self) -> list[ICIFCategory]:
-        pass
+    def categories(self) -> dict[str, ICIFCategory]:
+        return self._categories
 
-    def get_category(self, name: str) -> ICIFCategory:
-        pass
+    def get_category(self, name: str) -> Union[ICIFCategory | None]:
+        return self._categories.get(name, None)
 
-    def additional_data(self) -> dict:
-        pass
+    def additional_data(self) -> dict[str, object]:
+        return self._additional_data
 
 
 
