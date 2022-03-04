@@ -1,17 +1,6 @@
 from enum import Enum
 
 
-class DataTypes(Enum):
-    Int8 = 1
-    Int16 = 2
-    Int32 = 3
-    Uint8 = 4
-    Uint16 = 5
-    Uint32 = 6
-    Float32 = 32
-    Float64 = 33
-
-
 class EEncoding(Enum):
     ByteArray = 0,
     FixedPoint = 1,

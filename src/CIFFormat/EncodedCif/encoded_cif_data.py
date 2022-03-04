@@ -1,11 +1,10 @@
 from typing import TypedDict
 
-from numpy import uint8
+import numpy as np
 
-from ...Binary.Encoding import EEncoding, EncodingBase
+from ...Binary.Encoding import EncodingBase
 
 
 class EncodedCIFData(TypedDict):
-    def __init__(self, encoding: list[EncodingBase], data: bytes):  # TODO: check use case
-        self.encoding: list[EncodingBase] = encoding
-        self.data: bytes = data
+    encoding: list[EncodingBase]
+    data: np.ndarray

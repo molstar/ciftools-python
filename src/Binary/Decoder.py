@@ -1,3 +1,5 @@
+# TODO: refactor with new code format
+
 from typing import Union
 
 import numpy
@@ -9,24 +11,7 @@ from src.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 from src.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 from src.CIFFormat.i_cif_column import ICIFColumn
-
-_dtypes = {
-    DataTypes.Int8: "i1",
-    DataTypes.Int16: "i2",
-    DataTypes.Int32: "i4",
-    DataTypes.Uint8: "u1",
-    DataTypes.Uint16: "u2",
-    DataTypes.Uint32: "u4",
-    DataTypes.Float32: "f4",
-    DataTypes.Float64: "f8",
-}
-
-
-def _get_dtype(data_type: DataTypes) -> str:
-    if data_type in _dtypes:
-        return _dtypes[data_type]
-
-    raise ValueError(f"Unsupported data type '{data_type}'")
+from src.NumpyHelper import get_dtype
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
@@ -47,11 +32,11 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[s
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + _get_dtype(DataTypes(encoding["type"])))
+    return np.frombuffer(data, dtype="<" + get_dtype(DataTypes(encoding["type"])))
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
-    return np.array(data, dtype=_get_dtype(DataTypes(encoding["srcType"]))) / encoding["factor"]
+    return np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"]))) / encoding["factor"]
 
 
 def _decode_interval_quantization(
@@ -59,18 +44,18 @@ def _decode_interval_quantization(
 ) -> np.ndarray:
     delta = (encoding["max"] - encoding["min"]) / (encoding["numSteps"] - 1)
     return (
-        np.array(data, dtype=_get_dtype(DataTypes(encoding["srcType"]))) * delta + encoding["min"]
+        np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"]))) * delta + encoding["min"]
     )
 
 
 def _decode_run_length(data: np.ndarray, encoding: RunLengthEncoding) -> np.ndarray:
     return np.repeat(
-        np.array(data[::2], dtype=_get_dtype(DataTypes(encoding["srcType"]))), repeats=data[1::2]
+        np.array(data[::2], dtype=get_dtype(DataTypes(encoding["srcType"]))), repeats=data[1::2]
     )
 
 
 def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
-    result = np.array(data, dtype=_get_dtype(DataTypes(encoding["srcType"])))
+    result = np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"])))
     if encoding["origin"]:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
