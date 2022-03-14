@@ -5,13 +5,13 @@ from typing import Union
 import numpy
 import numpy as np
 
-from src.Binary.Encoding import DataTypes, ByteArrayEncoding, FixedPointEncoding, IntervalQuantizationEncoding, \
+from src.Binary.Encoding import ByteArrayEncoding, FixedPointEncoding, IntervalQuantizationEncoding, \
     RunLengthEncoding, DeltaEncoding, IntegerPackingEncoding, StringArrayEncoding, EEncoding
+from src.Binary.data_types import DataTypes
 from src.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 from src.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 from src.CIFFormat.i_cif_column import ICIFColumn
-from src.NumpyHelper import get_dtype
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
@@ -32,11 +32,11 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[s
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + get_dtype(DataTypes(encoding["type"])))
+    return np.frombuffer(data, dtype="<" + DataTypes.to_dtype(encoding["type"]))
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
-    return np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"]))) / encoding["factor"]
+    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) / encoding["factor"]
 
 
 def _decode_interval_quantization(
@@ -44,18 +44,18 @@ def _decode_interval_quantization(
 ) -> np.ndarray:
     delta = (encoding["max"] - encoding["min"]) / (encoding["numSteps"] - 1)
     return (
-        np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"]))) * delta + encoding["min"]
+        np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) * delta + encoding["min"]
     )
 
 
 def _decode_run_length(data: np.ndarray, encoding: RunLengthEncoding) -> np.ndarray:
     return np.repeat(
-        np.array(data[::2], dtype=get_dtype(DataTypes(encoding["srcType"]))), repeats=data[1::2]
+        np.array(data[::2], dtype=DataTypes.to_dtype(encoding["srcType"])), repeats=data[1::2]
     )
 
 
 def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
-    result = np.array(data, dtype=get_dtype(DataTypes(encoding["srcType"])))
+    result = np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"]))
     if encoding["origin"]:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
@@ -117,7 +117,7 @@ def _decode_integer_packing(
         return _decode_integer_packing_signed(data, encoding)
 
 
-def _decode_string_array(data: bytes, encoding: StringArrayEncoding) -> list[str]:
+def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> list[str]:
     offsets = decode_cif_data(
         EncodedCIFData(encoding=encoding["offsetEncoding"], data=encoding["offsets"])
     )

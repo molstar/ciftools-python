@@ -1,4 +1,7 @@
 from enum import Enum
+from typing import TypedDict
+
+import numpy as np
 
 
 class EEncoding(Enum):
@@ -11,7 +14,7 @@ class EEncoding(Enum):
     StringArray = 6
 
 
-class EncodingBase:
+class EncodingBase(TypedDict):
     kind: EEncoding
 
 
@@ -51,4 +54,4 @@ class StringArrayEncoding(EncodingBase):
     dataEncoding: list[EncodingBase]
     stringData: str
     offsetEncoding: list[EncodingBase]
-    offsets: bytes
+    offsets: np.ndarray
