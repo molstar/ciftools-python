@@ -3,7 +3,7 @@ import numpy as np
 from src.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
 from src.Binary.Encoders.ICIFEncoder import ICIFEncoder
 from src.Binary.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
-from src.Binary.Encoding import ByteArrayEncoding
+from src.Binary.Encoding import ByteArrayEncoding, EEncoding
 from src.Binary.data_types import DataTypes, EDataTypes
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
@@ -40,6 +40,6 @@ class ByteArray_CIFEncoder(ICIFEncoder):
                 mode='raise')
 
         encoding = ByteArrayEncoding()
-        encoding.kind = 'ByteArray'
-        encoding.type = data_type
+        encoding["kind"] = EEncoding.ByteArray
+        encoding["type"] = data_type
         return EncodedCIFData(data=encoded_data, encoding=[encoding])

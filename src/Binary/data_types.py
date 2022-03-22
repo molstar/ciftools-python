@@ -30,11 +30,11 @@ class DataTypes:
     }
 
     __dtypes_to_data_types: dict[Union[np.dtype, str], int] = \
-        {dtype: data_type for dtype, data_type in __data_types_to_dtypes.items()}
+        {data_type: dtype for dtype, data_type in __data_types_to_dtypes.items()}
 
     @staticmethod
     def from_dtype(dtype: Union[np.dtype, str]) -> EDataTypes:
-        return EDataTypes(DataTypes.__dtypes_to_data_types[dtype])
+        return EDataTypes(DataTypes.__dtypes_to_data_types[str(dtype.str).replace("<", "").replace("|", "")])
 
     @staticmethod
     def to_dtype(data_type: Union[EDataTypes, int]) -> Union[np.dtype, str]:

@@ -132,11 +132,11 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
 
 
 _decoders = {
-    "ByteArray": _decode_byte_array,
-    "FixedPoint": _decode_fixed_point,
-    "IntervalQuantization": _decode_interval_quantization,
-    "RunLength": _decode_run_length,
-    "Delta": _decode_delta,
-    "IntegerPacking": _decode_integer_packing,
-    "StringArray": _decode_string_array,
+    EEncoding.ByteArray: _decode_byte_array,
+    EEncoding.FixedPoint: _decode_fixed_point,
+    EEncoding.IntervalQuantization: _decode_interval_quantization,
+    EEncoding.RunLength: _decode_run_length,
+    EEncoding.Delta: _decode_delta,
+    EEncoding.IntegerPacking: _decode_integer_packing,
+    EEncoding.StringArray: _decode_string_array,
 }

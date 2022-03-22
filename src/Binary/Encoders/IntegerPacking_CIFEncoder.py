@@ -5,7 +5,7 @@ from numpy import int32, int8, int16, uint8, uint16
 
 from src.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from src.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from src.Binary.Encoding import IntegerPackingEncoding
+from src.Binary.Encoding import IntegerPackingEncoding, EEncoding
 from src.Binary.data_types import DataTypes, EDataTypes
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
@@ -67,10 +67,10 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
 
         byte_array_result = self.byte_array_encoder.encode(packed)
         integer_packing_encoding: IntegerPackingEncoding = IntegerPackingEncoding()
-        integer_packing_encoding.byteCount = packing.bytesPerElement
-        integer_packing_encoding.kind = 'IntegerPacking'
-        integer_packing_encoding.isUnsigned = not packing.isSigned
-        integer_packing_encoding.srcSize = data_len
+        integer_packing_encoding["byteCount"] = packing.bytesPerElement
+        integer_packing_encoding["kind"] = EEncoding.IntegerPacking
+        integer_packing_encoding["isUnsigned"] = not packing.isSigned
+        integer_packing_encoding["srcSize"] = data_len
 
         return EncodedCIFData(
             data=byte_array_result['data'],

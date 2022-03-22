@@ -2,7 +2,7 @@ import numpy as np
 from numpy import int32
 
 from src.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from src.Binary.Encoding import RunLengthEncoding
+from src.Binary.Encoding import RunLengthEncoding, EEncoding
 from src.Binary.data_types import DataTypes, EDataTypes
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
@@ -16,8 +16,8 @@ class RunLength_CIFEncoder(ICIFEncoder):
             src_data_type = EDataTypes.Int32
 
         encoding: RunLengthEncoding = RunLengthEncoding()
-        encoding.srcType = src_data_type
-        encoding.kind = 'RunLength'
+        encoding["srcType"] = src_data_type
+        encoding["kind"] = EEncoding.RunLength
 
         if not len(data):
             encoding.srcSize = 0

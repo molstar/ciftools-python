@@ -2,11 +2,11 @@ import numpy as np
 from numpy import int32
 
 from src.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from src.Binary.Encoding import DeltaEncoding
+from src.Binary.Encoding import DeltaEncoding, EEncoding
 from src.Binary.data_types import DataTypes, EDataTypes
 from src.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
-
+#buggy
 class Delta_CIFEncoder(ICIFEncoder):
     def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
 
@@ -19,8 +19,8 @@ class Delta_CIFEncoder(ICIFEncoder):
             src_data_type = EDataTypes.Int32
 
         encoding: DeltaEncoding = DeltaEncoding()
-        encoding.srcType = src_data_type
-        encoding.kind = 'Delta'
+        encoding["srcType"] = src_data_type
+        encoding["kind"] = EEncoding.Delta
 
         data_length = len(data)
 
@@ -34,9 +34,9 @@ class Delta_CIFEncoder(ICIFEncoder):
         encoded_data[0] = origin_data
 
         for i in range(1, data_length):
-            encoded_data[i] = encoded_data[i] - encoded_data[i-1]
+            encoded_data[i] = data[i] - data[i-1]
 
         encoded_data[0] = 0
-        encoding.origin = origin_data
+        encoding["origin"] = origin_data
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
     
