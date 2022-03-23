@@ -18,7 +18,6 @@ print("TestArr: " + str(test_arr))
 print("Encoding: " + str(encoded["encoding"]))
 print("EncodedData: " + str(encoded["data"]))
 
-# not working?
 decoded = decode_cif_data(encoded)
 
 print("Decoded: " + str(decoded))

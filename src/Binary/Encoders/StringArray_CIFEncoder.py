@@ -60,7 +60,7 @@ class StringArray_CIFEncoder(ICIFEncoder):
         encoding_output = self.delta_encoder.encode(np.asarray(output))
         encoding_output2 = self.run_length_encoder.encode(encoding_output["data"])
         encoding_output3 = self.integer_packing_encoder.encode(encoding_output2["data"])
-        encoding_output["encoding"].extend(encoding_offset2["encoding"])
+        encoding_output["encoding"].extend(encoding_output2["encoding"])
         encoding_output["encoding"].extend(encoding_output3["encoding"])
         encoding_output["data"] = encoding_output3["data"]
 
