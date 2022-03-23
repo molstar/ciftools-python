@@ -1,4 +1,3 @@
-import numpy as np
 
 from src.Binary.Decoder import decode_cif_data
 from src.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
@@ -13,16 +12,16 @@ from src.Binary.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 
 test_arr = ["my", "cat", "eats", "too", "much", "food", "off", "my", "plate", "because", "my", "cat"]
 
-encoder1 = Delta_CIFEncoder()
+delta_encoder = Delta_CIFEncoder()
 
-dep1 = INT8_CIFEncoder()
-dep2 = UINT8_CIFEncoder()
-encoderz = ByteArray_CIFEncoder(dep1, dep2)
-encoder2 = IntegerPacking_CIFEncoder(encoderz)
+int_encoder = INT8_CIFEncoder()
+uint_encoder = UINT8_CIFEncoder()
+byte_arr_encoder = ByteArray_CIFEncoder(int_encoder, uint_encoder)
+integer_packing_encoder = IntegerPacking_CIFEncoder(byte_arr_encoder)
 
-encoder3 = RunLength_CIFEncoder()
+run_length_encoder = RunLength_CIFEncoder()
 
-encoder = StringArray_CIFEncoder(encoder1, encoder2, encoder3)
+encoder = StringArray_CIFEncoder(delta_encoder, integer_packing_encoder, run_length_encoder)
 encoded = encoder.encode(test_arr)
 
 print("TestArr: " + str(test_arr))

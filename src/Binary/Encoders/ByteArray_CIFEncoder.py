@@ -29,17 +29,7 @@ class ByteArray_CIFEncoder(ICIFEncoder):
         elif data_type == EDataTypes.Uint8:
             return self.uint8_encoder.encode(data)
 
-        byte_size = ByteArray_CIFEncoder.__byte_size(data_type)
-        encoded_data = np.empty(len(data) * byte_size)
-        data_bytes = data.tobytes()
-
-        for i in range(len(data)):
-            encoded_data.put(
-                [byte_size*i + x for x in range(byte_size)],
-                [data_bytes[y] for y in range(byte_size*i, byte_size*i + byte_size)],
-                mode='raise')
-
         encoding = ByteArrayEncoding()
         encoding["kind"] = EEncoding.ByteArray
         encoding["type"] = data_type
-        return EncodedCIFData(data=encoded_data, encoding=[encoding])
+        return EncodedCIFData(data=data.tobytes(), encoding=[encoding])

@@ -5,7 +5,7 @@ from src.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from src.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
 from src.Binary.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 
-test_arr = np.random.rand(100) * 100
+test_arr = np.random.rand(5) * 100
 
 print(test_arr.dtype.str)
 
