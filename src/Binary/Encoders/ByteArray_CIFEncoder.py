@@ -30,6 +30,6 @@ class ByteArray_CIFEncoder(ICIFEncoder):
             return self.uint8_encoder.encode(data)
 
         encoding = ByteArrayEncoding()
-        encoding["kind"] = EEncoding.ByteArray
+        encoding["kind"] = EEncoding.ByteArray.name
         encoding["type"] = data_type
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])

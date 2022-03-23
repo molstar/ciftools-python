@@ -27,7 +27,7 @@ class FixedPoint_CIFEncoder(ICIFEncoder):
         processed_data = processed_data.round()
 
         encoding: FixedPointEncoding = FixedPointEncoding()
-        encoding["kind"] = EEncoding.FixedPoint
+        encoding["kind"] = EEncoding.FixedPoint.name
         encoding["factor"] = factor
         encoding["srcType"] = src_type
         # TODO: is it needed to call bytes(processed_data)?

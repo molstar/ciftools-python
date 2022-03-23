@@ -5,17 +5,17 @@ import numpy as np
 
 
 class EEncoding(Enum):
-    ByteArray = 0,
-    FixedPoint = 1,
-    RunLength = 2,
-    Delta = 3,
-    IntervalQuantization = 4,
-    IntegerPacking = 5,
-    StringArray = 6
+    ByteArray = "ByteArray",
+    FixedPoint = "FixedPoint",
+    RunLength = "RunLength",
+    Delta = "Delta",
+    IntervalQuantization = "IntervalQuantization",
+    IntegerPacking = "IntegerPacking",
+    StringArray = "StringArray"
 
 
 class EncodingBase(TypedDict):
-    kind: EEncoding
+    kind: str
 
 
 class ByteArrayEncoding(EncodingBase):

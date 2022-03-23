@@ -11,7 +11,7 @@ class INT8_CIFEncoder(ICIFEncoder):
 
     def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
         encoding: ByteArrayEncoding = ByteArrayEncoding()
-        encoding["kind"] = EEncoding.ByteArray
+        encoding["kind"] = EEncoding.ByteArray.name
         encoding["type"] = EDataTypes.Int8
         # TODO: is it needed to call uint8(data)?
         encoded_data = EncodedCIFData(data=uint8(data), encoding=[encoding])

@@ -20,7 +20,7 @@ class Delta_CIFEncoder(ICIFEncoder):
 
         encoding: DeltaEncoding = DeltaEncoding()
         encoding["srcType"] = src_data_type
-        encoding["kind"] = EEncoding.Delta
+        encoding["kind"] = EEncoding.Delta.name
 
         data_length = len(data)
 

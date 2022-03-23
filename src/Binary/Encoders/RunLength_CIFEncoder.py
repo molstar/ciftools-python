@@ -17,7 +17,7 @@ class RunLength_CIFEncoder(ICIFEncoder):
 
         encoding: RunLengthEncoding = RunLengthEncoding()
         encoding["srcType"] = src_data_type
-        encoding["kind"] = EEncoding.RunLength
+        encoding["kind"] = EEncoding.RunLength.name
 
         if not len(data):
             encoding.srcSize = 0

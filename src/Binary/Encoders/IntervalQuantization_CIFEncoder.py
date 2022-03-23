@@ -23,7 +23,7 @@ class IntervalQuantization_CIFEncoder(ICIFEncoder):
         encoding["max"] = arg_max
         encoding["numSteps"] = arg_num_steps
         encoding["srcType"] = src_data_type
-        encoding["kind"] = EEncoding.IntervalQuantization
+        encoding["kind"] = EEncoding.IntervalQuantization.name
 
         if not len(data):
             return EncodedCIFData(data=np.empty(0), encoding=[encoding])

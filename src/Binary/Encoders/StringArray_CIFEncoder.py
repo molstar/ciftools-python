@@ -65,7 +65,7 @@ class StringArray_CIFEncoder(ICIFEncoder):
         encoding_output["data"] = encoding_output3["data"]
 
         encoding = StringArrayEncoding()
-        encoding["kind"] = EEncoding.StringArray
+        encoding["kind"] = EEncoding.StringArray.name
         encoding["dataEncoding"] = encoding_output["encoding"]
         encoding["stringData"] = ''.join(strings)
         encoding["offsetEncoding"] = encoding_offset["encoding"]
