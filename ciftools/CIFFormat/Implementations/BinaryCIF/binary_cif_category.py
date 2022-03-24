@@ -3,14 +3,13 @@ from __future__ import annotations  # supposed to be in python 3.10 but reverted
 from typing import TypedDict
 
 import numpy
-
-from ciftools.Binary.Decoder import decode_cif_data, decode_cif_column
-from ciftools.CIFFormat.Implementations.BinaryCIF.ColumnTypes.undefined_cif_column import UndefinedCIFColumn
+from ciftools.Binary.Decoder import decode_cif_column, decode_cif_data
 from ciftools.CIFFormat.EncodedCif.encoded_cif_category import EncodedCIFCategory
 from ciftools.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
+from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
+from ciftools.CIFFormat.Implementations.BinaryCIF.ColumnTypes.undefined_cif_column import UndefinedCIFColumn
 
 
 class BinaryCIFCategory(ICIFCategory):
@@ -33,12 +32,8 @@ class BinaryCIFCategory(ICIFCategory):
 
     def __init__(self, category: EncodedCIFCategory, lazy: bool):
         self.field_names = [c["name"] for c in category["columns"]]
-        self._field_cache = {
-            c["name"]: None if lazy else decode_cif_column(c) for c in category["columns"]
-        }
-        self._columns: dict[str, EncodedCIFColumn] = {
-            c["name"]: c for c in category["columns"]
-        }
+        self._field_cache = {c["name"]: None if lazy else decode_cif_column(c) for c in category["columns"]}
+        self._columns: dict[str, EncodedCIFColumn] = {c["name"]: c for c in category["columns"]}
         self.row_count = category["rowCount"]
         self.name = category["name"][1:]
 
@@ -69,15 +64,15 @@ class BinaryCIFCategory(ICIFCategory):
         return BinaryCIFCategory.__undefined_column__
 
     def get_matrix(self, field: str, rows: int, cols: int, row_index: int) -> numpy.ndarray:
-        matrix = numpy.empty((rows,cols), float)
-        for i in range (1, rows + 1):
+        matrix = numpy.empty((rows, cols), float)
+        for i in range(1, rows + 1):
             row = numpy.empty(cols)
             for j in range(1, cols + 1):
                 row[j - 1] = self.get_column(field + "[" + str(i) + "][" + str(j) + "]").get_float(row_index)
 
             matrix[i - 1] = row
 
-        return matrix;
+        return matrix
 
     def get_vector(self, field: str, rows: int, cols: int, row_index: int) -> numpy.ndarray:
         vector = numpy.empty(rows, float)
@@ -93,7 +88,8 @@ class BinaryCIFCategory(ICIFCategory):
 
         return decode_cif_column(encoded_cif_column)
 
-'''
+
+"""
         data = decode_cif_data(encoded_cif_column.data)
         mask: list[uint8] = None
 
@@ -110,5 +106,4 @@ class BinaryCIFCategory(ICIFCategory):
             return StringColumn(data)
 
         return MaskedStringColumn(data, mask)
-'''
-
+"""

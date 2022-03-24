@@ -36,5 +36,12 @@ class TestEncodings_StringArray(unittest.TestCase):
 
         # validate
         for i in range(len(test_arr)):
-            self.assertTrue(test_arr[i] == decoded[i],
-            "StringArray encoding/decoding pair test failed;\nExpected element '"+str(i)+"' -> " + str(test_arr[i]) + " but decoded: "+str(decoded[i]))
+            self.assertTrue(
+                test_arr[i] == decoded[i],
+                "StringArray encoding/decoding pair test failed;\nExpected element '"
+                + str(i)
+                + "' -> "
+                + str(test_arr[i])
+                + " but decoded: "
+                + str(decoded[i]),
+            )

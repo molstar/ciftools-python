@@ -4,14 +4,21 @@ from typing import Union
 
 import numpy
 import numpy as np
-
-from ciftools.Binary.Encoding import ByteArrayEncoding, FixedPointEncoding, IntervalQuantizationEncoding, \
-    RunLengthEncoding, DeltaEncoding, IntegerPackingEncoding, StringArrayEncoding, EEncoding
 from ciftools.Binary.data_types import DataTypes
+from ciftools.Binary.Encoding import (
+    ByteArrayEncoding,
+    DeltaEncoding,
+    EEncoding,
+    FixedPointEncoding,
+    IntegerPackingEncoding,
+    IntervalQuantizationEncoding,
+    RunLengthEncoding,
+    StringArrayEncoding,
+)
 from ciftools.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
+from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
@@ -39,19 +46,13 @@ def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.nd
     return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) / encoding["factor"]
 
 
-def _decode_interval_quantization(
-    data: np.ndarray, encoding: IntervalQuantizationEncoding
-) -> np.ndarray:
+def _decode_interval_quantization(data: np.ndarray, encoding: IntervalQuantizationEncoding) -> np.ndarray:
     delta = (encoding["max"] - encoding["min"]) / (encoding["numSteps"] - 1)
-    return (
-        np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) * delta + encoding["min"]
-    )
+    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) * delta + encoding["min"]
 
 
 def _decode_run_length(data: np.ndarray, encoding: RunLengthEncoding) -> np.ndarray:
-    return np.repeat(
-        np.array(data[::2], dtype=DataTypes.to_dtype(encoding["srcType"])), repeats=data[1::2]
-    )
+    return np.repeat(np.array(data[::2], dtype=DataTypes.to_dtype(encoding["srcType"])), repeats=data[1::2])
 
 
 def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
@@ -61,9 +62,7 @@ def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
     return np.cumsum(result, out=result)
 
 
-def _decode_integer_packing_signed(
-    data: np.ndarray, encoding: IntegerPackingEncoding
-) -> np.ndarray:
+def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0x7F if encoding["byteCount"] == 1 else 0x7FFF
     lower_limit = -upper_limit - 1
     n = len(data)
@@ -84,9 +83,7 @@ def _decode_integer_packing_signed(
     return output
 
 
-def _decode_integer_packing_unsigned(
-    data: np.ndarray, encoding: IntegerPackingEncoding
-) -> np.ndarray:
+def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0xFF if encoding["byteCount"] == 1 else 0xFFFF
     n = len(data)
     output = np.zeros(encoding["srcSize"], dtype="i4")
@@ -106,9 +103,7 @@ def _decode_integer_packing_unsigned(
     return output
 
 
-def _decode_integer_packing(
-    data: np.ndarray, encoding: IntegerPackingEncoding
-) -> np.ndarray:
+def _decode_integer_packing(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     if len(data) == encoding["srcSize"]:
         return data
     if encoding["isUnsigned"]:
@@ -118,15 +113,13 @@ def _decode_integer_packing(
 
 
 def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> list[str]:
-    offsets = decode_cif_data(
-        EncodedCIFData(encoding=encoding["offsetEncoding"], data=encoding["offsets"])
-    )
+    offsets = decode_cif_data(EncodedCIFData(encoding=encoding["offsetEncoding"], data=encoding["offsets"]))
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
     string_data = encoding["stringData"]
-    strings = [string_data[0:offsets[0]]]
+    strings = [string_data[0 : offsets[0]]]
     for i in range(1, len(offsets)):
-        strings.append(string_data[offsets[i - 1]: offsets[i]])  # type: ignore
+        strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
 
     return [strings[i] for i in indices]  # type: ignore
 

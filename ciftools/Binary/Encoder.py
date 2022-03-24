@@ -3,15 +3,23 @@
 from typing import Union
 
 import numpy as np
-from numpy import uint8, int8, int16, int32
-
 from ciftools.Binary import Encoding
 from ciftools.Binary.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding import DataTypes, ByteArrayEncoding, FixedPointEncoding, IntervalQuantizationEncoding, \
-    RunLengthEncoding, DeltaEncoding, IntegerPackingEncoding, StringArrayEncoding, EEncoding, EncodingBase
+from ciftools.Binary.Encoding import (
+    ByteArrayEncoding,
+    DataTypes,
+    DeltaEncoding,
+    EEncoding,
+    EncodingBase,
+    FixedPointEncoding,
+    IntegerPackingEncoding,
+    IntervalQuantizationEncoding,
+    RunLengthEncoding,
+    StringArrayEncoding,
+)
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
-
+from numpy import int8, int16, int32, uint8
 
 # "IntervalQuantization": _decode_interval_quantization,
 # "RunLength": _decode_run_length,
@@ -29,23 +37,22 @@ def encode_cif_data(data: object) -> EncodedCIFData:
     encodings: EncodingBase = []
 
     for encoding, encoder in _encoders.items():
-        encoded = encoder.encode(data);
+        encoded = encoder.encode(data)
         added_encodings = encoded.get["encoding"]
 
         if not added_encodings or not len(added_encodings):
-            raise ValueError('Encodings must be non-empty.')
+            raise ValueError("Encodings must be non-empty.")
 
         data = encoded["data"]
         for added_encoding in added_encodings:
-            encodings["encoding"].push(added_encoding);
+            encodings["encoding"].push(added_encoding)
 
     if not isinstance(data, list(uint8)):
-        raise ValueError('The encoding must result in a list(uint8) but it was ' + type(data) +'. Fix your encoding chain.');
+        raise ValueError(
+            "The encoding must result in a list(uint8) but it was " + type(data) + ". Fix your encoding chain."
+        )
 
     encoded_data = EncodedCIFData()
     encoded_data["encoding"] = encodings
     encoded_data["data"] = data
     return encoded_data
-
-
-

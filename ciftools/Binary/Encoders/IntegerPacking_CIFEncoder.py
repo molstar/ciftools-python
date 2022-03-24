@@ -1,17 +1,15 @@
 import math
 
 import numpy as np
-from numpy import int32, int8, int16, uint8, uint16
-
+from ciftools.Binary.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding import IntegerPackingEncoding, EEncoding
-from ciftools.Binary.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoding import EEncoding, IntegerPackingEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from numpy import int8, int16, int32, uint8, uint16
 
 
 class IntegerPacking_CIFEncoder(ICIFEncoder):
-
     class __packing__:
         isSigned: bool
         size: int
@@ -73,8 +71,8 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
         integer_packing_encoding["srcSize"] = data_len
 
         return EncodedCIFData(
-            data=byte_array_result['data'],
-            encoding=[integer_packing_encoding, byte_array_result['encoding'][0]])
+            data=byte_array_result["data"], encoding=[integer_packing_encoding, byte_array_result["encoding"][0]]
+        )
 
     @staticmethod
     def __packing_size__(data: np.ndarray, upper_limit: int) -> int:
@@ -87,11 +85,11 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             if value == 0:
                 size = size + 1
             elif value > 0:
-                size = size + math.ceil(value/upper_limit)
+                size = size + math.ceil(value / upper_limit)
                 if value % upper_limit == 0:
                     size = size + 1
             else:
-                size = size + math.ceil(value/lower_limit)
+                size = size + math.ceil(value / lower_limit)
                 if value % lower_limit == 0:
                     size = size + 1
 
@@ -110,17 +108,25 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
                 break
 
         # determine packing size
-        size8 = IntegerPacking_CIFEncoder.__packing_size__(data, 0x7F) if is_signed else IntegerPacking_CIFEncoder.__packing_size__(data, 0xFF)
-        size16 = IntegerPacking_CIFEncoder.__packing_size__(data, 0x7FFF) if is_signed else IntegerPacking_CIFEncoder.__packing_size__(data, 0xFFFF)
+        size8 = (
+            IntegerPacking_CIFEncoder.__packing_size__(data, 0x7F)
+            if is_signed
+            else IntegerPacking_CIFEncoder.__packing_size__(data, 0xFF)
+        )
+        size16 = (
+            IntegerPacking_CIFEncoder.__packing_size__(data, 0x7FFF)
+            if is_signed
+            else IntegerPacking_CIFEncoder.__packing_size__(data, 0xFFFF)
+        )
 
         packing = IntegerPacking_CIFEncoder.__packing__()
         packing.isSigned = is_signed
 
-        if data_len*4 < size16*2:
+        if data_len * 4 < size16 * 2:
             packing.size = data_len
             packing.bytesPerElement = 4
 
-        elif size16*2 < size8:
+        elif size16 * 2 < size8:
             packing.size = size16
             packing.bytesPerElement = 2
 
@@ -129,4 +135,3 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             packing.bytesPerElement = 1
 
         return packing
-

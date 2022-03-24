@@ -5,12 +5,12 @@ import numpy as np
 
 
 class EEncoding(Enum):
-    ByteArray = "ByteArray",
-    FixedPoint = "FixedPoint",
-    RunLength = "RunLength",
-    Delta = "Delta",
-    IntervalQuantization = "IntervalQuantization",
-    IntegerPacking = "IntegerPacking",
+    ByteArray = ("ByteArray",)
+    FixedPoint = ("FixedPoint",)
+    RunLength = ("RunLength",)
+    Delta = ("Delta",)
+    IntervalQuantization = ("IntervalQuantization",)
+    IntegerPacking = ("IntegerPacking",)
     StringArray = "StringArray"
 
 

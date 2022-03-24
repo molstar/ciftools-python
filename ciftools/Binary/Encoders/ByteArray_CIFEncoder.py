@@ -1,10 +1,9 @@
 import numpy as np
-
-from ciftools.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
+from ciftools.Binary.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
 from ciftools.Binary.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 from ciftools.Binary.Encoding import ByteArrayEncoding, EEncoding
-from ciftools.Binary.data_types import DataTypes, EDataTypes
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
 
@@ -14,7 +13,7 @@ class ByteArray_CIFEncoder(ICIFEncoder):
         self.uint8_encoder = uint8_encoder
 
     @staticmethod
-    def __byte_size (data_type: EDataTypes):
+    def __byte_size(data_type: EDataTypes):
         if data_type in (EDataTypes.Int16, EDataTypes.Uint16):
             return 2
         if data_type in (EDataTypes.Int32, EDataTypes.Uint32, EDataTypes.Float32):

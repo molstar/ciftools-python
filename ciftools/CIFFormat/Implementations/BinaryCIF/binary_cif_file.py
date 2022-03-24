@@ -1,33 +1,24 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import Union, TypedDict
+from typing import TypedDict, Union
 
 import msgpack
-
-from .binary_cif_category import BinaryCIFCategory
-from .binary_cif_data_block import BinaryCIFDataBlock
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
 from ciftools.CIFFormat.i_cif_file import ICIFFile
 
+from .binary_cif_category import BinaryCIFCategory
+from .binary_cif_data_block import BinaryCIFDataBlock
+
 
 class BinaryCIFFile(ICIFFile):
-
     def __getitem__(self, index_or_name: Union[int, str]):
         """
         Access a data block by index or header (case sensitive)
         """
         if isinstance(index_or_name, str):
-            return (
-                self._block_map[index_or_name]
-                if index_or_name in self._block_map
-                else None
-            )
+            return self._block_map[index_or_name] if index_or_name in self._block_map else None
         else:
-            return (
-                self.data_blocks[index_or_name]
-                if index_or_name < len(self.data_blocks)
-                else None
-            )
+            return self.data_blocks[index_or_name] if index_or_name < len(self.data_blocks) else None
 
     def __len__(self):
         return len(self.data_blocks)
@@ -53,10 +44,7 @@ class BinaryCIFFile(ICIFFile):
         data_blocks = [
             BinaryCIFDataBlock(
                 block["header"],
-                {
-                    category["name"][1:]: BinaryCIFCategory(category, lazy)
-                    for category in block["categories"]
-                },
+                {category["name"][1:]: BinaryCIFCategory(category, lazy) for category in block["categories"]},
             )
             for block in file["dataBlocks"]
         ]
@@ -75,5 +63,3 @@ class BinaryCIFFile(ICIFFile):
 
     def data_block(self, name: str) -> Union[ICIFDataBlock, None]:
         return self._block_map.get(name, None)
-
-

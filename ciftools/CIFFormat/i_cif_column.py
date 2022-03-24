@@ -1,7 +1,7 @@
 import abc
 
-from .EValuePresence import EValuePresence
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
+from .EValuePresence import EValuePresence
 
 
 class ICIFColumn(IJsonSerializable, abc.ABC):

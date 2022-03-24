@@ -1,8 +1,7 @@
 import numpy as np
-
-from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding import ByteArrayEncoding, IntervalQuantizationEncoding, EEncoding
 from ciftools.Binary.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding import ByteArrayEncoding, EEncoding, IntervalQuantizationEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
 
@@ -31,12 +30,12 @@ class IntervalQuantization_CIFEncoder(ICIFEncoder):
         delta = (arg_max - arg_min) / (arg_num_steps - 1)
         print(delta)
         encoded_data = np.zeros(len(data))
-        for i in range (len(data)):
+        for i in range(len(data)):
             data_point = data[i]
             if data_point >= arg_max:
                 encoded_data[i] = arg_num_steps
             elif data_point > arg_min:
-                encoded_data[i] = round((data_point-arg_min)/delta)
+                encoded_data[i] = round((data_point - arg_min) / delta)
             else:
                 encoded_data[i] = 0
 

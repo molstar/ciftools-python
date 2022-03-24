@@ -1,7 +1,7 @@
 import abc
 
-from .i_cif_category import ICIFCategory
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
+from .i_cif_category import ICIFCategory
 
 
 class ICIFDataBlock(IJsonSerializable, abc.ABC):

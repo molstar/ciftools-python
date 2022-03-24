@@ -29,8 +29,9 @@ class DataTypes:
         EDataTypes.Float64.value: "f8",
     }
 
-    __dtypes_to_data_types: dict[Union[np.dtype, str], int] = \
-        {data_type: dtype for dtype, data_type in __data_types_to_dtypes.items()}
+    __dtypes_to_data_types: dict[Union[np.dtype, str], int] = {
+        data_type: dtype for dtype, data_type in __data_types_to_dtypes.items()
+    }
 
     @staticmethod
     def from_dtype(dtype: Union[np.dtype, str]) -> EDataTypes:

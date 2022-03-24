@@ -6,5 +6,3 @@ class EncodedCIFFile:
         self.version: str = version
         self.encoder: str = encoder
         self.dataBlocks: list[EncodedCIFDataBlock] = data_blocks
-
-

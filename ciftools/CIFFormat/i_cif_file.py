@@ -2,8 +2,8 @@ from __future__ import annotations  # supposed to be in python 3.10 but reverted
 
 import abc
 
-from .i_cif_data_block import ICIFDataBlock
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
+from .i_cif_data_block import ICIFDataBlock
 
 
 class ICIFFile(IJsonSerializable, abc.ABC):

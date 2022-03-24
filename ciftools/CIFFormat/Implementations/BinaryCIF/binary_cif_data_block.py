@@ -1,17 +1,16 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import Union, TypedDict
+from typing import TypedDict, Union
 
-from pydantic import BaseModel
-
-from .binary_cif_category import BinaryCIFCategory
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data_block import EncodedCIFDataBlock
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
+from pydantic import BaseModel
+
+from .binary_cif_category import BinaryCIFCategory
 
 
 class BinaryCIFDataBlock(ICIFDataBlock):
-
     def __getattr__(self, name: str) -> object:
         return self._categories[name]
 
@@ -44,7 +43,3 @@ class BinaryCIFDataBlock(ICIFDataBlock):
 
     def additional_data(self) -> dict[str, object]:
         return self._additional_data
-
-
-
-

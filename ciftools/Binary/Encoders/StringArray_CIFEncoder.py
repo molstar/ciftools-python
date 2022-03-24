@@ -1,24 +1,24 @@
 import math
 
 import numpy as np
-from numpy import int32, int8, int16, uint8, uint16
-
+from ciftools.Binary.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.Binary.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
-from ciftools.Binary.Encoding import IntegerPackingEncoding, StringArrayEncoding, EEncoding
-from ciftools.Binary.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoding import EEncoding, IntegerPackingEncoding, StringArrayEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from numpy import int8, int16, int32, uint8, uint16
 
 
 class StringArray_CIFEncoder(ICIFEncoder):
-
-    def __init__(self,
-                 delta_encoder: Delta_CIFEncoder,
-                 integer_packing_encoder: IntegerPacking_CIFEncoder,
-                 run_length_encoder: RunLength_CIFEncoder):
+    def __init__(
+        self,
+        delta_encoder: Delta_CIFEncoder,
+        integer_packing_encoder: IntegerPacking_CIFEncoder,
+        run_length_encoder: RunLength_CIFEncoder,
+    ):
         self.delta_encoder = delta_encoder
         self.integer_packing_encoder = integer_packing_encoder
         self.run_length_encoder = run_length_encoder
@@ -33,7 +33,7 @@ class StringArray_CIFEncoder(ICIFEncoder):
         for s in data:
             # handle null strings.
             if not s:
-                output.append(-1);
+                output.append(-1)
                 continue
 
             index = map.get(s, None)
@@ -44,7 +44,7 @@ class StringArray_CIFEncoder(ICIFEncoder):
                 # store the string and index
                 index = len(strings)
                 strings.append(s)
-                map[s] = index;
+                map[s] = index
 
                 # write the offset
                 offsets.append(acc_len)
@@ -67,7 +67,7 @@ class StringArray_CIFEncoder(ICIFEncoder):
         encoding = StringArrayEncoding()
         encoding["kind"] = EEncoding.StringArray.name
         encoding["dataEncoding"] = encoding_output["encoding"]
-        encoding["stringData"] = ''.join(strings)
+        encoding["stringData"] = "".join(strings)
         encoding["offsetEncoding"] = encoding_offset["encoding"]
         encoding["offsets"] = encoding_offset["data"]
 

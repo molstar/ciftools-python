@@ -1,10 +1,9 @@
 import numpy as np
-from numpy import int32
-
-from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding import RunLengthEncoding, EEncoding
 from ciftools.Binary.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding import EEncoding, RunLengthEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from numpy import int32
 
 
 class RunLength_CIFEncoder(ICIFEncoder):
@@ -24,16 +23,16 @@ class RunLength_CIFEncoder(ICIFEncoder):
             return EncodedCIFData(data=np.empty(0, dtype=np.dtype(int32)), encoding=[encoding])
 
         full_len = 2
-        for i in range (1, len(data)):
-            if data[i-1] != data[i]:
+        for i in range(1, len(data)):
+            if data[i - 1] != data[i]:
                 full_len += 2
 
         encoded_data = np.empty(full_len, dtype=np.dtype(int32))
         offset = 0
         run_len = 1
         for i in range(1, len(data)):
-            if data[i-1] != data[i]:
-                encoded_data[offset] = data[i-1]
+            if data[i - 1] != data[i]:
+                encoded_data[offset] = data[i - 1]
                 encoded_data[offset + 1] = run_len
                 run_len = 1
                 offset += 2

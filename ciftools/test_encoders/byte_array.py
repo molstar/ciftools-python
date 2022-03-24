@@ -1,7 +1,6 @@
 import unittest
 
 import numpy as np
-
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
@@ -26,5 +25,12 @@ class TestEncodings_ByteArray(unittest.TestCase):
 
         # validate
         for i in range(len(test_arr)):
-            self.assertTrue(test_arr[i] == decoded[i],
-            "ByteArray encoding/decoding pair test failed;\nExpected element '" +str(i)+"' -> " + str(test_arr[i]) + " but decoded: "+str(decoded[i]))
+            self.assertTrue(
+                test_arr[i] == decoded[i],
+                "ByteArray encoding/decoding pair test failed;\nExpected element '"
+                + str(i)
+                + "' -> "
+                + str(test_arr[i])
+                + " but decoded: "
+                + str(decoded[i]),
+            )

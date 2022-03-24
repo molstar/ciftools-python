@@ -1,6 +1,6 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import Union, TypedDict
+from typing import TypedDict, Union
 
 import numpy as np
 from pydantic import BaseModel
@@ -37,10 +37,10 @@ class BinaryCIFColumn(ICIFColumn):
         return self._value_kinds
 
     def __init__(
-            self,
-            name: str,
-            values: Union[np.ndarray, list[str]],
-            value_kinds: Union[np.ndarray, None],
+        self,
+        name: str,
+        values: Union[np.ndarray, list[str]],
+        value_kinds: Union[np.ndarray, None],
     ):
         self.name = name
         self._values = values

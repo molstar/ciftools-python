@@ -1,4 +1,5 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
+
 import abc
 
 

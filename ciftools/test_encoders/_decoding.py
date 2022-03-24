@@ -2,7 +2,6 @@ import unittest
 
 import msgpack
 import requests
-
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
 
