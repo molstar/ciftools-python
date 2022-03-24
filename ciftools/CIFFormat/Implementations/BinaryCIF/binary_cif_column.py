@@ -40,7 +40,7 @@ class BinaryCIFColumn(ICIFColumn):
             self,
             name: str,
             values: Union[np.ndarray, list[str]],
-            value_kinds: Union[np.ndarray | None],
+            value_kinds: Union[np.ndarray, None],
     ):
         self.name = name
         self._values = values

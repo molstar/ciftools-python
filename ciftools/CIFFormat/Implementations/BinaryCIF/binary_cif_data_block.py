@@ -39,7 +39,7 @@ class BinaryCIFDataBlock(ICIFDataBlock):
     def categories(self) -> dict[str, ICIFCategory]:
         return self._categories
 
-    def get_category(self, name: str) -> Union[ICIFCategory | None]:
+    def get_category(self, name: str) -> Union[ICIFCategory, None]:
         return self._categories.get(name, None)
 
     def additional_data(self) -> dict[str, object]:

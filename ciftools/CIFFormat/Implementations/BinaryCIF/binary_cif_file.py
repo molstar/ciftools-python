@@ -73,7 +73,7 @@ class BinaryCIFFile(ICIFFile):
     def data_blocks(self) -> list[ICIFDataBlock]:
         return self._block_map.values()
 
-    def data_block(self, name: str) -> Union[ICIFDataBlock | None]:
+    def data_block(self, name: str) -> Union[ICIFDataBlock, None]:
         return self._block_map.get(name, None)
 
 
