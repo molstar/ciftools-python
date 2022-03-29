@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
+from ciftools.Binary.Encoding.Encoders import FixedPoint_CIFEncoder
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):

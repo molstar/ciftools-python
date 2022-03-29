@@ -2,10 +2,10 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
-from ciftools.Binary.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
-from ciftools.Binary.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders import INT8_CIFEncoder
+from ciftools.Binary.Encoding.Encoders import IntegerPacking_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 
 
 class TestEncodings_IntegerPacking(unittest.TestCase):

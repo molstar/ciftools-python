@@ -1,8 +1,8 @@
 import numpy as np
-from ciftools.Binary.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
-from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
-from ciftools.Binary.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding import EEncoding, StringArrayEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 

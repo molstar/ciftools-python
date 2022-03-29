@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
 
 
 class TestEncodings_Delta(unittest.TestCase):

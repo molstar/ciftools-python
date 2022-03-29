@@ -1,25 +1,12 @@
 # TODO: refactor with new code format
 
-from typing import Union
-
-import numpy as np
-from ciftools.Binary import Encoding
-from ciftools.Binary.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
-from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders import FixedPoint_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding import (
-    ByteArrayEncoding,
-    DataTypes,
-    DeltaEncoding,
-    EEncoding,
     EncodingBase,
-    FixedPointEncoding,
-    IntegerPackingEncoding,
-    IntervalQuantizationEncoding,
-    RunLengthEncoding,
-    StringArrayEncoding,
 )
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
-from numpy import int8, int16, int32, uint8
+from numpy import uint8
 
 # "IntervalQuantization": _decode_interval_quantization,
 # "RunLength": _decode_run_length,

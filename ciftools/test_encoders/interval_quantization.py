@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoders.IntervalQuantization_CIFEncoder import IntervalQuantization_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.IntervalQuantization_CIFEncoder import IntervalQuantization_CIFEncoder
 
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):

@@ -1,9 +1,7 @@
-from typing import Union
-
 import numpy
 import numpy as np
 from ciftools.Binary.data_types import EDataTypes
-from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding import EEncoding, FixedPointEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 from numpy import float64, int32

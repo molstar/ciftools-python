@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 
 
 class TestEncodings_RunLength(unittest.TestCase):
