@@ -1,45 +1,43 @@
 # TODO: refactor with new code format
 
-from ciftools.Binary.Encoding.Encoders import FixedPoint_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding import (
     EncodingBase,
 )
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from numpy import uint8
 
-# "IntervalQuantization": _decode_interval_quantization,
-# "RunLength": _decode_run_length,
-# "Delta": _decode_delta,
-# "IntegerPacking": _decode_integer_packing,
-# "StringArray": _decode_string_array,
-# "ByteArray": _decode_byte_array,
-
-_encoders: dict[str, ICIFEncoder] = {
-    "FixedPoint": FixedPoint_CIFEncoder(),
-}
+from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 
 
-def encode_cif_data(data: object) -> EncodedCIFData:
-    encodings: EncodingBase = []
+class BinaryCIFEncoder:
+    encoders: list[ICIFEncoder]
 
-    for encoding, encoder in _encoders.items():
-        encoded = encoder.encode(data)
-        added_encodings = encoded.get["encoding"]
+    def __init__(self, encoders: list[ICIFEncoder]):
+        self.encoders: list[ICIFEncoder] = encoders
 
-        if not added_encodings or not len(added_encodings):
-            raise ValueError("Encodings must be non-empty.")
+    def and_(self, f: ICIFEncoder):
+        encoders = list(self.encoders)
+        encoders.append(f)
+        return BinaryCIFEncoder(encoders)
 
-        data = encoded["data"]
-        for added_encoding in added_encodings:
-            encodings["encoding"].push(added_encoding)
+    def encode_cif_data(self, data: any) -> EncodedCIFData:
+        encodings: list[EncodingBase] = []
 
-    if not isinstance(data, list(uint8)):
-        raise ValueError(
-            "The encoding must result in a list(uint8) but it was " + type(data) + ". Fix your encoding chain."
-        )
+        for encoder in self.encoders:
+            encoded = encoder.encode(data)
+            added_encodings = encoded["encoding"]
 
-    encoded_data = EncodedCIFData()
-    encoded_data["encoding"] = encodings
-    encoded_data["data"] = data
-    return encoded_data
+            if not added_encodings or not len(added_encodings):
+                raise ValueError('Encodings must be non-empty.')
+
+            data = encoded["data"]
+            encodings.extend(added_encodings)
+
+        if not (isinstance(data, bytes) or (DataTypes.from_dtype(data.dtype) is EDataTypes.Uint8)):
+            raise ValueError('The encoding must result in a nparray of (uint8) but it was ' + str(type(data)) + ' ' + str(data.dtype) + ' . Fix your encoding chain.');
+
+        return {"encoding": encodings, "data": data }
+
+    @staticmethod
+    def by(f: ICIFEncoder):
+        return BinaryCIFEncoder([f])
