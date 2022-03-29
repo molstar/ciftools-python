@@ -5,7 +5,7 @@ from typing import Union
 import numpy
 import numpy as np
 from ciftools.Binary.Encoding.data_types import DataTypes
-from ciftools.Binary.Encoding import (
+from ciftools.Binary.Encoding.Encoding import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
