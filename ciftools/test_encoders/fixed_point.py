@@ -2,7 +2,9 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders import FixedPoint_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):
@@ -11,8 +13,8 @@ class TestEncodings_FixedPoint(unittest.TestCase):
 
         print(test_arr.dtype.str)
 
-        encoder = FixedPoint_CIFEncoder()
-        encoded = encoder.encode(test_arr, 3, factor=1)
+        encoder = BinaryCIFEncoder.by(FixedPoint_CIFEncoder(1)).and_(ByteArray_CIFEncoder())
+        encoded = encoder.encode_cif_data(test_arr)
 
         print("TestArr: " + str(test_arr))
         print("Encoding: " + str(encoded["encoding"]))

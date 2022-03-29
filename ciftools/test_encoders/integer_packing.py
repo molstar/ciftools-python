@@ -2,21 +2,17 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders import INT8_CIFEncoder
 from ciftools.Binary.Encoding.Encoders import IntegerPacking_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 
 
 class TestEncodings_IntegerPacking(unittest.TestCase):
     def test(self):
         test_arr = np.random.rand(100) * 100
 
-        dep1 = INT8_CIFEncoder()
-        dep2 = UINT8_CIFEncoder()
-        encoder1 = ByteArray_CIFEncoder(dep1, dep2)
-        encoder = IntegerPacking_CIFEncoder(encoder1)
-        encoded = encoder.encode(test_arr)
+        encoder = BinaryCIFEncoder.by(IntegerPacking_CIFEncoder()).and_(ByteArray_CIFEncoder())
+        encoded = encoder.encode_cif_data(test_arr)
 
         print("TestArr: " + str(test_arr))
         print("Encoding: " + str(encoded["encoding"]))

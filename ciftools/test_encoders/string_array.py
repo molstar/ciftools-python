@@ -1,30 +1,17 @@
 import unittest
 
 from ciftools.Binary.Decoder import decode_cif_data
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
-from ciftools.Binary.Encoding.Encoders import INT8_CIFEncoder
-from ciftools.Binary.Encoding.Encoders import IntegerPacking_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding.Encoders import StringArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
 
 
 class TestEncodings_StringArray(unittest.TestCase):
     def test(self):
         test_arr = ["my", "cat", "eats", "too", "much", "food", "off", "my", "plate", "because", "my", "cat"]
 
-        delta_encoder = Delta_CIFEncoder()
-
-        int_encoder = INT8_CIFEncoder()
-        uint_encoder = UINT8_CIFEncoder()
-        byte_arr_encoder = ByteArray_CIFEncoder(int_encoder, uint_encoder)
-        integer_packing_encoder = IntegerPacking_CIFEncoder(byte_arr_encoder)
-
-        run_length_encoder = RunLength_CIFEncoder()
-
-        encoder = StringArray_CIFEncoder(delta_encoder, integer_packing_encoder, run_length_encoder)
-        encoded = encoder.encode(test_arr)
+        encoder = BinaryCIFEncoder.by(StringArray_CIFEncoder()).and_(ByteArray_CIFEncoder())
+        encoded = encoder.encode_cif_data(test_arr)
 
         print("TestArr: " + str(test_arr))
         print("Encoding: " + str(encoded["encoding"]))

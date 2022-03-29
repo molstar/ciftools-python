@@ -2,6 +2,8 @@ import unittest
 
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
+from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 
 
@@ -26,8 +28,8 @@ class TestEncodings_RunLength(unittest.TestCase):
         test_arr[13] = 16
         test_arr[14] = 16
 
-        encoder = RunLength_CIFEncoder()
-        encoded = encoder.encode(test_arr)
+        encoder = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
+        encoded = encoder.encode_cif_data(test_arr)
 
         print("TestArr: " + str(test_arr))
         print("Encoding: " + str(encoded["encoding"]))
