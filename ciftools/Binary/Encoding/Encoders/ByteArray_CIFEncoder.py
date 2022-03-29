@@ -1,9 +1,10 @@
 import numpy as np
+
+from ciftools.Binary.Encoding.Encoding import ByteArrayEncoding, EEncoding
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.Encoders.INT8_CIFEncoder import INT8_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.UINT8_CIFEncoder import UINT8_CIFEncoder
-from ciftools.Binary.Encoding import ByteArrayEncoding, EEncoding
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 
 

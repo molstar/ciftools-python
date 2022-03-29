@@ -2,7 +2,7 @@ from typing import TypedDict
 
 import numpy as np
 
-from ciftools.Binary.Encoding import EncodingBase
+from ciftools.Binary.Encoding.Encoding import EncodingBase
 
 
 class EncodedCIFData(TypedDict):

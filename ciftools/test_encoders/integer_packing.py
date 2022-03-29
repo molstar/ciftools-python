@@ -4,7 +4,7 @@ import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders import IntegerPacking_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 
 
 class TestEncodings_IntegerPacking(unittest.TestCase):

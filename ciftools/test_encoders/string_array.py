@@ -3,7 +3,7 @@ import unittest
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders import StringArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
 
 
 class TestEncodings_StringArray(unittest.TestCase):

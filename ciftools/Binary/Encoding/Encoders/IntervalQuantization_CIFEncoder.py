@@ -1,7 +1,8 @@
 import numpy as np
+
+from ciftools.Binary.Encoding.Encoding import IntervalQuantizationEncoding, EEncoding
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding import EEncoding, IntervalQuantizationEncoding
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 
 

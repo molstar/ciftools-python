@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders import FixedPoint_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 
 
