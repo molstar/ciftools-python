@@ -1,9 +1,8 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import TypedDict, Union
+from typing import Union
 
 import numpy as np
-from pydantic import BaseModel
 
 from ...EValuePresence import EValuePresence
 from ...i_cif_column import ICIFColumn

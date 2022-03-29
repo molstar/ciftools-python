@@ -1,6 +1,5 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-import numpy
 from ciftools.Binary.Decoder import decode_cif_column
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_category import EncodedCIFCategory
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
@@ -55,32 +54,14 @@ class BinaryCIFCategory(ICIFCategory):
         return self._column_names
 
     def get_column(self, name: str) -> ICIFColumn:
-        encoded_cif_column = self._encoded_columns.get(name, None)
+        encoded_cif_column = self._columns.get(name, None)
         if encoded_cif_column is not None:
             return BinaryCIFCategory.__wrap_column__(encoded_cif_column)
 
         return BinaryCIFCategory.__undefined_column__
 
-    def get_matrix(self, field: str, rows: int, cols: int, row_index: int) -> numpy.ndarray:
-        matrix = numpy.empty((rows, cols), float)
-        for i in range(1, rows + 1):
-            row = numpy.empty(cols)
-            for j in range(1, cols + 1):
-                row[j - 1] = self.get_column(field + "[" + str(i) + "][" + str(j) + "]").get_float(row_index)
-
-            matrix[i - 1] = row
-
-        return matrix
-
-    def get_vector(self, field: str, rows: int, cols: int, row_index: int) -> numpy.ndarray:
-        vector = numpy.empty(rows, float)
-        for i in range(1, rows + 1):
-            vector[i - 1] = self.get_column(field + "[" + str(i) + "]").get_float(row_index)
-
-        return vector
-
     @staticmethod
-    def __wrap_column__(self, encoded_cif_column: EncodedCIFColumn) -> ICIFColumn:
+    def __wrap_column__(encoded_cif_column: EncodedCIFColumn) -> ICIFColumn:
         if encoded_cif_column.data.data is None:
             return BinaryCIFCategory.__undefined_column__
 

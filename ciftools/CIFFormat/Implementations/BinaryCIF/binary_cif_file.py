@@ -1,6 +1,6 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import TypedDict, Union
+from typing import Union
 
 import msgpack
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
@@ -28,7 +28,7 @@ class BinaryCIFFile(ICIFFile):
 
     def __init__(self, data_blocks: list[BinaryCIFDataBlock]):
         self.data_blocks = data_blocks
-        self._block_map = {b.header: b for b in data_blocks}
+        self._block_map: dict[str, ICIFDataBlock] = {b.header: b for b in data_blocks}
 
     @staticmethod
     def loads(data: Union[bytes, dict], lazy=True) -> BinaryCIFFile:
@@ -59,7 +59,7 @@ class BinaryCIFFile(ICIFFile):
         return self.json()
 
     def data_blocks(self) -> list[ICIFDataBlock]:
-        return self._block_map.values()
+        return list(self._block_map.values())
 
     def data_block(self, name: str) -> Union[ICIFDataBlock, None]:
         return self._block_map.get(name, None)

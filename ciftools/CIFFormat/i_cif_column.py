@@ -1,4 +1,5 @@
 import abc
+from typing import Optional
 
 from ..JsonSerialization.i_json_serializable import IJsonSerializable
 from .EValuePresence import EValuePresence
@@ -10,7 +11,7 @@ class ICIFColumn(IJsonSerializable, abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_string(self, row: int) -> str:
+    def get_string(self, row: int) -> Optional[str]:
         pass
 
     @abc.abstractmethod
