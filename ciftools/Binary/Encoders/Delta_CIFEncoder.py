@@ -6,9 +6,8 @@ from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 from numpy import int32
 
 
-# buggy
 class Delta_CIFEncoder(ICIFEncoder):
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
 
         # TODO: must be signed integer
 
@@ -18,9 +17,10 @@ class Delta_CIFEncoder(ICIFEncoder):
             data = data.astype(dtype=np.dtype(int32))
             src_data_type = EDataTypes.Int32
 
-        encoding: DeltaEncoding = DeltaEncoding()
-        encoding["srcType"] = src_data_type
-        encoding["kind"] = EEncoding.Delta.name
+        encoding: DeltaEncoding = {
+            "kind": EEncoding.Delta.name,
+            "srcType": src_data_type
+        }
 
         data_length = len(data)
 

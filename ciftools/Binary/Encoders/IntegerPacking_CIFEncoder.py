@@ -1,12 +1,11 @@
 import math
 
 import numpy as np
-from ciftools.Binary.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding import EEncoding, IntegerPackingEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
-from numpy import int8, int16, int32, uint8, uint16
+from numpy import int8, int16, uint8, uint16
 
 
 class IntegerPacking_CIFEncoder(ICIFEncoder):
@@ -15,10 +14,10 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
         size: int
         bytesPerElement: int
 
-    def __init__(self, byte_array_encoder: ByteArray_CIFEncoder):
-        self.byte_array_encoder = byte_array_encoder
+    def __init__(self):
+        self.byte_array_encoder = ByteArray_CIFEncoder()
 
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
 
         # TODO: must be 32bit integer
 
@@ -64,15 +63,17 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             packed_index += 1
 
         byte_array_result = self.byte_array_encoder.encode(packed)
-        integer_packing_encoding: IntegerPackingEncoding = IntegerPackingEncoding()
-        integer_packing_encoding["byteCount"] = packing.bytesPerElement
-        integer_packing_encoding["kind"] = EEncoding.IntegerPacking.name
-        integer_packing_encoding["isUnsigned"] = not packing.isSigned
-        integer_packing_encoding["srcSize"] = data_len
+
+        integer_packing_encoding: IntegerPackingEncoding = {
+            "kind": EEncoding.IntegerPacking.name,
+            "isUnsigned": not packing.isSigned,
+            "srcSize": data_len,
+            "byteCount": packing.bytesPerElement
+        }
 
         return EncodedCIFData(
-            data=byte_array_result["data"], encoding=[integer_packing_encoding, byte_array_result["encoding"][0]]
-        )
+            data=byte_array_result['data'],
+            encoding=[integer_packing_encoding, byte_array_result["encoding"][0]])
 
     @staticmethod
     def __packing_size__(data: np.ndarray, upper_limit: int) -> int:
@@ -85,11 +86,11 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             if value == 0:
                 size = size + 1
             elif value > 0:
-                size = size + math.ceil(value / upper_limit)
+                size = size + math.ceil(value/upper_limit)
                 if value % upper_limit == 0:
                     size = size + 1
             else:
-                size = size + math.ceil(value / lower_limit)
+                size = size + math.ceil(value/lower_limit)
                 if value % lower_limit == 0:
                     size = size + 1
 

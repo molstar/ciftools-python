@@ -1,31 +1,22 @@
-import math
-
 import numpy as np
-from ciftools.Binary.data_types import DataTypes, EDataTypes
-from ciftools.Binary.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
 from ciftools.Binary.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.Binary.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
-from ciftools.Binary.Encoding import EEncoding, IntegerPackingEncoding, StringArrayEncoding
+from ciftools.Binary.Encoding import EEncoding, StringArrayEncoding
 from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
-from numpy import int8, int16, int32, uint8, uint16
 
 
 class StringArray_CIFEncoder(ICIFEncoder):
-    def __init__(
-        self,
-        delta_encoder: Delta_CIFEncoder,
-        integer_packing_encoder: IntegerPacking_CIFEncoder,
-        run_length_encoder: RunLength_CIFEncoder,
-    ):
-        self.delta_encoder = delta_encoder
-        self.integer_packing_encoder = integer_packing_encoder
-        self.run_length_encoder = run_length_encoder
 
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
+    def __init__(self):
+        self.delta_encoder = Delta_CIFEncoder()
+        self.integer_packing_encoder = IntegerPacking_CIFEncoder()
+        self.run_length_encoder = RunLength_CIFEncoder()
+
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
         map = dict()
-        strings: list(str) = []
+        strings: list[str] = []
         acc_len = 0
         offsets = []
         output = []
@@ -64,11 +55,12 @@ class StringArray_CIFEncoder(ICIFEncoder):
         encoding_output["encoding"].extend(encoding_output3["encoding"])
         encoding_output["data"] = encoding_output3["data"]
 
-        encoding = StringArrayEncoding()
-        encoding["kind"] = EEncoding.StringArray.name
-        encoding["dataEncoding"] = encoding_output["encoding"]
-        encoding["stringData"] = "".join(strings)
-        encoding["offsetEncoding"] = encoding_offset["encoding"]
-        encoding["offsets"] = encoding_offset["data"]
+        encoding: StringArrayEncoding = {
+            "dataEncoding": encoding_output["encoding"],
+            "kind": EEncoding.StringArray.name,
+            "stringData": ''.join(strings),
+            "offsetEncoding": encoding_offset["encoding"],
+            "offsets": encoding_offset["data"]
+        }
 
         return EncodedCIFData(data=encoding_output["data"], encoding=[encoding])

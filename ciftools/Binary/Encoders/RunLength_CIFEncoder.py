@@ -7,16 +7,17 @@ from numpy import int32
 
 
 class RunLength_CIFEncoder(ICIFEncoder):
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
         if not src_data_type:
             data = data.astype(dtype=np.dtype(int32))
             src_data_type = EDataTypes.Int32
 
-        encoding: RunLengthEncoding = RunLengthEncoding()
-        encoding["srcType"] = src_data_type
-        encoding["kind"] = EEncoding.RunLength.name
+        encoding: RunLengthEncoding = {
+            "srcType": src_data_type,
+            "kind": EEncoding.RunLength.name
+        }
 
         if not len(data):
             encoding.srcSize = 0
