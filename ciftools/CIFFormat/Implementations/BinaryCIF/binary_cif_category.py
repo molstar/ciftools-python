@@ -1,11 +1,9 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import TypedDict
-
 import numpy
-from ciftools.Binary.Decoder import decode_cif_column, decode_cif_data
-from ciftools.CIFFormat.EncodedCif.encoded_cif_category import EncodedCIFCategory
-from ciftools.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
+from ciftools.Binary.Decoder import decode_cif_column
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_category import EncodedCIFCategory
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn

@@ -4,7 +4,7 @@ import numpy as np
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding import EEncoding, IntegerPackingEncoding
-from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from numpy import int8, int16, uint8, uint16
 
 

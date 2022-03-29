@@ -4,7 +4,7 @@ from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding import EEncoding, StringArrayEncoding
-from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 
 
 class StringArray_CIFEncoder(ICIFEncoder):

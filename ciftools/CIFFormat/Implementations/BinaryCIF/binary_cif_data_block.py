@@ -1,11 +1,9 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from typing import TypedDict, Union
+from typing import Union
 
-from ciftools.CIFFormat.EncodedCif.encoded_cif_data_block import EncodedCIFDataBlock
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
-from pydantic import BaseModel
 
 from .binary_cif_category import BinaryCIFCategory
 

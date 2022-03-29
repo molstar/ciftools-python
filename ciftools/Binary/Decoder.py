@@ -4,19 +4,18 @@ from typing import Union
 
 import numpy
 import numpy as np
-from ciftools.Binary.data_types import DataTypes
+from ciftools.Binary.Encoding.data_types import DataTypes
 from ciftools.Binary.Encoding import (
     ByteArrayEncoding,
     DeltaEncoding,
-    EEncoding,
     FixedPointEncoding,
     IntegerPackingEncoding,
     IntervalQuantizationEncoding,
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.CIFFormat.EncodedCif.encoded_cif_column import EncodedCIFColumn
-from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 
