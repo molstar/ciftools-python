@@ -7,9 +7,10 @@ from numpy import uint8
 
 
 class UINT8_CIFEncoder(ICIFEncoder):
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
-        encoding: ByteArrayEncoding = ByteArrayEncoding()
-        encoding["kind"] = EEncoding.ByteArray.name
-        encoding["type"] = EDataTypes.Uint8
-        encoded_data = EncodedCIFData(data=data, encoding=[encoding])
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
+        encoding: ByteArrayEncoding = {
+            "kind": EEncoding.ByteArray.name,
+            "type": EDataTypes.Uint8
+        }
+        encoded_data = EncodedCIFData(data=uint8(data), encoding=[encoding])
         return encoded_data

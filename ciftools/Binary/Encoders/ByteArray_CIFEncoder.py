@@ -8,9 +8,9 @@ from ciftools.CIFFormat.EncodedCif.encoded_cif_data import EncodedCIFData
 
 
 class ByteArray_CIFEncoder(ICIFEncoder):
-    def __init__(self, int8_encoder: INT8_CIFEncoder, uint8_encoder: UINT8_CIFEncoder):
-        self.int8_encoder = int8_encoder
-        self.uint8_encoder = uint8_encoder
+    def __init__(self):
+        self._int8_encoder = INT8_CIFEncoder()
+        self._uint8_encoder = UINT8_CIFEncoder()
 
     @staticmethod
     def __byte_size(data_type: EDataTypes):
@@ -20,15 +20,17 @@ class ByteArray_CIFEncoder(ICIFEncoder):
             return 4
         return 8
 
-    def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
+    def encode(self, data: np.ndarray) -> EncodedCIFData:
         data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
         if data_type == EDataTypes.Int8:
-            return self.int8_encoder.encode(data)
+            return self._int8_encoder.encode(data)
         elif data_type == EDataTypes.Uint8:
-            return self.uint8_encoder.encode(data)
+            return self._uint8_encoder.encode(data)
 
-        encoding = ByteArrayEncoding()
-        encoding["kind"] = EEncoding.ByteArray.name
-        encoding["type"] = data_type
+        encoding: ByteArrayEncoding = {
+            "kind": EEncoding.ByteArray.name,
+            "type": data_type
+        }
+        # TODO: improve typing of conversion from ndarray to bytes back to nd array
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])
