@@ -3,11 +3,12 @@ from typing import Union, Optional
 
 import numpy as np
 
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 
 
-class FieldDesc(abc.abc):
+class FieldDesc(abc.ABC):
     name: str
 
     @abc.abstractmethod
@@ -35,7 +36,7 @@ class FieldDesc(abc.abc):
         pass
 
     @abc.abstractmethod
-    def encoder(self) -> ICIFEncoder:
+    def encoder(self) -> BinaryCIFEncoder:
         pass
 
     @abc.abstractmethod

@@ -32,31 +32,34 @@ class TMPData:
 class BinaryCIFWriter(CIFWriter):
 
     _data: Optional[EncodedCIFFile]
-    _data_blocks: Optional[list[EncodedCIFDataBlock]]
+    _data_blocks: list[EncodedCIFDataBlock]
     _encoded_data: np.ndarray  # bytes -> uint8
 
     def __init__(self, encoder: str):
         self._data_blocks = []
-        self._data = EncodedCIFFile("0.3.0", encoder, self._data_blocks)
+        self._data = {
+            "version": "0.3.0",
+            "encoder": encoder,
+            "dataBlocks": self._data_blocks }
 
     def start_data_block(self, header: str) -> None:
         # TODO: optimize if needed
         _header = header.replace(" ", "").replace("\n", "").replace("\t", "").upper()
-        self._data_blocks.append(EncodedCIFDataBlock(_header, []))
+        self._data_blocks.append({"header": _header, "categories": []})
 
     def write_category(self, writer_provider: CategoryWriterProvider, contexts: [any]) -> None:
         if not self._data:
-            raise Exception('The writer contents have already been encoded, no more writing.');
+            raise Exception('The writer contents have already been encoded, no more writing.')
 
         if not self._data_blocks:
-            raise Exception('No data block created.');
+            raise Exception('No data block created.')
 
         if not contexts:
             src = [writer_provider.category_writer(None)]
         else:
             src = [writer_provider.category_writer(ctx) for ctx in contexts]
 
-        categories: list[CategoryWriter] = list(filter(lambda ctx: len(ctx) > 0, src))
+        categories: list[CategoryWriter] = list(filter(lambda writer: writer.count > 0, src))
         if not categories:
             return
 
@@ -67,16 +70,16 @@ class BinaryCIFWriter(CIFWriter):
             return
 
         first = categories[0]
-        cif_cat: EncodedCIFCategory = EncodedCIFCategory(first.desc.name, count, [])
+        cif_cat: EncodedCIFCategory = {"name": first.desc.name, "rowCount": count, "columns": []}
         data = [TMPData(c.data, c.count) for c in categories]
 
         for f in first.desc.fields:
-            cif_cat.columns.append(BinaryCIFWriter._encode_field(f, data, count))
+            cif_cat["columns"].append(BinaryCIFWriter._encode_field(f, data, count))
 
-        self._data_blocks[len(self._data_blocks) - 1].categories.append(cif_cat)
+        self._data_blocks[len(self._data_blocks) - 1]["categories"].append(cif_cat)
 
     def encode(self) -> None:
-        self._encoded_data = msgpack.dumps(self._data);
+        self._encoded_data = msgpack.dumps(self._data)
         self._data = None
         self._data_blocks = None
 
@@ -88,7 +91,7 @@ class BinaryCIFWriter(CIFWriter):
         array: np.ndarray
         is_native: bool = False
         if field.has_typed_array():
-            array = field.typed_array(total_count);
+            array = field.typed_array(total_count)
         else:
             is_native = True
             array = np.ndarray(shape=[total_count])
@@ -114,8 +117,8 @@ class BinaryCIFWriter(CIFWriter):
 
                 offset += 1
 
-        encoder = field.encoder if field.encoder else StringArray_CIFEncoder()
-        encoded = BinaryCIFEncoder.by(encoder).encode_cif_data(array)
+        encoder = field.encoder() if field.encoder else BinaryCIFEncoder.by(StringArray_CIFEncoder())
+        encoded = encoder.encode_cif_data(array)
 
         mask_data: Optional[EncodedCIFData] = None
 
@@ -126,5 +129,5 @@ class BinaryCIFWriter(CIFWriter):
             else:
                 mask_data = BinaryCIFEncoder.by(ByteArray_CIFEncoder()).encode_cif_data(mask)
 
-        return EncodedCIFColumn(field.name, encoded, mask_data)
+        return {"name": field.name, "data": encoded, "mask": mask_data}
 

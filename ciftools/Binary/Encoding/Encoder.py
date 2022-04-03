@@ -1,5 +1,5 @@
 # TODO: refactor with new code format
-
+from __future__ import annotations
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoding import EncodingBase
@@ -13,7 +13,7 @@ class BinaryCIFEncoder:
     def __init__(self, encoders: list[ICIFEncoder]):
         self.encoders: list[ICIFEncoder] = encoders
 
-    def and_(self, f: ICIFEncoder):
+    def and_(self, f: ICIFEncoder) -> BinaryCIFEncoder:
         encoders = list(self.encoders)
         encoders.append(f)
         return BinaryCIFEncoder(encoders)
@@ -37,5 +37,5 @@ class BinaryCIFEncoder:
         return {"encoding": encodings, "data": data }
 
     @staticmethod
-    def by(f: ICIFEncoder):
+    def by(f: ICIFEncoder) -> BinaryCIFEncoder:
         return BinaryCIFEncoder([f])

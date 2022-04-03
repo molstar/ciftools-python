@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class EValuePresence(Enum):
+class EValuePresence(IntEnum):
     Present = (0,)
     NotSpecified = (1,)
     Unknown = 2

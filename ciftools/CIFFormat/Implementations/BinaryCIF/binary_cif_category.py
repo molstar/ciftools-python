@@ -51,7 +51,7 @@ class BinaryCIFCategory(ICIFCategory):
         return self._column_count
 
     def column_names(self) -> list[str]:
-        return self._column_names
+        return self.field_names
 
     def get_column(self, name: str) -> ICIFColumn:
         encoded_cif_column = self._columns.get(name, None)
@@ -62,7 +62,7 @@ class BinaryCIFCategory(ICIFCategory):
 
     @staticmethod
     def __wrap_column__(encoded_cif_column: EncodedCIFColumn) -> ICIFColumn:
-        if encoded_cif_column.data.data is None:
+        if encoded_cif_column["data"]["data"] is None:
             return BinaryCIFCategory.__undefined_column__
 
         return decode_cif_column(encoded_cif_column)
