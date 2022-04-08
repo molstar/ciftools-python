@@ -2,8 +2,8 @@ import unittest
 
 testmodules = [
     # 'byte_array',
-    'delta',
-    # 'fixed_point',
+    # 'delta',
+    'fixed_point',
     # 'integer_packing',
     # 'interval_quantization',
     # 'run_length',

@@ -11,10 +11,10 @@ class TestEncodings_FixedPoint(unittest.TestCase):
     def test(self):
 
         test_suite = [
-            (np.random.rand(100) * 100, 1),
-            (np.random.rand(100) * 100, 2),
-            (np.random.rand(100) * 100, 3),
-            (np.random.rand(100) * 100, 4),
+            (np.random.rand(100) * 1000, 1),
+            (np.random.rand(100) * 1000, 2),
+            (np.random.rand(100) * 1000, 3),
+            (np.random.rand(100) * 1000, 4),
         ]
 
         for test_arr, e in test_suite:

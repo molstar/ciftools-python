@@ -21,8 +21,7 @@ class FixedPoint_CIFEncoder(ICIFEncoder):
         if self._factor is None:
             raise ValueError("FixedPoint encoder factor must be valid")
 
-        processed_data: np.ndarray[int32] = numpy.multiply(data, self._factor)
-        processed_data = processed_data.round()
+        fixed_point_data: np.ndarray[int32] = np.array(data * self._factor, dtype='i4')
 
         encoding: FixedPointEncoding = {
             "kind": EEncoding.FixedPoint.name,
@@ -30,5 +29,4 @@ class FixedPoint_CIFEncoder(ICIFEncoder):
             "factor": self._factor
         }
 
-        # TODO: is it needed to call bytes(processed_data)?
-        return EncodedCIFData(data=processed_data, encoding=[encoding])
+        return EncodedCIFData(data=fixed_point_data, encoding=[encoding])
