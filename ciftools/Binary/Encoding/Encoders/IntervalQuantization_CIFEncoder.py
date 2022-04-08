@@ -7,10 +7,11 @@ from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 
 
 class IntervalQuantization_CIFEncoder(ICIFEncoder):
-    def __init__(self, arg_min: int, arg_max: int, num_steps: int):
+    def __init__(self, arg_min: int, arg_max: int, num_steps: int, array_type: EDataTypes = EDataTypes.Uint32):
         self._min = arg_min
         self._max = arg_max
         self._num_steps = num_steps
+        self._array_type = array_type
 
     def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
@@ -28,18 +29,17 @@ class IntervalQuantization_CIFEncoder(ICIFEncoder):
             "kind": EEncoding.IntervalQuantization.name
         }
 
+        dtype = DataTypes.to_dtype(self._array_type)
+
         if not len(data):
-            return EncodedCIFData(data=np.empty(0), encoding=[encoding])
+            return EncodedCIFData(data=np.empty(0, dtype=dtype), encoding=[encoding])
 
         delta = (self._max - self._min) / (self._num_steps - 1)
-        encoded_data = np.zeros(len(data))
-        for i in range(len(data)):
-            data_point = data[i]
-            if data_point >= self._max:
-                encoded_data[i] = self._num_steps
-            elif data_point > self._min:
-                encoded_data[i] = round((data_point - self._min) / delta)
-            else:
-                encoded_data[i] = 0
+
+        quantized = np.clip(data, self._min, self._max)
+        np.subtract(quantized, self._min, out=quantized)
+        np.divide(quantized, delta, out=quantized)
+
+        encoded_data = np.array(quantized, dtype=dtype)
 
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
