@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-
+import msgpack
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
@@ -13,6 +13,7 @@ class TestEncodings_StringArray(unittest.TestCase):
 
         encoder = BinaryCIFEncoder.by(StringArray_CIFEncoder())
         encoded = encoder.encode_cif_data(test_arr)
+        msgpack.loads(msgpack.dumps(encoded))
         decoded = decode_cif_data(encoded)
 
         self.assertTrue(np.array_equal(test_arr, decoded))

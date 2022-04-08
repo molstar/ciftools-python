@@ -1,5 +1,6 @@
 import unittest
 
+import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
@@ -25,6 +26,8 @@ class TestEncodings_ByteArray(unittest.TestCase):
         for test_arr, expected_type in test_suite:
             encoder = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
             encoded = encoder.encode_cif_data(test_arr)
+            
+            msgpack.loads(msgpack.dumps(encoded))
             
             decoded = decode_cif_data(encoded)
 
