@@ -9,29 +9,17 @@ from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIF
 
 class TestEncodings_FixedPoint(unittest.TestCase):
     def test(self):
-        test_arr = np.random.rand(100) * 100
 
-        print(test_arr.dtype.str)
+        test_suite = [
+            (np.random.rand(100) * 100, 1),
+            (np.random.rand(100) * 100, 2),
+            (np.random.rand(100) * 100, 3),
+            (np.random.rand(100) * 100, 4),
+        ]
 
-        encoder = BinaryCIFEncoder.by(FixedPoint_CIFEncoder(1)).and_(ByteArray_CIFEncoder())
-        encoded = encoder.encode_cif_data(test_arr)
+        for test_arr, e in test_suite:
+            encoder = BinaryCIFEncoder.by(FixedPoint_CIFEncoder(10 ** e)).and_(ByteArray_CIFEncoder())
+            encoded = encoder.encode_cif_data(test_arr)
+            decoded = decode_cif_data(encoded)
 
-        print("TestArr: " + str(test_arr))
-        print("Encoding: " + str(encoded["encoding"]))
-        print("EncodedData: " + str(encoded["data"]))
-
-        decoded = decode_cif_data(encoded)
-
-        print("Decoded: " + str(decoded))
-
-        # validate
-        for i in range(len(test_arr)):
-            self.assertTrue(
-                round(test_arr[i]) == decoded[i],
-                "FixedPoint encoding/decoding pair test failed;\nExpected element '"
-                + str(i)
-                + "' -> "
-                + str(test_arr[i])
-                + " but decoded: "
-                + str(decoded[i]),
-            )
+            self.assertTrue(np.allclose(test_arr, decoded, atol=10 ** (-e)))

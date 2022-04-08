@@ -13,23 +13,6 @@ class TestEncodings_Delta(unittest.TestCase):
 
         encoder = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(ByteArray_CIFEncoder())
         encoded = encoder.encode_cif_data(test_arr)
-
-        print("TestArr: " + str(test_arr))
-        print("Encoding: " + str(encoded["encoding"]))
-        print("EncodedData: " + str(encoded["data"]))
-
         decoded = decode_cif_data(encoded)
 
-        print("Decoded: " + str(decoded))
-
-        # validate
-        for i in range(len(test_arr)):
-            self.assertTrue(
-                test_arr[i] == decoded[i],
-                "Delta encoding/decoding pair test failed;\nExpected element '"
-                + str(i)
-                + "' -> "
-                + str(test_arr[i])
-                + " but decoded: "
-                + str(decoded[i]),
-            )
+        self.assertEqual(list(test_arr), list(decoded))

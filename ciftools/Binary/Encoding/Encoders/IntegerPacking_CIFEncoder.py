@@ -44,11 +44,10 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
                 packed = np.empty(packing.size, dtype=uint16)
 
         lower_limit = -upper_limit - 1
-        data_len = len(data)
 
         packed_index = 0
-        for i in range(data_len):
-            value = data[i]
+        for _v in data:
+            value = _v
             if value >= 0:
                 while value >= upper_limit:
                     packed[packed_index] = upper_limit
@@ -68,7 +67,7 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
         integer_packing_encoding: IntegerPackingEncoding = {
             "kind": EEncoding.IntegerPacking.name,
             "isUnsigned": not packing.isSigned,
-            "srcSize": data_len,
+            "srcSize": len(data),
             "byteCount": packing.bytesPerElement
         }
 

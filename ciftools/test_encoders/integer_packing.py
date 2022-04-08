@@ -7,29 +7,21 @@ from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIF
 from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 
 
-class TestEncodings_IntegerPacking(unittest.TestCase):
+class TestEncodings_IntegerPackingSigned(unittest.TestCase):
     def test(self):
-        test_arr = np.random.rand(100) * 100
+        test_suite = [
+            ([0, 1], True, 1),
+            ([-1, 1], False, 1),
+            ([0, 1000, 14000], True, 2),
+            ([-1000, 1000, 14000, -14000], False, 2),
+        ]
 
-        encoder = BinaryCIFEncoder.by(IntegerPacking_CIFEncoder()).and_(ByteArray_CIFEncoder())
-        encoded = encoder.encode_cif_data(test_arr)
+        for test_arr, is_unsigned, byte_count in test_suite:
+            encoder = BinaryCIFEncoder.by(IntegerPacking_CIFEncoder())
+            encoded = encoder.encode_cif_data(test_arr)            
+            decoded = decode_cif_data(encoded)
 
-        print("TestArr: " + str(test_arr))
-        print("Encoding: " + str(encoded["encoding"]))
-        print("EncodedData: " + str(encoded["data"]))
+            self.assertEqual(test_arr, list(decoded))
+            self.assertEqual(is_unsigned, encoded["encoding"][0]["isUnsigned"])
+            self.assertEqual(byte_count, encoded["encoding"][0]["byteCount"])
 
-        decoded = decode_cif_data(encoded)
-
-        print("Decoded: " + str(decoded))
-
-        # validate
-        for i in range(len(test_arr)):
-            self.assertTrue(
-                int(test_arr[i]) == round(decoded[i]),
-                "IntegerPacking encoding/decoding pair test failed;\nExpected element '"
-                + str(i)
-                + "' -> "
-                + str(test_arr[i])
-                + " but decoded: "
-                + str(decoded[i]),
-            )

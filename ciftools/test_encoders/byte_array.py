@@ -4,30 +4,29 @@ import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
+from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 
 
 class TestEncodings_ByteArray(unittest.TestCase):
     def test(self):
-        test_arr = np.random.rand(100) * 100
-        encoder = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
-        encoded = encoder.encode_cif_data(test_arr)
+        test_suite = [
+            (np.array(np.random.rand(100) * 100, dtype="i1"), EDataTypes.Int8),
+            (np.array(np.random.rand(100) * 100, dtype="u1"), EDataTypes.Uint8),
+            (np.array(np.random.rand(100) * 100, dtype="b"), EDataTypes.Int8),
+            (np.array(np.random.rand(100) * 100, dtype="B"), EDataTypes.Uint8),
+            (np.array(np.random.rand(100) * 100, dtype="i2"), EDataTypes.Int16),
+            (np.array(np.random.rand(100) * 100, dtype="u2"), EDataTypes.Uint16),
+            (np.array(np.random.rand(100) * 100, dtype="i4"), EDataTypes.Int32),
+            (np.array(np.random.rand(100) * 100, dtype="u4"), EDataTypes.Uint32),
+            (np.array(np.random.rand(100) * 100, dtype="f4"), EDataTypes.Float32),
+            (np.array(np.random.rand(100) * 100, dtype="f8"), EDataTypes.Float64),
+        ]
 
-        print("TestArr: " + str(test_arr))
-        print("Encoding: " + str(encoded["encoding"]))
-        print("EncodedData: " + str(encoded["data"]))
+        for test_arr, expected_type in test_suite:
+            encoder = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
+            encoded = encoder.encode_cif_data(test_arr)
+            
+            decoded = decode_cif_data(encoded)
 
-        decoded = decode_cif_data(encoded)
-
-        print("Decoded: " + str(decoded))
-
-        # validate
-        for i in range(len(test_arr)):
-            self.assertTrue(
-                test_arr[i] == decoded[i],
-                "ByteArray encoding/decoding pair test failed;\nExpected element '"
-                + str(i)
-                + "' -> "
-                + str(test_arr[i])
-                + " but decoded: "
-                + str(decoded[i]),
-            )
+            self.assertTrue(np.array_equal(test_arr, decoded))
+            self.assertEqual(encoded["encoding"][0]["type"], expected_type)

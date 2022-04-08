@@ -32,7 +32,6 @@ class IntervalQuantization_CIFEncoder(ICIFEncoder):
             return EncodedCIFData(data=np.empty(0), encoding=[encoding])
 
         delta = (self._max - self._min) / (self._num_steps - 1)
-        print(delta)
         encoded_data = np.zeros(len(data))
         for i in range(len(data)):
             data_point = data[i]

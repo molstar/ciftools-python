@@ -30,7 +30,9 @@ class DataTypes:
     }
 
     __dtypes_to_data_types: dict[Union[np.dtype, str], int] = {
-        data_type: dtype for dtype, data_type in __data_types_to_dtypes.items()
+        **{ data_type: dtype for dtype, data_type in __data_types_to_dtypes.items() },
+        "b": EDataTypes.Int8.value,
+        "B": EDataTypes.Uint8.value,
     }
 
     @staticmethod

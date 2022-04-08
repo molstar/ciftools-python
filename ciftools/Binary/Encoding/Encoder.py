@@ -31,8 +31,8 @@ class BinaryCIFEncoder:
             data = encoded["data"]
             encodings.extend(added_encodings)
 
-        if not (isinstance(data, bytes) or (DataTypes.from_dtype(data.dtype) is EDataTypes.Uint8)):
-            raise ValueError('The encoding must result in a nparray of (uint8) but it was ' + str(type(data)) + ' ' + str(data.dtype) + ' . Fix your encoding chain.');
+        if not isinstance(data, bytes):
+            raise ValueError(f'The encoding must result in bytes but it was {str(type(data))}. Fix your encoding chain.');
 
         return {"encoding": encodings, "data": data }
 

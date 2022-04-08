@@ -9,27 +9,17 @@ from ciftools.Binary.Encoding.Encoders.IntervalQuantization_CIFEncoder import In
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):
     def test(self):
-        test_arr = np.random.rand(100) * 100
 
-        encoder = BinaryCIFEncoder.by(IntervalQuantization_CIFEncoder(0, 100, 10000)).and_(ByteArray_CIFEncoder())
-        encoded = encoder.encode_cif_data(test_arr)
+        test_suite = [
+            (np.random.rand(100) * 100, 100),
+            (np.random.rand(100) * 100, 2**8 - 1),
+            (np.random.rand(100) * 100, 2**16 - 1),
+        ]
 
-        print("TestArr: " + str(test_arr))
-        print("Encoding: " + str(encoded["encoding"]))
-        print("EncodedData: " + str(encoded["data"]))
+        for test_arr, steps in test_suite:
+            low, high = np.min(test_arr), np.max(test_arr)
+            encoder = BinaryCIFEncoder.by(IntervalQuantization_CIFEncoder(low, high, steps)).and_(ByteArray_CIFEncoder())
+            encoded = encoder.encode_cif_data(test_arr)
+            decoded = decode_cif_data(encoded)
 
-        decoded = decode_cif_data(encoded)
-
-        print("Decoded: " + str(decoded))
-
-        # validate
-        for i in range(len(test_arr)):
-            self.assertTrue(
-                test_arr[i] - decoded[i] < 0.1,
-                "IntervalQuantization encoding/decoding pair test failed;\nExpected element '"
-                + str(i)
-                + "' -> "
-                + str(test_arr[i])
-                + " but decoded: "
-                + str(decoded[i]),
-            )
+            self.assertTrue(np.allclose(test_arr, decoded, atol=1.1 * (high - low) / steps))

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, List
 
 import msgpack
 import numpy as np
@@ -47,7 +47,7 @@ class BinaryCIFWriter(CIFWriter):
         _header = header.replace(" ", "").replace("\n", "").replace("\t", "").upper()
         self._data_blocks.append({"header": _header, "categories": []})
 
-    def write_category(self, writer_provider: CategoryWriterProvider, contexts: [any]) -> None:
+    def write_category(self, writer_provider: CategoryWriterProvider, contexts: List[Any]) -> None:
         if not self._data:
             raise Exception('The writer contents have already been encoded, no more writing.')
 
