@@ -74,7 +74,7 @@ class TestEncodings_Encoding(unittest.TestCase):
 
         # test
         test_data = prepare_test_data(100)
-        print("Original data: " + str(test_data.__dict__))
+        # print("Original data: " + str(test_data.__dict__))
 
         writer = BinaryCIFWriter("my_encoder")
 
@@ -103,24 +103,24 @@ class TestEncodings_Encoding(unittest.TestCase):
         print("DataBlocks: " + str(len(parsed.data_blocks)))
 
         # TODO: missing initial character a from category name -> bug may be in the encoder?
-        lattice_ids = parsed.data_block("lattice_ids".upper()).get_category("attice_ids").get_column("lattice_ids").__dict__["_values"]
+        lattice_ids = parsed.data_block("lattice_ids".upper()).get_category("lattice_ids").get_column("lattice_ids").__dict__["_values"]
         print("LatticeIds: " + str(lattice_ids))
         compare = np.array_equal(test_data.metadata.lattices_ids, lattice_ids)
         self.assertTrue(compare, "LatticeIds did not match original data")
 
         # load encoded data
-        volume_and_lattices = parsed.data_block("volume_data".upper()).get_category("olume")
+        volume_and_lattices = parsed.data_block("volume_data".upper()).get_category("volume")
 
         print("Lattices: " + str(volume_and_lattices.column_names()))
         volume = volume_and_lattices.get_column("volume").__dict__["_values"]
-        print("Volume: " + str(volume))
+        # print("Volume: " + str(volume))
         compare = np.array_equal(test_data.volume, volume)
         self.assertTrue(compare, "Volume did not match original data")
 
         for lattice_id in lattice_ids:
             print("Lattice: " + str(lattice_id))
             lattice_value = volume_and_lattices.get_column("lattice_" + str(lattice_id)).__dict__["_values"]
-            print("LatticeValue: " + str(lattice_value))
+            # print("LatticeValue: " + str(lattice_value))
             compare = np.array_equal(test_data.lattices[lattice_id], lattice_value)
             self.assertTrue(compare, str("Lattice id " + str(lattice_id) + " did not match original data"))
 

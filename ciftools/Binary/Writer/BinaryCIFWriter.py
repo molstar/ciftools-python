@@ -70,7 +70,7 @@ class BinaryCIFWriter(CIFWriter):
             return
 
         first = categories[0]
-        cif_cat: EncodedCIFCategory = {"name": first.desc.name, "rowCount": count, "columns": []}
+        cif_cat: EncodedCIFCategory = {"name": f"_{first.desc.name}", "rowCount": count, "columns": []}
         data = [TMPData(c.data, c.count) for c in categories]
 
         for f in first.desc.fields:
