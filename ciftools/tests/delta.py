@@ -9,10 +9,10 @@ from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
 
 class TestEncodings_Delta(unittest.TestCase):
     def test(self):
-        test_arr = np.random.randint(0, 100, 100)
+        test_arr = np.array([1, 1, 2, 2, 10, -10])
 
         encoder = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(ByteArray_CIFEncoder())
         encoded = encoder.encode_cif_data(test_arr)
         decoded = decode_cif_data(encoded)
 
-        self.assertEqual(list(test_arr), list(decoded))
+        self.assertTrue(np.array_equal(test_arr, decoded))

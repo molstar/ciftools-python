@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "molstar": "^3.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23"
   }
 }

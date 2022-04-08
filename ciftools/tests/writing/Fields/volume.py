@@ -33,7 +33,7 @@ class TestFieldDesc_Volume(FieldDesc):
         return True
 
     def typed_array(self, total_count: int) -> np.ndarray:
-        return np.ndarray([total_count], dtype=np.dtype(int32))
+        return np.ndarray([total_count], dtype='f4')
 
     def encoder(self) -> BinaryCIFEncoder:
         return BinaryCIFEncoder.by(FixedPoint_CIFEncoder(1000)).and_(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())

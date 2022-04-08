@@ -29,6 +29,8 @@ class TMPData:
         self.count = count
 
 
+_RLE_ENCODER = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
+
 class BinaryCIFWriter(CIFWriter):
 
     _data: Optional[EncodedCIFFile]
@@ -48,6 +50,7 @@ class BinaryCIFWriter(CIFWriter):
         self._data_blocks.append({"header": _header, "categories": []})
 
     def write_category(self, writer_provider: CategoryWriterProvider, contexts: List[Any]) -> None:
+
         if not self._data:
             raise Exception('The writer contents have already been encoded, no more writing.')
 
@@ -58,6 +61,7 @@ class BinaryCIFWriter(CIFWriter):
             src = [writer_provider.category_writer(None)]
         else:
             src = [writer_provider.category_writer(ctx) for ctx in contexts]
+
 
         categories: list[CategoryWriter] = list(filter(lambda writer: writer.count > 0, src))
         if not categories:
@@ -75,7 +79,7 @@ class BinaryCIFWriter(CIFWriter):
 
         for f in first.desc.fields:
             cif_cat["columns"].append(BinaryCIFWriter._encode_field(f, data, count))
-
+        
         self._data_blocks[len(self._data_blocks) - 1]["categories"].append(cif_cat)
 
     def encode(self) -> None:
@@ -94,6 +98,7 @@ class BinaryCIFWriter(CIFWriter):
             array = field.typed_array(total_count)
         else:
             is_native = True
+            # TODO: how to determine dtype here?
             array = np.ndarray(shape=[total_count])
 
         mask = np.ndarray(shape=[total_count], dtype=np.dtype(np.uint8))
@@ -123,7 +128,7 @@ class BinaryCIFWriter(CIFWriter):
         mask_data: Optional[EncodedCIFData] = None
 
         if not all_present:
-            mask_rle = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder()).encode_cif_data(mask)
+            mask_rle = _RLE_ENCODER.encode_cif_data(mask)
             if len(mask_rle["data"]) < len(mask):
                 mask_data = mask_rle
             else:

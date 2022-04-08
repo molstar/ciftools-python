@@ -11,14 +11,14 @@ class TestVolumeData:
     lattices: dict[int, np.ndarray]
 
 
-def prepare_test_data(size: int) -> TestVolumeData:
+def prepare_test_data(size: int, num_lattices = 2) -> TestVolumeData:
     data = TestVolumeData()
     data.lattices = dict()
     data.metadata = TestMetadata()
-    data.metadata.lattices_ids = [1, 2, 3, 15, 107]
+    data.metadata.lattices_ids = list(range(num_lattices))
     for i in data.metadata.lattices_ids:
-        data.lattices[i] = np.random.randint(1, 100, size)
+        data.lattices[i] = np.arange(size) + i
 
-    data.volume = np.random.randint(1, 100, size)
+    data.volume = np.array([0.123 + 0.1 * i for i in range(size)])
 
     return data

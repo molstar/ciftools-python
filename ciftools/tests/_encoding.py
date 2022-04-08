@@ -2,8 +2,6 @@ from pathlib import Path
 import unittest
 
 import numpy as np
-import msgpack_numpy as m
-from numpy import int32
 
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
@@ -69,11 +67,9 @@ class TestOutputStream(OutputStream):
 
 class TestEncodings_Encoding(unittest.TestCase):
     def test(self):
-        # initialize msg pack numpy
-        m.patch()
 
         # test
-        test_data = prepare_test_data(100)
+        test_data = prepare_test_data(5, 1)
         # print("Original data: " + str(test_data.__dict__))
 
         writer = BinaryCIFWriter("my_encoder")
@@ -113,14 +109,16 @@ class TestEncodings_Encoding(unittest.TestCase):
 
         print("Lattices: " + str(volume_and_lattices.column_names()))
         volume = volume_and_lattices.get_column("volume").__dict__["_values"]
-        # print("Volume: " + str(volume))
+        print("Volume (parsed): " + str(volume))
+        print("Volume (input): " + str(test_data.volume))
         compare = np.array_equal(test_data.volume, volume)
         self.assertTrue(compare, "Volume did not match original data")
 
         for lattice_id in lattice_ids:
             print("Lattice: " + str(lattice_id))
             lattice_value = volume_and_lattices.get_column("lattice_" + str(lattice_id)).__dict__["_values"]
-            # print("LatticeValue: " + str(lattice_value))
+            print("LatticeValue (parsed): " + str(lattice_value))
+            print("LatticeValue (input): " + str(test_data.lattices[lattice_id]))
             compare = np.array_equal(test_data.lattices[lattice_id], lattice_value)
             self.assertTrue(compare, str("Lattice id " + str(lattice_id) + " did not match original data"))
 

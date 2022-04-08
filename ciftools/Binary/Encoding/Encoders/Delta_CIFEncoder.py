@@ -8,8 +8,7 @@ from numpy import int32
 
 
 class Delta_CIFEncoder(ICIFEncoder):
-    def encode(self, data: np.ndarray) -> EncodedCIFData:
-        
+    def encode(self, data: np.ndarray) -> EncodedCIFData:        
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
         if not src_data_type or src_data_type not in (EDataTypes.Int8, EDataTypes.Int16, EDataTypes.Int32):
@@ -26,7 +25,8 @@ class Delta_CIFEncoder(ICIFEncoder):
         if not data_length:
             encoding.origin = 0
             return EncodedCIFData(data=np.empty(0, dtype=np.dtype(int32)), encoding=[encoding])
-
+        
         encoded_data = np.diff(data, prepend=data[0])
-        encoding["origin"] = data[0]
+        encoding["origin"] = int(data[0])
+
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
