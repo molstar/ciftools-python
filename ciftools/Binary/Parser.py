@@ -17,7 +17,7 @@ class BinaryCifParser:
 
     @staticmethod
     def parse(data: Union[np.ndarray, bytes, list]) -> ICIFFile:
-        min_version = [0, 3]
+        # min_version = [0, 3]
 
         try:
             array = bytes(data)
