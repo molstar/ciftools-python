@@ -9,12 +9,10 @@ from numpy import int32
 
 class Delta_CIFEncoder(ICIFEncoder):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
-
-        # TODO: must be signed integer
-
+        
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
-        if not src_data_type:
+        if not src_data_type or src_data_type not in (EDataTypes.Int8, EDataTypes.Int16, EDataTypes.Int32):
             data = data.astype(dtype=np.dtype(int32))
             src_data_type = EDataTypes.Int32
 
@@ -29,14 +27,6 @@ class Delta_CIFEncoder(ICIFEncoder):
             encoding.origin = 0
             return EncodedCIFData(data=np.empty(0, dtype=np.dtype(int32)), encoding=[encoding])
 
-        encoded_data = np.empty(data_length, dtype=np.dtype(int32))
-
-        origin_data = data[0]
-        encoded_data[0] = origin_data
-
-        for i in range(1, data_length):
-            encoded_data[i] = data[i] - data[i - 1]
-
-        encoded_data[0] = 0
-        encoding["origin"] = origin_data
+        encoded_data = np.diff(data, prepend=data[0])
+        encoding["origin"] = data[0]
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
