@@ -23,4 +23,5 @@ class ByteArray_CIFEncoder(ICIFEncoder):
             "type": data_type
         }
         
+        # TODO: ensure little endian
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])

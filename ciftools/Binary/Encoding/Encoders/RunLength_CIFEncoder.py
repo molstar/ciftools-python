@@ -4,7 +4,7 @@ from ciftools.Binary.Encoding.Encoding import RunLengthEncoding, EEncoding
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from numpy import int32
+
 
 
 class RunLength_CIFEncoder(ICIFEncoder):
@@ -12,7 +12,7 @@ class RunLength_CIFEncoder(ICIFEncoder):
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
         if not src_data_type:
-            data = data.astype(dtype=np.dtype(int32))
+            data = data.astype(dtype='i4')
             src_data_type = EDataTypes.Int32
 
         encoding: RunLengthEncoding = {
@@ -22,26 +22,14 @@ class RunLength_CIFEncoder(ICIFEncoder):
 
         if not len(data):
             encoding.srcSize = 0
-            return EncodedCIFData(data=np.empty(0, dtype=np.dtype(int32)), encoding=[encoding])
+            return EncodedCIFData(data=np.empty(0, dtype='i4'), encoding=[encoding])
 
-        full_len = 2
-        for i in range(1, len(data)):
-            if data[i - 1] != data[i]:
-                full_len += 2
 
-        encoded_data = np.empty(full_len, dtype=np.dtype(int32))
-        offset = 0
-        run_len = 1
-        for i in range(1, len(data)):
-            if data[i - 1] != data[i]:
-                encoded_data[offset] = data[i - 1]
-                encoded_data[offset + 1] = run_len
-                run_len = 1
-                offset += 2
-            else:
-                run_len = run_len + 1
-
-            encoded_data[offset] = data[-1]
-            encoded_data[offset + 1] = run_len
+        # adapted from https://stackoverflow.com/a/32681075
+        y = data[1:] != data[:-1]  # pairwise unequal (string safe)
+        pivots = np.append(np.where(y), len(data) - 1)  # must include last element posi
+        run_lengths = np.diff(np.append(-1, pivots)).astype('i4')  # run lengths
+        
+        encoded_data = np.ravel([data[pivots].astype('i4'), run_lengths], 'F')
 
         return EncodedCIFData(data=encoded_data, encoding=[encoding])

@@ -9,7 +9,7 @@ from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIF
 
 class TestEncodings_RunLength(unittest.TestCase):
     def test(self):
-        test_arr = np.array([1] * 10 + [2] * 11 + [3] * 12)
+        test_arr = np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12)
 
         encoder = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
         encoded = encoder.encode_cif_data(test_arr)
