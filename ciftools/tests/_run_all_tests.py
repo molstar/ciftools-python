@@ -4,11 +4,11 @@ testmodules = [
     # 'byte_array',
     # 'delta',
     # 'fixed_point',
-    # 'integer_packing',
+    'integer_packing',
     # 'interval_quantization',
     # 'run_length',
-    'string_array',
-    # # '_decoding',
+    # 'string_array',
+    # '_decoding',
     # '_encoding'
     ]
 

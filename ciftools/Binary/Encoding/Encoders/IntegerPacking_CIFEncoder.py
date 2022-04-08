@@ -45,6 +45,8 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
 
         lower_limit = -upper_limit - 1
 
+        # TODO: figure out if there is a way to implement this
+        # better & faster with numpy methods.
         packed_index = 0
         for _v in data:
             value = _v
@@ -80,9 +82,7 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
         lower_limit = -upper_limit - 1
         size = 0
 
-        data_len = len(data)
-        for i in range(data_len):
-            value = data[i]
+        for value in data:
             if value == 0:
                 size = size + 1
             elif value > 0:
@@ -98,16 +98,9 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
 
     @staticmethod
     def __determine_packing__(data: np.ndarray) -> __packing__:
-
-        data_len = len(data)
-
         # determine sign
-        is_signed = False
-        for i in range(len(data)):
-            if data[i] < 0:
-                is_signed = True
-                break
-
+        is_signed = np.any(data < 0)
+        
         # determine packing size
         size8 = (
             IntegerPacking_CIFEncoder.__packing_size__(data, 0x7F)
@@ -122,6 +115,8 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
 
         packing = IntegerPacking_CIFEncoder.__packing__()
         packing.isSigned = is_signed
+
+        data_len = len(data)
 
         if data_len * 4 < size16 * 2:
             packing.size = data_len
