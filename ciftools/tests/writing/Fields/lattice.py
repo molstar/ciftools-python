@@ -10,12 +10,15 @@ from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 from ciftools.Writer.FieldDesc import FieldDesc
-from ciftools.test_encoders.writing.test_data import TestVolumeData
+from ciftools.tests.writing.test_data import TestVolumeData
 
 
-class TestFieldDesc_Volume(FieldDesc):
-    def __init__(self):
-        self.name = "volume"
+class TestFieldDesc_Lattice(FieldDesc):
+    lattice_id: int
+
+    def __init__(self, lattice_id: int):
+        self.name = "lattice_" + str(lattice_id)
+        self.lattice_id = lattice_id
 
     def has_string(self) -> bool:
         return False
@@ -27,7 +30,7 @@ class TestFieldDesc_Volume(FieldDesc):
         return True
 
     def number(self, data: TestVolumeData, i: int) -> Optional[Union[int, float]]:
-        return data.volume[i]
+        return data.lattices[self.lattice_id][i]
 
     def has_typed_array(self) -> bool:
         return True

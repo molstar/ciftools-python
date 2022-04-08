@@ -1,3 +1,5 @@
+**/tests/**/*.bcif
+
 ### VisualStudioCode template
 .vscode/*
 !.vscode/settings.json

@@ -1,3 +1,4 @@
+from pathlib import Path
 import unittest
 
 import numpy as np
@@ -11,10 +12,10 @@ from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
 from ciftools.Writer.FieldDesc import FieldDesc
 from ciftools.Writer.OutputStream import OutputStream
-from ciftools.test_encoders.writing.Fields.lattice import TestFieldDesc_Lattice
-from ciftools.test_encoders.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
-from ciftools.test_encoders.writing.Fields.volume import TestFieldDesc_Volume
-from ciftools.test_encoders.writing.test_data import TestVolumeData, prepare_test_data
+from ciftools.tests.writing.Fields.lattice import TestFieldDesc_Lattice
+from ciftools.tests.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
+from ciftools.tests.writing.Fields.volume import TestFieldDesc_Volume
+from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
 
 
 class TestCategoryDesc(CategoryDesc):
@@ -93,7 +94,7 @@ class TestEncodings_Encoding(unittest.TestCase):
         writer.flush(output_stream)
 
         encoded = output_stream.encoded_output
-        print("Encoded: " + str(encoded))
+        (Path(__file__).parent / 'lattices.bcif').write_bytes(encoded)
 
         # load encoded lattice ids
         parsed = BinaryCIFFile.loads(encoded, lazy=False)
