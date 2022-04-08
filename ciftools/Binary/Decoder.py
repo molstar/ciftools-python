@@ -116,11 +116,12 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
     string_data = encoding["stringData"]
-    strings = [string_data[0 : offsets[0]]]
+    strings = ['']
+
     for i in range(1, len(offsets)):
         strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
 
-    return [strings[i] for i in indices]  # type: ignore
+    return [strings[i + 1] for i in indices]  # type: ignore
 
 
 _decoders = {

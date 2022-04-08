@@ -6,8 +6,8 @@ testmodules = [
     # 'fixed_point',
     # 'integer_packing',
     # 'interval_quantization',
-    'run_length',
-    # 'string_array',
+    # 'run_length',
+    'string_array',
     # # '_decoding',
     # '_encoding'
     ]

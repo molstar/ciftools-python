@@ -5,29 +5,32 @@ from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerP
 from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoding import StringArrayEncoding, EEncoding
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 
 
 class StringArray_CIFEncoder(ICIFEncoder):
 
     def __init__(self):
-        self.delta_encoder = Delta_CIFEncoder()
-        self.integer_packing_encoder = IntegerPacking_CIFEncoder()
-        self.run_length_encoder = RunLength_CIFEncoder()
+        # TODO: use classifier once implemented
+        self.offset_encoder = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
+        self.data_encoder = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(RunLength_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
 
-    def encode(self, data: np.ndarray) -> EncodedCIFData:
+    def encode(self, data: np.ndarray | list[str]) -> EncodedCIFData:
         map = dict()
+        
         strings: list[str] = []
-        acc_len = 0
-        offsets = []
-        output = []
+        offsets = [0]
+        output = np.empty(len(data), dtype='i4')
 
-        for s in data:
+        acc_len = 0
+
+        for i, s in enumerate(data):
             # handle null strings.
             if not s:
-                output.append(-1)
+                output[i] = -1
                 continue
 
-            index = map.get(s, None)
+            index = map.get(s)
             if index is None:
                 # increment the length
                 acc_len += len(s)
@@ -40,27 +43,17 @@ class StringArray_CIFEncoder(ICIFEncoder):
                 # write the offset
                 offsets.append(acc_len)
 
-            output.append(index)
+            output[i] = index
 
-        # todo: improve api to make this easier -> public api at least
-        encoding_offset = self.delta_encoder.encode(np.asarray(offsets))
-        encoding_offset2 = self.integer_packing_encoder.encode(encoding_offset["data"])
-        encoding_offset["encoding"].extend(encoding_offset2["encoding"])
-        encoding_offset["data"] = encoding_offset2["data"]
-
-        encoding_output = self.delta_encoder.encode(np.asarray(output))
-        encoding_output2 = self.run_length_encoder.encode(encoding_output["data"])
-        encoding_output3 = self.integer_packing_encoder.encode(encoding_output2["data"])
-        encoding_output["encoding"].extend(encoding_output2["encoding"])
-        encoding_output["encoding"].extend(encoding_output3["encoding"])
-        encoding_output["data"] = encoding_output3["data"]
+        encoded_offsets = self.offset_encoder.encode_cif_data(np.array(offsets, dtype='i4'))
+        encoded_data = self.data_encoder.encode_cif_data(output)
 
         encoding: StringArrayEncoding = {
-            "dataEncoding": encoding_output["encoding"],
+            "dataEncoding": encoded_data["encoding"],
             "kind": EEncoding.StringArray.name,
             "stringData": ''.join(strings),
-            "offsetEncoding": encoding_offset["encoding"],
-            "offsets": encoding_offset["data"]
+            "offsetEncoding": encoded_offsets["encoding"],
+            "offsets": encoded_offsets["data"]
         }
 
-        return EncodedCIFData(data=encoding_output["data"], encoding=[encoding])
+        return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])

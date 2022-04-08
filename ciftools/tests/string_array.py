@@ -8,7 +8,7 @@ from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray
 
 class TestEncodings_StringArray(unittest.TestCase):
     def test(self):
-        test_arr = ["my", "cat", "eats", "too", "much", "food", "off", "my", "plate", "because", "my", "cat"]
+        test_arr = ["my", "cat", "eats", "too", "much", "food", "off", "my", "my", "", "plate", "because", "", "my", "cat"]
 
         encoder = BinaryCIFEncoder.by(StringArray_CIFEncoder())
         encoded = encoder.encode_cif_data(test_arr)
