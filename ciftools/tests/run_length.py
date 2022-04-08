@@ -10,11 +10,16 @@ from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIF
 
 class TestEncodings_RunLength(unittest.TestCase):
     def test(self):
-        test_arr = np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12)
 
-        encoder = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
-        encoded = encoder.encode_cif_data(test_arr)
-        msgpack.loads(msgpack.dumps(encoded))
-        decoded = decode_cif_data(encoded)
+        suite = [
+            np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12),
+            np.arange(10)
+        ]
 
-        self.assertTrue(np.array_equal(test_arr, decoded))
+        for test_arr in suite:
+            encoder = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
+            encoded = encoder.encode_cif_data(test_arr)
+            msgpack.loads(msgpack.dumps(encoded))
+            decoded = decode_cif_data(encoded)
+
+            self.assertTrue(np.array_equal(test_arr, decoded))

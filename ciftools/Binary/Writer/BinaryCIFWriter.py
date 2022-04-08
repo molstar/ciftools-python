@@ -94,8 +94,7 @@ class BinaryCIFWriter(CIFWriter):
             array = field.typed_array(total_count)
         else:
             is_native = True
-            # TODO: how to determine dtype here?
-            array = np.ndarray(shape=[total_count])
+            array = [None] * total_count
 
         mask = np.ndarray(shape=[total_count], dtype=np.dtype(np.uint8))
         presence = field.presence

@@ -2,20 +2,18 @@ import numpy as np
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding.Encoding import EEncoding, StringArrayEncoding
 
 
-class StringArray_CIFEncoder(ICIFEncoder):
-    def __init__(self):
-        # TODO: use classifier once implemented
-        self.offset_encoder = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
-        self.data_encoder = (
-            BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(RunLength_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
-        )
+# TODO: use classifier once implemented
+_OFFSET_ENCODER = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
+_DATA_ENCODER = BinaryCIFEncoder.by(Delta_CIFEncoder()).and_(RunLength_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
 
+class StringArray_CIFEncoder(ICIFEncoder):
     def encode(self, data: np.ndarray | list[str]) -> EncodedCIFData:
         map = dict()
 
@@ -46,8 +44,8 @@ class StringArray_CIFEncoder(ICIFEncoder):
 
             output[i] = index
 
-        encoded_offsets = self.offset_encoder.encode_cif_data(np.array(offsets, dtype="i4"))
-        encoded_data = self.data_encoder.encode_cif_data(output)
+        encoded_offsets = _OFFSET_ENCODER.encode_cif_data(np.array(offsets, dtype="i4"))
+        encoded_data = _DATA_ENCODER.encode_cif_data(output)
 
         encoding: StringArrayEncoding = {
             "dataEncoding": encoded_data["encoding"],

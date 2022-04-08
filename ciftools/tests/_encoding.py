@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
+from ciftools.tests.writing.Fields.annotation import TestFieldDesc_Annotation
 from ciftools.tests.writing.Fields.lattice import TestFieldDesc_Lattice
 from ciftools.tests.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
 from ciftools.tests.writing.Fields.volume import TestFieldDesc_Volume
@@ -48,6 +49,7 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
         field_desc: list[FieldDesc] = [TestFieldDesc_Lattice(_id) for _id in ctx.metadata.lattices_ids]
         field_desc.append(TestFieldDesc_Volume())
+        field_desc.append(TestFieldDesc_Annotation())
 
         return TestCategoryWriter(ctx, self.length, TestCategoryDesc("volume", field_desc))
 
@@ -68,7 +70,7 @@ class TestEncodings_Encoding(unittest.TestCase):
     def test(self):
 
         # test
-        test_data = prepare_test_data(5, 1)
+        test_data = prepare_test_data(5, 3)
         # print("Original data: " + str(test_data.__dict__))
 
         writer = BinaryCIFWriter("my_encoder")

@@ -13,10 +13,9 @@ class RunLength_CIFEncoder(ICIFEncoder):
             data = data.astype(dtype="i4")
             src_data_type = EDataTypes.Int32
 
-        encoding: RunLengthEncoding = {"srcType": src_data_type, "kind": EEncoding.RunLength.name}
+        encoding: RunLengthEncoding = {"srcType": src_data_type, "kind": EEncoding.RunLength.name, "srcSize": len(data)}
 
         if not len(data):
-            encoding.srcSize = 0
             return EncodedCIFData(data=np.empty(0, dtype="i4"), encoding=[encoding])
 
         # adapted from https://stackoverflow.com/a/32681075
