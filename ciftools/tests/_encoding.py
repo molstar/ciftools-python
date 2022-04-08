@@ -111,7 +111,7 @@ class TestEncodings_Encoding(unittest.TestCase):
         volume = volume_and_lattices.get_column("volume").__dict__["_values"]
         print("Volume (parsed): " + str(volume))
         print("Volume (input): " + str(test_data.volume))
-        compare = np.array_equal(test_data.volume, volume)
+        compare = np.allclose(test_data.volume, volume, atol=1e-3)
         self.assertTrue(compare, "Volume did not match original data")
 
         for lattice_id in lattice_ids:

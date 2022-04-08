@@ -19,8 +19,6 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
         self.byte_array_encoder = ByteArray_CIFEncoder()
 
     def encode(self, data: np.ndarray) -> EncodedCIFData:
-        print('encoding IP')
-
 
         # TODO: must be 32bit integer
 

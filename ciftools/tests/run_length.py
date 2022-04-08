@@ -15,4 +15,4 @@ class TestEncodings_RunLength(unittest.TestCase):
         encoded = encoder.encode_cif_data(test_arr)
         decoded = decode_cif_data(encoded)
 
-        self.assertEqual(list(test_arr), list(decoded))
+        self.assertTrue(np.array_equal(test_arr, decoded))
