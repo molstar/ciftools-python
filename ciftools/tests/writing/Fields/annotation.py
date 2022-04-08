@@ -2,10 +2,6 @@ from typing import Optional, Union
 
 import numpy as np
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 from ciftools.tests.writing.test_data import TestVolumeData
@@ -37,7 +33,6 @@ class TestFieldDesc_Annotation(FieldDesc):
         # return np.ndarray([total_count], dtype=np.object_)
 
     def encoder(self) -> BinaryCIFEncoder:
-        print('getting encoder of Annotation')
         return BinaryCIFEncoder.by(StringArray_CIFEncoder())
 
     def has_presence(self) -> bool:

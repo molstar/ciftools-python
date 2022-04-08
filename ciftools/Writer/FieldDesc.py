@@ -3,7 +3,6 @@ from typing import Optional, Union
 
 import numpy as np
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 
 
