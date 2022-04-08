@@ -11,7 +11,7 @@ class TestVolumeData:
     lattices: dict[int, np.ndarray]
 
 
-def prepare_test_data(size: int, num_lattices = 2) -> TestVolumeData:
+def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
     data = TestVolumeData()
     data.lattices = dict()
     data.metadata = TestMetadata()

@@ -1,4 +1,5 @@
 import unittest
+
 import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
@@ -18,11 +19,10 @@ class TestEncodings_IntegerPackingSigned(unittest.TestCase):
 
         for test_arr, is_unsigned, byte_count in test_suite:
             encoder = BinaryCIFEncoder.by(IntegerPacking_CIFEncoder())
-            encoded = encoder.encode_cif_data(test_arr)            
+            encoded = encoder.encode_cif_data(test_arr)
             decoded = decode_cif_data(encoded)
             msgpack.loads(msgpack.dumps(encoded))
 
             self.assertTrue(np.array_equal(test_arr, decoded))
             self.assertEqual(is_unsigned, encoded["encoding"][0]["isUnsigned"])
             self.assertEqual(byte_count, encoded["encoding"][0]["byteCount"])
-

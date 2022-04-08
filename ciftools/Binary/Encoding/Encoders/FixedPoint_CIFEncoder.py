@@ -1,10 +1,9 @@
 import numpy
 import numpy as np
-
-from ciftools.Binary.Encoding.Encoding import FixedPointEncoding, EEncoding
 from ciftools.Binary.Encoding.data_types import EDataTypes
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoding import EEncoding, FixedPointEncoding
 from numpy import float64, int32
 
 
@@ -21,12 +20,8 @@ class FixedPoint_CIFEncoder(ICIFEncoder):
         if self._factor is None:
             raise ValueError("FixedPoint encoder factor must be valid")
 
-        fixed_point_data: np.ndarray[int32] = np.array(data * self._factor, dtype='i4')
+        fixed_point_data: np.ndarray[int32] = np.array(data * self._factor, dtype="i4")
 
-        encoding: FixedPointEncoding = {
-            "kind": EEncoding.FixedPoint.name,
-            "srcType": src_type,
-            "factor": self._factor
-        }
+        encoding: FixedPointEncoding = {"kind": EEncoding.FixedPoint.name, "srcType": src_type, "factor": self._factor}
 
         return EncodedCIFData(data=fixed_point_data, encoding=[encoding])

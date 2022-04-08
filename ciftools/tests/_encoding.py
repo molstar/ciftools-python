@@ -1,19 +1,18 @@
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 import numpy as np
-
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
+from ciftools.tests.writing.Fields.lattice import TestFieldDesc_Lattice
+from ciftools.tests.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
+from ciftools.tests.writing.Fields.volume import TestFieldDesc_Volume
+from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
 from ciftools.Writer.CategoryDesc import CategoryDesc
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
 from ciftools.Writer.FieldDesc import FieldDesc
 from ciftools.Writer.OutputStream import OutputStream
-from ciftools.tests.writing.Fields.lattice import TestFieldDesc_Lattice
-from ciftools.tests.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
-from ciftools.tests.writing.Fields.volume import TestFieldDesc_Volume
-from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
 
 
 class TestCategoryDesc(CategoryDesc):
@@ -90,7 +89,7 @@ class TestEncodings_Encoding(unittest.TestCase):
         writer.flush(output_stream)
 
         encoded = output_stream.encoded_output
-        (Path(__file__).parent / 'lattices.bcif').write_bytes(encoded)
+        (Path(__file__).parent / "lattices.bcif").write_bytes(encoded)
 
         # load encoded lattice ids
         parsed = BinaryCIFFile.loads(encoded, lazy=False)
@@ -99,7 +98,12 @@ class TestEncodings_Encoding(unittest.TestCase):
         print("DataBlocks: " + str(len(parsed.data_blocks)))
 
         # TODO: missing initial character a from category name -> bug may be in the encoder?
-        lattice_ids = parsed.data_block("lattice_ids".upper()).get_category("lattice_ids").get_column("lattice_ids").__dict__["_values"]
+        lattice_ids = (
+            parsed.data_block("lattice_ids".upper())
+            .get_category("lattice_ids")
+            .get_column("lattice_ids")
+            .__dict__["_values"]
+        )
         print("LatticeIds: " + str(lattice_ids))
         compare = np.array_equal(test_data.metadata.lattices_ids, lattice_ids)
         self.assertTrue(compare, "LatticeIds did not match original data")
@@ -121,4 +125,3 @@ class TestEncodings_Encoding(unittest.TestCase):
             print("LatticeValue (input): " + str(test_data.lattices[lattice_id]))
             compare = np.array_equal(test_data.lattices[lattice_id], lattice_value)
             self.assertTrue(compare, str("Lattice id " + str(lattice_id) + " did not match original data"))
-

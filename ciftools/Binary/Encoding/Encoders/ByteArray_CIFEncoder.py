@@ -1,9 +1,8 @@
 import numpy as np
-
-from ciftools.Binary.Encoding.Encoding import ByteArrayEncoding, EEncoding
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoding import ByteArrayEncoding, EEncoding
 
 
 class ByteArray_CIFEncoder(ICIFEncoder):
@@ -18,10 +17,7 @@ class ByteArray_CIFEncoder(ICIFEncoder):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
         data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
-        encoding: ByteArrayEncoding = {
-            "kind": EEncoding.ByteArray.name,
-            "type": data_type
-        }
-        
+        encoding: ByteArrayEncoding = {"kind": EEncoding.ByteArray.name, "type": data_type}
+
         # TODO: ensure little endian
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])

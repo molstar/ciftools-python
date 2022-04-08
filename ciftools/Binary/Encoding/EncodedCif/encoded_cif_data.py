@@ -1,7 +1,6 @@
 from typing import TypedDict
 
 import numpy as np
-
 from ciftools.Binary.Encoding.Encoding import EncodingBase
 
 

@@ -1,8 +1,7 @@
-from typing import Optional, Any, List
+from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_category import EncodedCIFCategory
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
@@ -13,9 +12,9 @@ from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIF
 from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
-from ciftools.Writer.CIFWriter import CIFWriter
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
+from ciftools.Writer.CIFWriter import CIFWriter
 from ciftools.Writer.FieldDesc import FieldDesc
 from ciftools.Writer.OutputStream import OutputStream
 
@@ -31,6 +30,7 @@ class TMPData:
 
 _RLE_ENCODER = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
 
+
 class BinaryCIFWriter(CIFWriter):
 
     _data: Optional[EncodedCIFFile]
@@ -39,10 +39,7 @@ class BinaryCIFWriter(CIFWriter):
 
     def __init__(self, encoder: str):
         self._data_blocks = []
-        self._data = {
-            "version": "0.3.0",
-            "encoder": encoder,
-            "dataBlocks": self._data_blocks }
+        self._data = {"version": "0.3.0", "encoder": encoder, "dataBlocks": self._data_blocks}
 
     def start_data_block(self, header: str) -> None:
         # TODO: optimize if needed
@@ -52,16 +49,15 @@ class BinaryCIFWriter(CIFWriter):
     def write_category(self, writer_provider: CategoryWriterProvider, contexts: List[Any]) -> None:
 
         if not self._data:
-            raise Exception('The writer contents have already been encoded, no more writing.')
+            raise Exception("The writer contents have already been encoded, no more writing.")
 
         if not self._data_blocks:
-            raise Exception('No data block created.')
+            raise Exception("No data block created.")
 
         if not contexts:
             src = [writer_provider.category_writer(None)]
         else:
             src = [writer_provider.category_writer(ctx) for ctx in contexts]
-
 
         categories: list[CategoryWriter] = list(filter(lambda writer: writer.count > 0, src))
         if not categories:
@@ -79,7 +75,7 @@ class BinaryCIFWriter(CIFWriter):
 
         for f in first.desc.fields:
             cif_cat["columns"].append(BinaryCIFWriter._encode_field(f, data, count))
-        
+
         self._data_blocks[len(self._data_blocks) - 1]["categories"].append(cif_cat)
 
     def encode(self) -> None:
@@ -135,4 +131,3 @@ class BinaryCIFWriter(CIFWriter):
                 mask_data = BinaryCIFEncoder.by(ByteArray_CIFEncoder()).encode_cif_data(mask)
 
         return {"name": field.name, "data": encoded, "mask": mask_data}
-

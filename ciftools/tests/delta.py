@@ -1,4 +1,5 @@
 import unittest
+
 import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data

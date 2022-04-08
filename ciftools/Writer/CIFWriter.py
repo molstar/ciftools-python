@@ -1,6 +1,5 @@
 import abc
 
-
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
 from ciftools.Writer.OutputStream import OutputStream
 

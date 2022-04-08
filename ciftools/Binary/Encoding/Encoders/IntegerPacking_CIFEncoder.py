@@ -1,12 +1,11 @@
 import math
 
 import numpy as np
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
 from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.Encoding import EEncoding, IntegerPackingEncoding
 from numpy import int8, int16, uint8, uint16
-
-from ciftools.Binary.Encoding.Encoding import IntegerPackingEncoding, EEncoding
 
 
 class IntegerPacking_CIFEncoder(ICIFEncoder):
@@ -70,12 +69,12 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             "kind": EEncoding.IntegerPacking.name,
             "isUnsigned": not packing.isSigned,
             "srcSize": len(data),
-            "byteCount": packing.bytesPerElement
+            "byteCount": packing.bytesPerElement,
         }
 
         return EncodedCIFData(
-            data=byte_array_result['data'],
-            encoding=[integer_packing_encoding, byte_array_result["encoding"][0]])
+            data=byte_array_result["data"], encoding=[integer_packing_encoding, byte_array_result["encoding"][0]]
+        )
 
     @staticmethod
     def __packing_size__(data: np.ndarray, upper_limit: int) -> int:
@@ -86,11 +85,11 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
             if value == 0:
                 size = size + 1
             elif value > 0:
-                size = size + math.ceil(value/upper_limit)
+                size = size + math.ceil(value / upper_limit)
                 if value % upper_limit == 0:
                     size = size + 1
             else:
-                size = size + math.ceil(value/lower_limit)
+                size = size + math.ceil(value / lower_limit)
                 if value % lower_limit == 0:
                     size = size + 1
 
@@ -100,7 +99,7 @@ class IntegerPacking_CIFEncoder(ICIFEncoder):
     def __determine_packing__(data: np.ndarray) -> __packing__:
         # determine sign
         is_signed = np.any(data < 0)
-        
+
         # determine packing size
         size8 = (
             IntegerPacking_CIFEncoder.__packing_size__(data, 0x7F)

@@ -5,6 +5,8 @@ from typing import Union
 import numpy
 import numpy as np
 from ciftools.Binary.Encoding.data_types import DataTypes
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
+from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoding import (
     ByteArrayEncoding,
     DeltaEncoding,
@@ -14,8 +16,6 @@ from ciftools.Binary.Encoding.Encoding import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 
@@ -116,7 +116,7 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
     string_data = encoding["stringData"]
-    strings = ['']
+    strings = [""]
 
     for i in range(1, len(offsets)):
         strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
