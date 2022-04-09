@@ -2,10 +2,10 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.Binary.Encoding import encoders
-from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFData, EncodedCIFDataBlock, EncodedCIFFile
-from ciftools.Binary.Encoding import binarycif_encoder
-from ciftools.CIFFormat.value_presence import ValuePresenceEnum
+from ciftools.binary.encoding import encoders
+from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFData, EncodedCIFDataBlock, EncodedCIFFile
+from ciftools.binary.encoding import binarycif_encoder
+from ciftools.cif_format.value_presence import ValuePresenceEnum
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
 from ciftools.Writer.CIFWriter import CIFWriter

@@ -1,6 +1,6 @@
 from typing import Union
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
-from ciftools.CIFFormat.base import ICIFCategory, ICIFDataBlock
+from ciftools.cif_format.binary.category import BinaryCIFCategory
+from ciftools.cif_format.base import ICIFCategory, ICIFDataBlock
 
 
 class BinaryCIFDataBlock(ICIFDataBlock):

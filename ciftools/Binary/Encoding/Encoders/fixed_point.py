@@ -1,10 +1,10 @@
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypeEnum
-from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.encodings import EncodingEnun, FixedPointEncoding
+from ciftools.binary.encoding.data_types import DataTypeEnum
+from ciftools.binary.encoding.encoders.base import CIFEncoderBase
+from ciftools.binary.encoding.encodings import EncodingEnun, FixedPointEncoding
 from numpy import float64
 
-from ciftools.Binary.Encoding.types import EncodedCIFData
+from ciftools.binary.encoding.types import EncodedCIFData
 
 
 class FixedPointCIFEncoder(CIFEncoderBase):

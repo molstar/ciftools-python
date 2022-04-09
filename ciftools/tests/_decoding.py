@@ -2,8 +2,8 @@ import unittest
 
 import msgpack
 import requests
-from ciftools.CIFFormat.value_presence import ValuePresenceEnum
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
+from ciftools.cif_format.value_presence import ValuePresenceEnum
+from ciftools.cif_format.binary.file import BinaryCIFFile
 
 
 class TestEncodings_Decoding(unittest.TestCase):

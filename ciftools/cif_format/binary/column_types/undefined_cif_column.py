@@ -1,9 +1,9 @@
 from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
 
-from ciftools.CIFFormat.value_presence import ValuePresenceEnum
+from ciftools.cif_format.value_presence import ValuePresenceEnum
 from pydantic import BaseModel
 
-from ciftools.CIFFormat.base import ICIFColumn
+from ciftools.cif_format.base import ICIFColumn
 
 
 class UndefinedCIFColumn(ICIFColumn, BaseModel):

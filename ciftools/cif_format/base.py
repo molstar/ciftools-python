@@ -2,7 +2,7 @@ import abc
 import numpy as np
 from typing import Optional
 
-from ciftools.CIFFormat.value_presence import ValuePresenceEnum
+from ciftools.cif_format.value_presence import ValuePresenceEnum
 
 
 class ICIFColumn(abc.ABC):

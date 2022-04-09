@@ -1,12 +1,12 @@
 import math
 
 import numpy as np
-from ciftools.Binary.Encoding import encoders
-from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.encodings import EncodingEnun, IntegerPackingEncoding
+from ciftools.binary.encoding import encoders
+from ciftools.binary.encoding.encoders.base import CIFEncoderBase
+from ciftools.binary.encoding.encodings import EncodingEnun, IntegerPackingEncoding
 from numpy import int8, int16, uint8, uint16
 
-from ciftools.Binary.Encoding.types import EncodedCIFData
+from ciftools.binary.encoding.types import EncodedCIFData
 
 
 class IntegerPackingCIFEncoder(CIFEncoderBase):

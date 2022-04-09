@@ -1,9 +1,9 @@
 from typing import Union
 
 import msgpack
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_data_block import BinaryCIFDataBlock
-from ciftools.CIFFormat.base import ICIFDataBlock, ICIFFile
+from ciftools.cif_format.binary.category import BinaryCIFCategory
+from ciftools.cif_format.binary.data_block import BinaryCIFDataBlock
+from ciftools.cif_format.base import ICIFDataBlock, ICIFFile
 
 
 class BinaryCIFFile(ICIFFile):

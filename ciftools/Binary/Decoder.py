@@ -1,11 +1,8 @@
-# TODO: refactor with new code format
-
 from typing import Union
 
-import numpy
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataType
-from ciftools.Binary.Encoding.encodings import (
+from ciftools.binary.encoding.data_types import DataType
+from ciftools.binary.encoding.encodings import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
@@ -14,9 +11,9 @@ from ciftools.Binary.Encoding.encodings import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.Binary.Encoding.types import EncodedCIFColumn, EncodedCIFData
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
-from ciftools.CIFFormat.base import ICIFColumn
+from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
+from ciftools.cif_format.binary.column import BinaryCIFColumn
+from ciftools.cif_format.base import ICIFColumn
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
@@ -25,7 +22,7 @@ def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
     return BinaryCIFColumn(column["name"], values, value_kinds)  # type: ignore
 
 
-def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[str]]:
+def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]]:
     result = encoded_data["data"]
     for encoding in encoded_data["encoding"][::-1]:
         if encoding["kind"] in _decoders:

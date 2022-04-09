@@ -1,8 +1,8 @@
 from typing import Union
 
 import numpy as np
-from ciftools.CIFFormat import value_presence
-from ciftools.CIFFormat.base import ICIFColumn
+from ciftools.cif_format import value_presence
+from ciftools.cif_format.base import ICIFColumn
 
 
 class BinaryCIFColumn(ICIFColumn):

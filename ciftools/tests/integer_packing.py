@@ -2,8 +2,8 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.Binary.decoder import decode_cif_data
-from ciftools.Binary.Encoding import encoders, binarycif_encoder
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.encoding import encoders, binarycif_encoder
 
 
 class TestEncodings_IntegerPackingSigned(unittest.TestCase):

@@ -3,9 +3,9 @@ import numpy as np
 from typing import Callable, Optional, Any
 
 import numpy as np
-from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
-from ciftools.CIFFormat.value_presence import ValuePresenceEnum
-from ciftools.Binary.Encoding import encoders, binarycif_encoder
+from ciftools.binary.encoding.encoder import BinaryCIFEncoder
+from ciftools.cif_format.value_presence import ValuePresenceEnum
+from ciftools.binary.encoding import encoders, binarycif_encoder
 
 
 class FieldDesc(abc.ABC):

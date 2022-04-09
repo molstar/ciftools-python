@@ -2,9 +2,9 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.Binary.Encoding import encoders, binarycif_encoder
-from ciftools.Binary.writer import BinaryCIFWriter
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
+from ciftools.binary.encoding import encoders, binarycif_encoder
+from ciftools.binary.writer import BinaryCIFWriter
+from ciftools.cif_format.binary.file import BinaryCIFFile
 from ciftools.Writer.CategoryDesc import CategoryDesc
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider

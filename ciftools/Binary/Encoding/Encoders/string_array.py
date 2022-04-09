@@ -1,9 +1,9 @@
 import numpy as np
-from ciftools.Binary.Encoding import encoders
-from ciftools.Binary.Encoding.encoder import binarycif_encoder
-from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.encodings import EncodingEnun, StringArrayEncoding
-from ciftools.Binary.Encoding.types import EncodedCIFData
+from ciftools.binary.encoding import encoders
+from ciftools.binary.encoding.encoder import binarycif_encoder
+from ciftools.binary.encoding.encoders.base import CIFEncoderBase
+from ciftools.binary.encoding.encodings import EncodingEnun, StringArrayEncoding
+from ciftools.binary.encoding.types import EncodedCIFData
 
 # TODO: use classifier once implemented
 _OFFSET_ENCODER = binarycif_encoder(encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)

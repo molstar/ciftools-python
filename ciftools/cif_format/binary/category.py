@@ -1,8 +1,8 @@
-from ciftools.Binary.decoder import decode_cif_column
-from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
-from ciftools.CIFFormat.Implementations.BinaryCIF.ColumnTypes.undefined_cif_column import UndefinedCIFColumn
-from ciftools.CIFFormat.base import ICIFCategory, ICIFColumn
+from ciftools.binary.decoder import decode_cif_column
+from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn
+from ciftools.cif_format.binary.column import BinaryCIFColumn
+from ciftools.cif_format.binary.column_types.undefined_cif_column import UndefinedCIFColumn
+from ciftools.cif_format.base import ICIFCategory, ICIFColumn
 
 
 class BinaryCIFCategory(ICIFCategory):

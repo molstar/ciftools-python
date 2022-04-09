@@ -2,8 +2,8 @@ from typing import Union
 
 import msgpack
 import numpy as np
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
-from ciftools.CIFFormat.base import ICIFFile
+from ciftools.cif_format.binary.file import BinaryCIFFile
+from ciftools.cif_format.base import ICIFFile
 
 
 class BinaryCifParser:
