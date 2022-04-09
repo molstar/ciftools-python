@@ -1,19 +1,19 @@
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoding.data_types import DataType, DataTypeEnum
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import EEncoding, RunLengthEncoding
+from ciftools.Binary.Encoding.Encoding import EncodingEnun, RunLengthEncoding
 
 
 class RunLengthCIFEncoder(CIFEncoderBase):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
-        src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
+        src_data_type: DataTypeEnum = DataType.from_dtype(data.dtype)
 
         if not src_data_type:
             data = data.astype(dtype="i4")
-            src_data_type = EDataTypes.Int32
+            src_data_type = DataTypeEnum.Int32
 
-        encoding: RunLengthEncoding = {"srcType": src_data_type, "kind": EEncoding.RunLength.name, "srcSize": len(data)}
+        encoding: RunLengthEncoding = {"srcType": src_data_type, "kind": EncodingEnun.RunLength, "srcSize": len(data)}
 
         if not len(data):
             return EncodedCIFData(data=np.empty(0, dtype="i4"), encoding=[encoding])

@@ -3,8 +3,8 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoding.data_types import EDataTypes
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
+from ciftools.Binary.Encoding.data_types import DataTypeEnum
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
 from ciftools.Binary.Encoding.Encoders.interval_quantization import IntervalQuantizationCIFEncoder
 
@@ -13,10 +13,10 @@ class TestEncodings_IntervalQuantization(unittest.TestCase):
     def test(self):
 
         test_suite = [
-            (np.random.rand(100) * 100, 100, EDataTypes.Uint8),
-            (np.random.rand(100) * 100, 2**8 - 1, EDataTypes.Uint8),
-            (np.random.rand(100) * 100, 2**16 - 1, EDataTypes.Uint16),
-            (np.random.rand(100) * 100, 2**24 - 1, EDataTypes.Uint32),
+            (np.random.rand(100) * 100, 100, DataTypeEnum.Uint8),
+            (np.random.rand(100) * 100, 2**8 - 1, DataTypeEnum.Uint8),
+            (np.random.rand(100) * 100, 2**16 - 1, DataTypeEnum.Uint16),
+            (np.random.rand(100) * 100, 2**24 - 1, DataTypeEnum.Uint32),
         ]
 
         for test_arr, steps, dtype in test_suite:

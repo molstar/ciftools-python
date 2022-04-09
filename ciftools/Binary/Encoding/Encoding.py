@@ -4,18 +4,18 @@ from typing import TypedDict
 import numpy as np
 
 
-class EEncoding(Enum):
-    ByteArray = ("ByteArray",)
-    FixedPoint = ("FixedPoint",)
-    RunLength = ("RunLength",)
-    Delta = ("Delta",)
-    IntervalQuantization = ("IntervalQuantization",)
-    IntegerPacking = ("IntegerPacking",)
+class EncodingEnun(str, Enum):
+    ByteArray = "ByteArray"
+    FixedPoint = "FixedPoint"
+    RunLength = "RunLength"
+    Delta = "Delta"
+    IntervalQuantization = "IntervalQuantization"
+    IntegerPacking = "IntegerPacking"
     StringArray = "StringArray"
 
 
 class EncodingBase(TypedDict):
-    kind: str
+    kind: EncodingEnun
 
 
 # type[] -> Uint8[]

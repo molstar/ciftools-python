@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder, binarycif_encoder
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder, binarycif_encoder
 from ciftools.Binary.Encoding.Encoders import DeltaCIFEncoder, FixedPointCIFEncoder, IntegerPackingCIFEncoder
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile

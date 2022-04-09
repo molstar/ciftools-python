@@ -2,12 +2,14 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
+from ciftools.Binary.Encoding import Encoders
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_category import EncodedCIFCategory
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data_block import EncodedCIFDataBlock
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_file import EncodedCIFFile
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
+from ciftools.Binary.Encoding import binarycif_encoder
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
 from ciftools.Binary.Encoding.Encoders.run_length import RunLengthCIFEncoder
 from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
@@ -28,9 +30,9 @@ class TMPData:
         self.count = count
 
 
-_RLE_ENCODER = BinaryCIFEncoder.by(RunLengthCIFEncoder()).and_(ByteArrayCIFEncoder())
-_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArrayCIFEncoder())
-_BYTE_ARRAY_ENCODER = BinaryCIFEncoder.by(ByteArrayCIFEncoder())
+_RLE_ENCODER = binarycif_encoder(Encoders.RUN_LENGTH_CIF_ENCODER, Encoders.BYTE_ARRAY_CIF_ENCODER)
+_STRING_ARRAY_ENCODER = binarycif_encoder(Encoders.STRING_ARRAY_CIF_ENCODER)
+_BYTE_ARRAY_ENCODER = binarycif_encoder(Encoders.BYTE_ARRAY_CIF_ENCODER)
 
 
 def _always_present(data, i):

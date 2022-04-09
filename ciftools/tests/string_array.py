@@ -3,7 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
 from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
 
 

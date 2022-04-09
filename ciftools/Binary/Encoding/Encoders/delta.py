@@ -1,20 +1,20 @@
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoding.data_types import DataType, DataTypeEnum
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import DeltaEncoding, EEncoding
+from ciftools.Binary.Encoding.Encoding import DeltaEncoding, EncodingEnun
 from numpy import int32
 
 
 class DeltaCIFEncoder(CIFEncoderBase):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
-        src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
+        src_data_type: DataTypeEnum = DataType.from_dtype(data.dtype)
 
-        if not src_data_type or src_data_type not in (EDataTypes.Int8, EDataTypes.Int16, EDataTypes.Int32):
+        if not src_data_type or src_data_type not in (DataTypeEnum.Int8, DataTypeEnum.Int16, DataTypeEnum.Int32):
             data = data.astype(dtype=np.dtype(int32))
-            src_data_type = EDataTypes.Int32
+            src_data_type = DataTypeEnum.Int32
 
-        encoding: DeltaEncoding = {"kind": EEncoding.Delta.name, "srcType": src_data_type}
+        encoding: DeltaEncoding = {"kind": EncodingEnun.Delta, "srcType": src_data_type}
 
         data_length = len(data)
 

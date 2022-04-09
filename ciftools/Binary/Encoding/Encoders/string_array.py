@@ -1,12 +1,12 @@
 import numpy as np
 from ciftools.Binary.Encoding import Encoders
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder, binarycif_encoder
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder, binarycif_encoder
 from ciftools.Binary.Encoding.Encoders.delta import DeltaCIFEncoder
 from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
 from ciftools.Binary.Encoding.Encoders.integer_packing import IntegerPackingCIFEncoder
 from ciftools.Binary.Encoding.Encoders.run_length import RunLengthCIFEncoder
-from ciftools.Binary.Encoding.Encoding import EEncoding, StringArrayEncoding
+from ciftools.Binary.Encoding.Encoding import EncodingEnun, StringArrayEncoding
 
 # TODO: use classifier once implemented
 _OFFSET_ENCODER = binarycif_encoder(Encoders.DELTA_CIF_ENCODER, Encoders.INTEGER_PACKING_CIF_ENCODER)
@@ -50,7 +50,7 @@ class StringArrayCIFEncoder(CIFEncoderBase):
 
         encoding: StringArrayEncoding = {
             "dataEncoding": encoded_data["encoding"],
-            "kind": EEncoding.StringArray.name,
+            "kind": EncodingEnun.StringArray,
             "stringData": "".join(strings),
             "offsetEncoding": encoded_offsets["encoding"],
             "offsets": encoded_offsets["data"],

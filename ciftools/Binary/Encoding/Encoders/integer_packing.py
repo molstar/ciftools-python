@@ -4,7 +4,7 @@ import numpy as np
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding import Encoders
 from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import EEncoding, IntegerPackingEncoding
+from ciftools.Binary.Encoding.Encoding import EncodingEnun, IntegerPackingEncoding
 from numpy import int8, int16, uint8, uint16
 
 
@@ -58,7 +58,7 @@ class IntegerPackingCIFEncoder(CIFEncoderBase):
         byte_array_result = Encoders.BYTE_ARRAY_CIF_ENCODER.encode(packed)
 
         integer_packing_encoding: IntegerPackingEncoding = {
-            "kind": EEncoding.IntegerPacking.name,
+            "kind": EncodingEnun.IntegerPacking,
             "isUnsigned": not packing.isSigned,
             "srcSize": len(data),
             "byteCount": packing.bytesPerElement,

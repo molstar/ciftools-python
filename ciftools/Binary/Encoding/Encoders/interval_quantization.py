@@ -1,19 +1,19 @@
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
+from ciftools.Binary.Encoding.data_types import DataType, DataTypeEnum
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import EEncoding, IntervalQuantizationEncoding
+from ciftools.Binary.Encoding.Encoding import EncodingEnun, IntervalQuantizationEncoding
 
 
 class IntervalQuantizationCIFEncoder(CIFEncoderBase):
-    def __init__(self, arg_min: int, arg_max: int, num_steps: int, array_type: EDataTypes = EDataTypes.Uint32):
+    def __init__(self, arg_min: int, arg_max: int, num_steps: int, array_type: DataTypeEnum = DataTypeEnum.Uint32):
         self._min = arg_min
         self._max = arg_max
         self._num_steps = num_steps
         self._array_type = array_type
 
     def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
-        src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
+        src_data_type: DataTypeEnum = DataType.from_dtype(data.dtype)
 
         # TODO: determine min/max from data if not set?
         if self._max < self._min:
@@ -26,10 +26,10 @@ class IntervalQuantizationCIFEncoder(CIFEncoderBase):
             "max": self._max,
             "numSteps": self._num_steps,
             "srcType": src_data_type,
-            "kind": EEncoding.IntervalQuantization.name,
+            "kind": EncodingEnun.IntervalQuantization,
         }
 
-        dtype = DataTypes.to_dtype(self._array_type)
+        dtype = DataType.to_dtype(self._array_type)
 
         if not len(data):
             return EncodedCIFData(data=np.empty(0, dtype=dtype), encoding=[encoding])

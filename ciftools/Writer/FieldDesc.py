@@ -3,7 +3,7 @@ import numpy as np
 from typing import Callable, Optional, Union, Any
 
 import numpy as np
-from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
+from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
 

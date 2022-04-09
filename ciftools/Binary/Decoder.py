@@ -4,7 +4,7 @@ from typing import Union
 
 import numpy
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypes
+from ciftools.Binary.Encoding.data_types import DataType
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.Encoding import (
@@ -38,24 +38,24 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[s
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + DataTypes.to_dtype(encoding["type"]))
+    return np.frombuffer(data, dtype="<" + DataType.to_dtype(encoding["type"]))
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
-    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) / encoding["factor"]
+    return np.array(data, dtype=DataType.to_dtype(encoding["srcType"])) / encoding["factor"]
 
 
 def _decode_interval_quantization(data: np.ndarray, encoding: IntervalQuantizationEncoding) -> np.ndarray:
     delta = (encoding["max"] - encoding["min"]) / (encoding["numSteps"] - 1)
-    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) * delta + encoding["min"]
+    return np.array(data, dtype=DataType.to_dtype(encoding["srcType"])) * delta + encoding["min"]
 
 
 def _decode_run_length(data: np.ndarray, encoding: RunLengthEncoding) -> np.ndarray:
-    return np.repeat(np.array(data[::2], dtype=DataTypes.to_dtype(encoding["srcType"])), repeats=data[1::2])
+    return np.repeat(np.array(data[::2], dtype=DataType.to_dtype(encoding["srcType"])), repeats=data[1::2])
 
 
 def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
-    result = np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"]))
+    result = np.array(data, dtype=DataType.to_dtype(encoding["srcType"]))
     if encoding["origin"]:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
