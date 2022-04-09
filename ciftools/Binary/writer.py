@@ -2,11 +2,17 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoding import encoders
-from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFData, EncodedCIFDataBlock, EncodedCIFFile
-from ciftools.binary.encoding import binarycif_encoder
+from ciftools.binary.encoding import binarycif_encoder, encoders
+from ciftools.binary.encoding.types import (
+    EncodedCIFCategory,
+    EncodedCIFColumn,
+    EncodedCIFData,
+    EncodedCIFDataBlock,
+    EncodedCIFFile,
+)
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CIFWriter, FieldDesc, OutputStream
+
 
 class _ContextData:
     data: any

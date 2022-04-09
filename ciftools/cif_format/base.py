@@ -1,7 +1,7 @@
 import abc
-import numpy as np
 from typing import Optional
 
+import numpy as np
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
 
@@ -95,7 +95,6 @@ class CIFCategoryBase(abc.ABC):
         return vector
 
 
-
 class CIFDataBlockBase(abc.ABC):
     @abc.abstractmethod
     def header(self) -> str:
@@ -112,6 +111,7 @@ class CIFDataBlockBase(abc.ABC):
     @abc.abstractmethod
     def additional_data(self) -> dict:
         pass
+
 
 class CIFFileBase(abc.ABC):
     @abc.abstractmethod

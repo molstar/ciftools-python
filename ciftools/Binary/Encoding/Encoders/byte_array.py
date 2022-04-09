@@ -1,5 +1,6 @@
-import numpy as np
 import sys
+
+import numpy as np
 from ciftools.binary.encoding.data_types import DataType, DataTypeEnum
 from ciftools.binary.encoding.encoders.base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import ByteArrayEncoding, EncodingEnun

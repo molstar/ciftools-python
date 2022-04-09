@@ -1,4 +1,5 @@
-from typing import TypedDict, Optional
+from typing import Optional, TypedDict
+
 from ciftools.binary.encoding.encodings import EncodingBase
 
 
@@ -12,10 +13,12 @@ class EncodedCIFColumn(TypedDict):
     data: EncodedCIFData
     mask: Optional[EncodedCIFData]
 
+
 class EncodedCIFCategory(TypedDict):
     name: str
     rowCount: int
     columns: list[EncodedCIFColumn]
+
 
 class EncodedCIFDataBlock(TypedDict):
     header: str

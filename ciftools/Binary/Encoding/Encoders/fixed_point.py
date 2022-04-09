@@ -2,9 +2,8 @@ import numpy as np
 from ciftools.binary.encoding.data_types import DataTypeEnum
 from ciftools.binary.encoding.encoders.base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import EncodingEnun, FixedPointEncoding
-from numpy import float64
-
 from ciftools.binary.encoding.types import EncodedCIFData
+from numpy import float64
 
 
 class FixedPointCIFEncoder(CIFEncoderBase):

@@ -7,8 +7,9 @@ from ciftools.binary.encoding.types import EncodedCIFData
 
 # TODO: use classifier once implemented
 _OFFSET_ENCODER = binarycif_encoder(encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
-_DATA_ENCODER = binarycif_encoder(encoders.DELTA_CIF_ENCODER, encoders.RUN_LENGTH_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
-
+_DATA_ENCODER = binarycif_encoder(
+    encoders.DELTA_CIF_ENCODER, encoders.RUN_LENGTH_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER
+)
 
 
 class StringArrayCIFEncoder(CIFEncoderBase):

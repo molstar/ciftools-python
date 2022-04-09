@@ -1,10 +1,10 @@
 import abc
-import numpy as np
-from typing import Callable, Optional, Any
+from typing import Any
 
 import numpy as np
 from ciftools.binary.encoding.encoder import BinaryCIFEncoder
 from ciftools.cif_format.value_presence import ValuePresenceEnum
+
 
 class FieldDesc(abc.ABC):
     name: str
@@ -37,12 +37,10 @@ class CategoryWriter:
     desc: CategoryDesc
 
 
-
 class CategoryWriterProvider(abc.ABC):
     @abc.abstractmethod
     def category_writer(self, ctx: any) -> CategoryWriter:
         pass
-
 
 
 class OutputStream(abc.ABC):
@@ -53,7 +51,6 @@ class OutputStream(abc.ABC):
     @abc.abstractmethod
     def write_binary(self, data: np.ndarray) -> bool:
         pass
-
 
 
 class CIFWriter(abc.ABC):

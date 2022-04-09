@@ -4,9 +4,8 @@ import numpy as np
 from ciftools.binary.encoding import encoders
 from ciftools.binary.encoding.encoders.base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import EncodingEnun, IntegerPackingEncoding
-from numpy import int8, int16, uint8, uint16
-
 from ciftools.binary.encoding.types import EncodedCIFData
+from numpy import int8, int16, uint8, uint16
 
 
 class IntegerPackingCIFEncoder(CIFEncoderBase):
@@ -69,26 +68,20 @@ class IntegerPackingCIFEncoder(CIFEncoderBase):
             data=byte_array_result["data"], encoding=[integer_packing_encoding, byte_array_result["encoding"][0]]
         )
 
+
 class _PackingInfo:
     isSigned: bool
     size: int
     bytesPerElement: int
+
 
 def _determine_packing(data: np.ndarray) -> _PackingInfo:
     # determine sign
     is_signed = np.any(data < 0)
 
     # determine packing size
-    size8 = (
-        _packing_size(data, 0x7F)
-        if is_signed
-        else _packing_size(data, 0xFF)
-    )
-    size16 = (
-        _packing_size(data, 0x7FFF)
-        if is_signed
-        else _packing_size(data, 0xFFFF)
-    )
+    size8 = _packing_size(data, 0x7F) if is_signed else _packing_size(data, 0xFF)
+    size16 = _packing_size(data, 0x7FFF) if is_signed else _packing_size(data, 0xFFFF)
 
     packing = _PackingInfo()
     packing.isSigned = is_signed
@@ -127,5 +120,6 @@ def _packing_size(data: np.ndarray, upper_limit: int) -> int:
                 size = size + 1
 
     return size
+
 
 INTEGER_PACKING_CIF_ENCODER = IntegerPackingCIFEncoder()

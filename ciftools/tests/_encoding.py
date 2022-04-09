@@ -2,10 +2,10 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.binary.encoding import encoders, binarycif_encoder
+from ciftools.binary.encoding import binarycif_encoder, encoders
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CategoryDesc, FieldDesc, OutputStream
+from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldDesc, OutputStream
 from ciftools.writer.fields import number_field, string_field
 
 
@@ -72,8 +72,8 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
         self.length = length
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        lattice_encoding = (
-            binarycif_encoder(encoders.FixedPointCIFEncoder(1000), encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
+        lattice_encoding = binarycif_encoder(
+            encoders.FixedPointCIFEncoder(1000), encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER
         )
 
         def lattice_value_getter(lid: int):
@@ -93,7 +93,11 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
                 name=f"volume",
                 dtype="f4",
                 # TODO: use interval quantization
-                encoder=lambda _: binarycif_encoder(encoders.FixedPointCIFEncoder(1000), encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER),
+                encoder=lambda _: binarycif_encoder(
+                    encoders.FixedPointCIFEncoder(1000),
+                    encoders.DELTA_CIF_ENCODER,
+                    encoders.INTEGER_PACKING_CIF_ENCODER,
+                ),
                 value=lambda data, i: data.volume[i],
             )
         )

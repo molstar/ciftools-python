@@ -1,8 +1,8 @@
 from ciftools.binary.decoder import decode_cif_column
 from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn
+from ciftools.cif_format.base import CIFCategoryBase, CIFColumnBase
 from ciftools.cif_format.binary.column import BinaryCIFColumn
 from ciftools.cif_format.binary.column_types.undefined_cif_column import UndefinedCIFColumn
-from ciftools.cif_format.base import CIFCategoryBase, CIFColumnBase
 
 
 class BinaryCIFCategory(CIFCategoryBase):
@@ -29,7 +29,7 @@ class BinaryCIFCategory(CIFCategoryBase):
         self._columns: dict[str, EncodedCIFColumn] = {c["name"]: c for c in category["columns"]}
         self.row_count = category["rowCount"]
         self.name = category["name"][1:]
-    
+
     def name(self) -> str:
         return self._name
 
