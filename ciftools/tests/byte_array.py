@@ -17,10 +17,16 @@ class TestEncodings_ByteArray(unittest.TestCase):
             (np.array(np.random.rand(100) * 100, dtype="B"), EDataTypes.Uint8),
             (np.array(np.random.rand(100) * 100, dtype="i2"), EDataTypes.Int16),
             (np.array(np.random.rand(100) * 100, dtype="u2"), EDataTypes.Uint16),
+            (np.array(np.random.rand(100) * 100, dtype=">i2"), EDataTypes.Int16),
+            (np.array(np.random.rand(100) * 100, dtype=">u2"), EDataTypes.Uint16),
             (np.array(np.random.rand(100) * 100, dtype="i4"), EDataTypes.Int32),
             (np.array(np.random.rand(100) * 100, dtype="u4"), EDataTypes.Uint32),
+            (np.array(np.random.rand(100) * 100, dtype=">i4"), EDataTypes.Int32),
+            (np.array(np.random.rand(100) * 100, dtype=">u4"), EDataTypes.Uint32),
             (np.array(np.random.rand(100) * 100, dtype="f4"), EDataTypes.Float32),
             (np.array(np.random.rand(100) * 100, dtype="f8"), EDataTypes.Float64),
+            (np.array(np.random.rand(100) * 100, dtype=">f4"), EDataTypes.Float32),
+            (np.array(np.random.rand(100) * 100, dtype=">f8"), EDataTypes.Float64),
         ]
 
         for test_arr, expected_type in test_suite:

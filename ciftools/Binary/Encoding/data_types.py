@@ -37,7 +37,10 @@ class DataTypes:
 
     @staticmethod
     def from_dtype(dtype: Union[np.dtype, str]) -> EDataTypes:
-        return EDataTypes(DataTypes.__dtypes_to_data_types[str(dtype.str).replace("<", "").replace("|", "")])
+        t = str(dtype.str)
+        if t[0] in (">", "<", "|"):
+            t = t[1:]
+        return EDataTypes(DataTypes.__dtypes_to_data_types[t])
 
     @staticmethod
     def to_dtype(data_type: Union[EDataTypes, int]) -> Union[np.dtype, str]:
