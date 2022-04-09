@@ -1,13 +1,10 @@
-from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
-
 from typing import Union
 
 import msgpack
+from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
+from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_data_block import BinaryCIFDataBlock
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
 from ciftools.CIFFormat.i_cif_file import ICIFFile
-
-from .binary_cif_category import BinaryCIFCategory
-from .binary_cif_data_block import BinaryCIFDataBlock
 
 
 class BinaryCIFFile(ICIFFile):
@@ -31,7 +28,7 @@ class BinaryCIFFile(ICIFFile):
         self._block_map: dict[str, ICIFDataBlock] = {b.header: b for b in data_blocks}
 
     @staticmethod
-    def loads(data: Union[bytes, dict], lazy=True) -> BinaryCIFFile:
+    def loads(data: Union[bytes, dict], lazy=True) -> "BinaryCIFFile":
         """
         - data: msgpack encoded blob or EncodedFile object
         - lazy:
@@ -52,7 +49,7 @@ class BinaryCIFFile(ICIFFile):
         return BinaryCIFFile(data_blocks)
 
     @staticmethod
-    def from_json(json: str) -> BinaryCIFFile:
+    def from_json(json: str) -> "BinaryCIFFile":
         return BinaryCIFFile.parse_raw(json)
 
     def to_json(self) -> str:

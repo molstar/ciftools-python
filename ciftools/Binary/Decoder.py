@@ -5,9 +5,7 @@ from typing import Union
 import numpy
 import numpy as np
 from ciftools.Binary.Encoding.data_types import DataType
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoding import (
+from ciftools.Binary.Encoding.encodings import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
@@ -16,6 +14,7 @@ from ciftools.Binary.Encoding.Encoding import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
+from ciftools.Binary.Encoding.types import EncodedCIFColumn, EncodedCIFData
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 

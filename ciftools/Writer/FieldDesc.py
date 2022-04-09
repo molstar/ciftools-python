@@ -1,11 +1,11 @@
 import abc
 import numpy as np
-from typing import Callable, Optional, Union, Any
+from typing import Callable, Optional, Any
 
 import numpy as np
 from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
-from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
+from ciftools.Binary.Encoding import encoders, binarycif_encoder
 
 
 class FieldDesc(abc.ABC):
@@ -28,7 +28,7 @@ class FieldDesc(abc.ABC):
         pass
 
 
-_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArrayCIFEncoder())
+_STRING_ARRAY_ENCODER = binarycif_encoder(encoders.STRING_ARRAY_CIF_ENCODER)
 
 
 #TODO: derive from FieldDesc

@@ -1,6 +1,6 @@
 import abc
 
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
+from ciftools.Binary.Encoding.types import EncodedCIFData
 
 
 class CIFEncoderBase(abc.ABC):

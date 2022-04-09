@@ -1,6 +1,6 @@
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoding import EncodingBase
-from ciftools.Binary.Encoding.Encoders import CIFEncoderBase
+from ciftools.Binary.Encoding.encodings import EncodingBase
+from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
+from ciftools.Binary.Encoding.types import EncodedCIFData
 
 class BinaryCIFEncoder:
     encoders: list[CIFEncoderBase]

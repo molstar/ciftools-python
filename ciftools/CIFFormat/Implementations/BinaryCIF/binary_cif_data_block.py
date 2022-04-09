@@ -1,11 +1,8 @@
-from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
-
 from typing import Union
+from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
 
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
-
-from .binary_cif_category import BinaryCIFCategory
 
 
 class BinaryCIFDataBlock(ICIFDataBlock):
@@ -24,7 +21,7 @@ class BinaryCIFDataBlock(ICIFDataBlock):
         self._additional_data: dict[str, object] = dict()
 
     @staticmethod
-    def from_json(json: str) -> BinaryCIFDataBlock:
+    def from_json(json: str) -> "BinaryCIFDataBlock":
         return BinaryCIFDataBlock.parse_raw(json)
 
     def to_json(self) -> str:

@@ -10,7 +10,7 @@ class CIFWriter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def write_category(self, category: CategoryWriterProvider, contexts: [any]) -> None:
+    def write_category(self, category: CategoryWriterProvider, contexts: list) -> None:
         pass
 
     @abc.abstractmethod

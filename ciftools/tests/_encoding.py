@@ -2,11 +2,9 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder, binarycif_encoder
-from ciftools.Binary.Encoding.Encoders import DeltaCIFEncoder, FixedPointCIFEncoder, IntegerPackingCIFEncoder
+from ciftools.Binary.Encoding import encoders, binarycif_encoder
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
-from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
 from ciftools.Writer.CategoryDesc import CategoryDesc
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
@@ -63,7 +61,7 @@ class TestCategoryWriterProvider_LatticeIds(CategoryWriterProvider):
             number_field(
                 name="id",
                 dtype="i4",
-                encoder=lambda _: BinaryCIFEncoder.by(IntegerPackingCIFEncoder()),
+                encoder=lambda _: binarycif_encoder(encoders.INTEGER_PACKING_CIF_ENCODER),
                 value=lambda data, i: data.metadata.lattices_ids[i],
             )
         ]
@@ -78,7 +76,7 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
         lattice_encoding = (
-            BinaryCIFEncoder.by(FixedPointCIFEncoder(1000)).and_(DeltaCIFEncoder()).and_(IntegerPackingCIFEncoder())
+            binarycif_encoder(encoders.FixedPointCIFEncoder(1000), encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
         )
 
         def lattice_value_getter(lid: int):
@@ -98,9 +96,7 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
                 name=f"volume",
                 dtype="f4",
                 # TODO: use interval quantization
-                encoder=lambda _: binarycif_encoder(
-                    FixedPointCIFEncoder(1000), DeltaCIFEncoder(), IntegerPackingCIFEncoder()
-                ),
+                encoder=lambda _: binarycif_encoder(encoders.FixedPointCIFEncoder(1000), encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER),
                 value=lambda data, i: data.volume[i],
             )
         )

@@ -1,9 +1,9 @@
 import numpy as np
 import sys
 from ciftools.Binary.Encoding.data_types import DataType, DataTypeEnum
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import ByteArrayEncoding, EncodingEnun
+from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
+from ciftools.Binary.Encoding.encodings import ByteArrayEncoding, EncodingEnun
+from ciftools.Binary.Encoding.types import EncodedCIFData
 
 
 class ByteArrayCIFEncoder(CIFEncoderBase):

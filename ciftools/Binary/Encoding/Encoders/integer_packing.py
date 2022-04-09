@@ -1,11 +1,12 @@
 import math
 
 import numpy as np
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding import Encoders
-from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
-from ciftools.Binary.Encoding.Encoding import EncodingEnun, IntegerPackingEncoding
+from ciftools.Binary.Encoding import encoders
+from ciftools.Binary.Encoding.encoders.base import CIFEncoderBase
+from ciftools.Binary.Encoding.encodings import EncodingEnun, IntegerPackingEncoding
 from numpy import int8, int16, uint8, uint16
+
+from ciftools.Binary.Encoding.types import EncodedCIFData
 
 
 class IntegerPackingCIFEncoder(CIFEncoderBase):
@@ -15,7 +16,7 @@ class IntegerPackingCIFEncoder(CIFEncoderBase):
 
         packing = _determine_packing(data)
         if packing.bytesPerElement == 4:
-            return Encoders.BYTE_ARRAY_CIF_ENCODER.encode(data)
+            return encoders.BYTE_ARRAY_CIF_ENCODER.encode(data)
 
         # integer packing
 
@@ -55,7 +56,7 @@ class IntegerPackingCIFEncoder(CIFEncoderBase):
             packed[packed_index] = value
             packed_index += 1
 
-        byte_array_result = Encoders.BYTE_ARRAY_CIF_ENCODER.encode(packed)
+        byte_array_result = encoders.BYTE_ARRAY_CIF_ENCODER.encode(packed)
 
         integer_packing_encoding: IntegerPackingEncoding = {
             "kind": EncodingEnun.IntegerPacking,

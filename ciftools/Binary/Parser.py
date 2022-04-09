@@ -26,7 +26,6 @@ class BinaryCifParser:
             # if not __checkVersions(min_version, unpacked.version.match(/(\d)\.(\d)\.\d/).slice(1))) {
             #    return ParserResult.error<CIFTools.File>(`Unsupported format version. Current ${unpacked.version}, required ${minVersion.join('.')}.`);
             # }
-            print("DEBUG_PARSED: " + str(unpacked))  # TODO: unpacked is supposed to be of type Encoded CIF Data
             file = BinaryCIFFile(unpacked)
             return file
 

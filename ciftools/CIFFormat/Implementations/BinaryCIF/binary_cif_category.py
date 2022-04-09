@@ -1,8 +1,5 @@
-from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
-
 from ciftools.Binary.Decoder import decode_cif_column
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_category import EncodedCIFCategory
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
+from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
@@ -35,7 +32,7 @@ class BinaryCIFCategory(ICIFCategory):
         self.name = category["name"][1:]
 
     @staticmethod
-    def from_json(json: str) -> BinaryCIFCategory:
+    def from_json(json: str) -> "BinaryCIFCategory":
         return BinaryCIFCategory.parse_raw(json)
 
     def to_json(self) -> str:

@@ -1,11 +1,9 @@
-from __future__ import annotations  # supposed to be in python 3.10 but reverted; maybe in python 3.11?
-
 from typing import Union
 
 import numpy as np
+from ciftools.CIFFormat import EValuePresence
 
-from ...EValuePresence import EValuePresence
-from ...i_cif_column import ICIFColumn
+from ciftools.CIFFormat.i_cif_column import ICIFColumn
 
 
 class BinaryCIFColumn(ICIFColumn):
@@ -47,7 +45,7 @@ class BinaryCIFColumn(ICIFColumn):
         self.row_count = len(values)
 
     @staticmethod
-    def from_json(json: str) -> BinaryCIFColumn:
+    def from_json(json: str) -> "BinaryCIFColumn":
         return BinaryCIFColumn.parse_raw(json)
 
     def to_json(self) -> str:
