@@ -1,15 +1,14 @@
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
 from ciftools.Binary.Encoding.Encoding import EncodingBase
-
+from ciftools.Binary.Encoding.Encoders import CIFEncoderBase
 
 class BinaryCIFEncoder:
-    encoders: list[ICIFEncoder]
+    encoders: list[CIFEncoderBase]
 
-    def __init__(self, encoders: list[ICIFEncoder]):
-        self.encoders: list[ICIFEncoder] = encoders
+    def __init__(self, encoders: list[CIFEncoderBase]):
+        self.encoders: list[CIFEncoderBase] = encoders
 
-    def and_(self, f: ICIFEncoder) -> "BinaryCIFEncoder":
+    def and_(self, f: CIFEncoderBase) -> "BinaryCIFEncoder":
         return BinaryCIFEncoder([*self.encoders, f])
 
     def encode_cif_data(self, data: any) -> EncodedCIFData:
@@ -33,9 +32,9 @@ class BinaryCIFEncoder:
         return {"encoding": encodings, "data": data}
 
     @staticmethod
-    def by(f: ICIFEncoder) -> "BinaryCIFEncoder":
+    def by(f: CIFEncoderBase) -> "BinaryCIFEncoder":
         return BinaryCIFEncoder([f])
 
 
-def binarycif_encoder(*encodings: list[ICIFEncoder]):
+def binarycif_encoder(*encodings: list[CIFEncoderBase]):
     return BinaryCIFEncoder(encodings)

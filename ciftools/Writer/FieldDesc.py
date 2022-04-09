@@ -5,7 +5,7 @@ from typing import Callable, Optional, Union, Any
 import numpy as np
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
-from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
 
 
 class FieldDesc(abc.ABC):
@@ -28,7 +28,7 @@ class FieldDesc(abc.ABC):
         pass
 
 
-_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArray_CIFEncoder())
+_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArrayCIFEncoder())
 
 
 #TODO: derive from FieldDesc

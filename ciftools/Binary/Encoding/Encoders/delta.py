@@ -1,12 +1,12 @@
 import numpy as np
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
 from ciftools.Binary.Encoding.Encoding import DeltaEncoding, EEncoding
 from numpy import int32
 
 
-class Delta_CIFEncoder(ICIFEncoder):
+class DeltaCIFEncoder(CIFEncoderBase):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
@@ -26,3 +26,6 @@ class Delta_CIFEncoder(ICIFEncoder):
         encoding["origin"] = int(data[0])
 
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
+
+
+DELTA_CIF_ENCODER = DeltaCIFEncoder()

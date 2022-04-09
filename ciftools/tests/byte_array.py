@@ -5,7 +5,7 @@ import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.data_types import EDataTypes
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
 
 
 class TestEncodings_ByteArray(unittest.TestCase):
@@ -30,7 +30,7 @@ class TestEncodings_ByteArray(unittest.TestCase):
         ]
 
         for test_arr, expected_type in test_suite:
-            encoder = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
+            encoder = BinaryCIFEncoder.by(ByteArrayCIFEncoder())
             encoded = encoder.encode_cif_data(test_arr)
 
             msgpack.loads(msgpack.dumps(encoded))

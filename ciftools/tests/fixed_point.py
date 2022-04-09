@@ -4,9 +4,9 @@ import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
+from ciftools.Binary.Encoding.Encoders.delta import DeltaCIFEncoder
+from ciftools.Binary.Encoding.Encoders.fixed_point import FixedPointCIFEncoder
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestEncodings_FixedPoint(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = BinaryCIFEncoder.by(FixedPoint_CIFEncoder(10**e)).and_(ByteArray_CIFEncoder())
+            encoder = BinaryCIFEncoder.by(FixedPointCIFEncoder(10**e)).and_(ByteArrayCIFEncoder())
             encoded = encoder.encode_cif_data(test_arr)
             decoded = decode_cif_data(encoded)
 
@@ -40,9 +40,9 @@ class TestEncodings_FixedPointDelta(unittest.TestCase):
 
         for test_arr, e in test_suite:
             encoder = (
-                BinaryCIFEncoder.by(FixedPoint_CIFEncoder(10**e))
-                .and_(Delta_CIFEncoder())
-                .and_(ByteArray_CIFEncoder())
+                BinaryCIFEncoder.by(FixedPointCIFEncoder(10**e))
+                .and_(DeltaCIFEncoder())
+                .and_(ByteArrayCIFEncoder())
             )
             encoded = encoder.encode_cif_data(test_arr)
             msgpack.loads(msgpack.dumps(encoded))

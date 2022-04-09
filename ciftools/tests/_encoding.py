@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder, binarycif_encoder
-from ciftools.Binary.Encoding.Encoders import Delta_CIFEncoder, FixedPoint_CIFEncoder, IntegerPacking_CIFEncoder
+from ciftools.Binary.Encoding.Encoders import DeltaCIFEncoder, FixedPointCIFEncoder, IntegerPackingCIFEncoder
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
 from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
@@ -63,7 +63,7 @@ class TestCategoryWriterProvider_LatticeIds(CategoryWriterProvider):
             number_field(
                 name="id",
                 dtype="i4",
-                encoder=lambda _: BinaryCIFEncoder.by(IntegerPacking_CIFEncoder()),
+                encoder=lambda _: BinaryCIFEncoder.by(IntegerPackingCIFEncoder()),
                 value=lambda data, i: data.metadata.lattices_ids[i],
             )
         ]
@@ -78,7 +78,7 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
         lattice_encoding = (
-            BinaryCIFEncoder.by(FixedPoint_CIFEncoder(1000)).and_(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
+            BinaryCIFEncoder.by(FixedPointCIFEncoder(1000)).and_(DeltaCIFEncoder()).and_(IntegerPackingCIFEncoder())
         )
 
         def lattice_value_getter(lid: int):
@@ -99,7 +99,7 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
                 dtype="f4",
                 # TODO: use interval quantization
                 encoder=lambda _: binarycif_encoder(
-                    FixedPoint_CIFEncoder(1000), Delta_CIFEncoder(), IntegerPacking_CIFEncoder()
+                    FixedPointCIFEncoder(1000), DeltaCIFEncoder(), IntegerPackingCIFEncoder()
                 ),
                 value=lambda data, i: data.volume[i],
             )

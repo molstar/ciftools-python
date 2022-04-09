@@ -5,8 +5,8 @@ import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.data_types import EDataTypes
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.IntervalQuantization_CIFEncoder import IntervalQuantization_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
+from ciftools.Binary.Encoding.Encoders.interval_quantization import IntervalQuantizationCIFEncoder
 
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):
@@ -21,8 +21,8 @@ class TestEncodings_IntervalQuantization(unittest.TestCase):
 
         for test_arr, steps, dtype in test_suite:
             low, high = np.min(test_arr), np.max(test_arr)
-            encoder = BinaryCIFEncoder.by(IntervalQuantization_CIFEncoder(low, high, steps, dtype)).and_(
-                ByteArray_CIFEncoder()
+            encoder = BinaryCIFEncoder.by(IntervalQuantizationCIFEncoder(low, high, steps, dtype)).and_(
+                ByteArrayCIFEncoder()
             )
             encoded = encoder.encode_cif_data(test_arr)
             msgpack.loads(msgpack.dumps(encoded))

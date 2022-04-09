@@ -8,9 +8,9 @@ from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data_block import EncodedCIFDataBlock
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_file import EncodedCIFFile
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder
+from ciftools.Binary.Encoding.Encoders.run_length import RunLengthCIFEncoder
+from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder
 from ciftools.CIFFormat.EValuePresence import EValuePresence
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
@@ -28,9 +28,9 @@ class TMPData:
         self.count = count
 
 
-_RLE_ENCODER = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
-_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArray_CIFEncoder())
-_BYTE_ARRAY_ENCODER = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
+_RLE_ENCODER = BinaryCIFEncoder.by(RunLengthCIFEncoder()).and_(ByteArrayCIFEncoder())
+_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArrayCIFEncoder())
+_BYTE_ARRAY_ENCODER = BinaryCIFEncoder.by(ByteArrayCIFEncoder())
 
 
 def _always_present(data, i):

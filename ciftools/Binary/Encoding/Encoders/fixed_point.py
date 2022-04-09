@@ -2,12 +2,12 @@ import numpy
 import numpy as np
 from ciftools.Binary.Encoding.data_types import EDataTypes
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
 from ciftools.Binary.Encoding.Encoding import EEncoding, FixedPointEncoding
 from numpy import float64, int32
 
 
-class FixedPoint_CIFEncoder(ICIFEncoder):
+class FixedPointCIFEncoder(CIFEncoderBase):
     def __init__(self, factor: float):
         self._factor = factor
 

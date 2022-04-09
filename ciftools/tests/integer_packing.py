@@ -4,7 +4,7 @@ import msgpack
 import numpy as np
 from ciftools.Binary.Decoder import decode_cif_data
 from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder
-from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.integer_packing import IntegerPackingCIFEncoder
 
 
 class TestEncodings_IntegerPackingSigned(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestEncodings_IntegerPackingSigned(unittest.TestCase):
         ]
 
         for test_arr, is_unsigned, byte_count in test_suite:
-            encoder = BinaryCIFEncoder.by(IntegerPacking_CIFEncoder())
+            encoder = BinaryCIFEncoder.by(IntegerPackingCIFEncoder())
             encoded = encoder.encode_cif_data(test_arr)
             decoded = decode_cif_data(encoded)
             msgpack.loads(msgpack.dumps(encoded))

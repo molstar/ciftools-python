@@ -1,11 +1,11 @@
 import numpy as np
 from ciftools.Binary.Encoding.data_types import DataTypes, EDataTypes
 from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.Binary.Encoding.Encoders.ICIFEncoder import ICIFEncoder
+from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
 from ciftools.Binary.Encoding.Encoding import EEncoding, IntervalQuantizationEncoding
 
 
-class IntervalQuantization_CIFEncoder(ICIFEncoder):
+class IntervalQuantizationCIFEncoder(CIFEncoderBase):
     def __init__(self, arg_min: int, arg_max: int, num_steps: int, array_type: EDataTypes = EDataTypes.Uint32):
         self._min = arg_min
         self._max = arg_max

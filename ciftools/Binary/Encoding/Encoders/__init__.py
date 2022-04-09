@@ -1,7 +1,8 @@
-from ciftools.Binary.Encoding.Encoders.ByteArray_CIFEncoder import ByteArray_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.Delta_CIFEncoder import Delta_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.FixedPoint_CIFEncoder import FixedPoint_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.IntegerPacking_CIFEncoder import IntegerPacking_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.IntervalQuantization_CIFEncoder import IntervalQuantization_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.RunLength_CIFEncoder import RunLength_CIFEncoder
-from ciftools.Binary.Encoding.Encoders.StringArray_CIFEncoder import StringArray_CIFEncoder
+from ciftools.Binary.Encoding.Encoders.base import CIFEncoderBase
+from ciftools.Binary.Encoding.Encoders.byte_array import ByteArrayCIFEncoder, BYTE_ARRAY_CIF_ENCODER
+from ciftools.Binary.Encoding.Encoders.delta import DeltaCIFEncoder, DELTA_CIF_ENCODER
+from ciftools.Binary.Encoding.Encoders.fixed_point import FixedPointCIFEncoder
+from ciftools.Binary.Encoding.Encoders.integer_packing import IntegerPackingCIFEncoder, INTEGER_PACKING_CIF_ENCODER
+from ciftools.Binary.Encoding.Encoders.interval_quantization import IntervalQuantizationCIFEncoder
+from ciftools.Binary.Encoding.Encoders.run_length import RunLengthCIFEncoder, RUN_LENGTH_CIF_ENCODER
+from ciftools.Binary.Encoding.Encoders.string_array import StringArrayCIFEncoder, STRING_ARRAY_CIF_ENCODER
