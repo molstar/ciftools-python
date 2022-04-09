@@ -1,9 +1,8 @@
 from ciftools.Binary.decoder import decode_cif_column
 from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn
-from ciftools.CIFFormat.i_cif_category import ICIFCategory
-from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.ColumnTypes.undefined_cif_column import UndefinedCIFColumn
+from ciftools.CIFFormat.base import ICIFCategory, ICIFColumn
 
 
 class BinaryCIFCategory(ICIFCategory):
@@ -30,14 +29,7 @@ class BinaryCIFCategory(ICIFCategory):
         self._columns: dict[str, EncodedCIFColumn] = {c["name"]: c for c in category["columns"]}
         self.row_count = category["rowCount"]
         self.name = category["name"][1:]
-
-    @staticmethod
-    def from_json(json: str) -> "BinaryCIFCategory":
-        return BinaryCIFCategory.parse_raw(json)
-
-    def to_json(self) -> str:
-        return self.json()
-
+    
     def name(self) -> str:
         return self._name
 

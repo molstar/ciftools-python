@@ -1,9 +1,8 @@
 from typing import Union
 
 import numpy as np
-from ciftools.CIFFormat import EValuePresence
-
-from ciftools.CIFFormat.i_cif_column import ICIFColumn
+from ciftools.CIFFormat import value_presence
+from ciftools.CIFFormat.base import ICIFColumn
 
 
 class BinaryCIFColumn(ICIFColumn):
@@ -44,13 +43,6 @@ class BinaryCIFColumn(ICIFColumn):
         self._value_kinds = value_kinds
         self.row_count = len(values)
 
-    @staticmethod
-    def from_json(json: str) -> "BinaryCIFColumn":
-        return BinaryCIFColumn.parse_raw(json)
-
-    def to_json(self) -> str:
-        return self.json()
-
     def is_defined(self) -> bool:
         pass
 
@@ -63,7 +55,7 @@ class BinaryCIFColumn(ICIFColumn):
     def get_float(self, row: int) -> float:
         pass
 
-    def get_value_presence(self, row: int) -> EValuePresence:
+    def get_value_presence(self, row: int) -> value_presence:
         pass
 
     def are_values_equal(self, row_a: int, row_b: int) -> bool:

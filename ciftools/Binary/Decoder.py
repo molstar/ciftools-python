@@ -15,8 +15,8 @@ from ciftools.Binary.Encoding.encodings import (
     StringArrayEncoding,
 )
 from ciftools.Binary.Encoding.types import EncodedCIFColumn, EncodedCIFData
-from ciftools.CIFFormat.i_cif_column import ICIFColumn
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
+from ciftools.CIFFormat.base import ICIFColumn
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:

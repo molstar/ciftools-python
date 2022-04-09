@@ -1,12 +1,41 @@
 import abc
-
 import numpy as np
+from typing import Optional
 
-from ..JsonSerialization.i_json_serializable import IJsonSerializable
-from .i_cif_column import ICIFColumn
+from ciftools.CIFFormat.value_presence import ValuePresenceEnum
 
 
-class ICIFCategory(IJsonSerializable, abc.ABC):
+class ICIFColumn(abc.ABC):
+    @abc.abstractmethod
+    def is_defined(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_string(self, row: int) -> Optional[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_integer(self, row: int) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_float(self, row: int) -> float:
+        pass
+
+    @abc.abstractmethod
+    def get_value_presence(self, row: int) -> ValuePresenceEnum:
+        pass
+
+    @abc.abstractmethod
+    def are_values_equal(self, row_a: int, row_b: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def string_equals(self, row: int, value: str) -> bool:
+        pass
+
+
+class ICIFCategory(abc.ABC):
     @abc.abstractmethod
     def name(self) -> str:
         pass
@@ -64,3 +93,27 @@ class ICIFCategory(IJsonSerializable, abc.ABC):
             vector[i - 1] = self.get_column(field + "[" + str(i) + "]").get_float(row_index)
 
         return vector
+
+
+
+class ICIFDataBlock(abc.ABC):
+    @abc.abstractmethod
+    def header(self) -> str:
+        pass
+
+    @abc.abstractmethod
+    def categories(self) -> dict[str, ICIFCategory]:
+        pass
+
+    @abc.abstractmethod
+    def get_category(self, name: str) -> ICIFCategory:
+        pass
+
+    @abc.abstractmethod
+    def additional_data(self) -> dict:
+        pass
+
+class ICIFFile(abc.ABC):
+    @abc.abstractmethod
+    def data_blocks(self) -> list[ICIFDataBlock]:
+        pass

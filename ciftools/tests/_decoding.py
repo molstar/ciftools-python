@@ -2,7 +2,7 @@ import unittest
 
 import msgpack
 import requests
-from ciftools.CIFFormat.EValuePresence import EValuePresence
+from ciftools.CIFFormat.value_presence import ValuePresenceEnum
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
 
 
@@ -28,7 +28,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         print(len(label_comp_id.values))
         print(len(label_comp_id))
         print(Cartn_x.values[0:10])
-        print(atom_site["label_alt_id"].value_kinds[0] == EValuePresence.NotSpecified)
+        print(atom_site["label_alt_id"].value_kinds[0] == ValuePresenceEnum.NotSpecified)
         # print([[f"_{c.name}.{f}" for f in c.field_names] for c in parsed[0].categories.values()])
 
         print("Volume Data test")

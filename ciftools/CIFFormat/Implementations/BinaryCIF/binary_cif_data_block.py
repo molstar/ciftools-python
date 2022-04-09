@@ -1,8 +1,6 @@
 from typing import Union
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
-
-from ciftools.CIFFormat.i_cif_category import ICIFCategory
-from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
+from ciftools.CIFFormat.base import ICIFCategory, ICIFDataBlock
 
 
 class BinaryCIFDataBlock(ICIFDataBlock):
@@ -19,13 +17,6 @@ class BinaryCIFDataBlock(ICIFDataBlock):
         self.header = header
         self._categories = categories
         self._additional_data: dict[str, object] = dict()
-
-    @staticmethod
-    def from_json(json: str) -> "BinaryCIFDataBlock":
-        return BinaryCIFDataBlock.parse_raw(json)
-
-    def to_json(self) -> str:
-        return self.json()
 
     def header(self) -> str:
         return self._header

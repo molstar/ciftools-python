@@ -5,7 +5,7 @@ import numpy as np
 from ciftools.Binary.Encoding import encoders
 from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFData, EncodedCIFDataBlock, EncodedCIFFile
 from ciftools.Binary.Encoding import binarycif_encoder
-from ciftools.CIFFormat.EValuePresence import EValuePresence
+from ciftools.CIFFormat.value_presence import ValuePresenceEnum
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
 from ciftools.Writer.CIFWriter import CIFWriter
@@ -27,7 +27,7 @@ _BYTE_ARRAY_ENCODER = binarycif_encoder(encoders.BYTE_ARRAY_CIF_ENCODER)
 
 
 def _always_present(data, i):
-    return EValuePresence.Present
+    return ValuePresenceEnum.Present
 
 
 class BinaryCIFWriter(CIFWriter):
@@ -100,13 +100,13 @@ class BinaryCIFWriter(CIFWriter):
             d = _d.data
             for i in range(_d.count):
                 p = presence(d, i)
-                if p is not EValuePresence.Present:
+                if p is not ValuePresenceEnum.Present:
                     mask[offset] = p
                     if is_native:
                         array[offset] = None
                     all_present = False
                 else:
-                    mask[offset] = EValuePresence.Present
+                    mask[offset] = ValuePresenceEnum.Present
                     array[offset] = field.value(d, i)
 
                 offset += 1

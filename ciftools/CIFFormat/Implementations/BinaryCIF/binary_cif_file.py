@@ -3,8 +3,7 @@ from typing import Union
 import msgpack
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_category import BinaryCIFCategory
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_data_block import BinaryCIFDataBlock
-from ciftools.CIFFormat.i_cif_data_block import ICIFDataBlock
-from ciftools.CIFFormat.i_cif_file import ICIFFile
+from ciftools.CIFFormat.base import ICIFDataBlock, ICIFFile
 
 
 class BinaryCIFFile(ICIFFile):
@@ -47,13 +46,6 @@ class BinaryCIFFile(ICIFFile):
         ]
 
         return BinaryCIFFile(data_blocks)
-
-    @staticmethod
-    def from_json(json: str) -> "BinaryCIFFile":
-        return BinaryCIFFile.parse_raw(json)
-
-    def to_json(self) -> str:
-        return self.json()
 
     def data_blocks(self) -> list[ICIFDataBlock]:
         return list(self._block_map.values())

@@ -4,7 +4,7 @@ from typing import Callable, Optional, Any
 
 import numpy as np
 from ciftools.Binary.Encoding.encoder import BinaryCIFEncoder
-from ciftools.CIFFormat.EValuePresence import EValuePresence
+from ciftools.CIFFormat.value_presence import ValuePresenceEnum
 from ciftools.Binary.Encoding import encoders, binarycif_encoder
 
 
@@ -24,7 +24,7 @@ class FieldDesc(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def presence(self, data: any, i: int) -> EValuePresence:
+    def presence(self, data: any, i: int) -> ValuePresenceEnum:
         pass
 
 
@@ -43,7 +43,7 @@ class StringFieldDesc:
         self,
         name: str,
         value: Callable[[Any, int], Optional[int | float]],
-        presence: Optional[Callable[[Any, int], Optional[EValuePresence]]] = None,
+        presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
     ) -> None:
         self.name = name
         self.value = value
@@ -54,7 +54,7 @@ def string_field(
     *,
     name: str,
     value: Callable[[Any, int], Optional[str]],
-    presence: Optional[Callable[[Any, int], Optional[EValuePresence]]] = None,
+    presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
 ):
     return StringFieldDesc(name=name, value=value, presence=presence)
 
@@ -70,7 +70,7 @@ class NumberFieldDesc:
         value: Callable[[Any, int], Optional[int | float]],
         dtype: np.dtype,
         encoder: Callable[[Any], BinaryCIFEncoder],
-        presence: Optional[Callable[[Any, int], Optional[EValuePresence]]] = None,
+        presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
     ) -> None:
         self.name = name
         self.value = value
@@ -85,6 +85,6 @@ def number_field(
     value: Callable[[Any, int], Optional[int | float]],
     dtype: np.dtype,
     encoder: Callable[[Any], BinaryCIFEncoder],
-    presence: Optional[Callable[[Any, int], Optional[EValuePresence]]] = None,
+    presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
 ):
     return NumberFieldDesc(name=name, value=value, dtype=dtype, encoder=encoder, presence=presence)
