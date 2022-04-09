@@ -1,9 +1,9 @@
 from typing import Union
 from ciftools.cif_format.binary.category import BinaryCIFCategory
-from ciftools.cif_format.base import ICIFCategory, ICIFDataBlock
+from ciftools.cif_format.base import CIFCategoryBase, CIFDataBlockBase
 
 
-class BinaryCIFDataBlock(ICIFDataBlock):
+class BinaryCIFDataBlock(CIFDataBlockBase):
     def __getattr__(self, name: str) -> object:
         return self._categories[name]
 
@@ -21,10 +21,10 @@ class BinaryCIFDataBlock(ICIFDataBlock):
     def header(self) -> str:
         return self._header
 
-    def categories(self) -> dict[str, ICIFCategory]:
+    def categories(self) -> dict[str, CIFCategoryBase]:
         return self._categories
 
-    def get_category(self, name: str) -> Union[ICIFCategory, None]:
+    def get_category(self, name: str) -> Union[CIFCategoryBase, None]:
         return self._categories.get(name, None)
 
     def additional_data(self) -> dict[str, object]:

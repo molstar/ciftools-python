@@ -5,11 +5,11 @@ import numpy as np
 from ciftools.binary.encoding import encoders, binarycif_encoder
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.Writer.CategoryDesc import CategoryDesc
-from ciftools.Writer.CategoryWriter import CategoryWriter
-from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
-from ciftools.Writer.FieldDesc import FieldDesc, number_field, string_field
-from ciftools.Writer.OutputStream import OutputStream
+from ciftools.writer.CategoryDesc import CategoryDesc
+from ciftools.writer.CategoryWriter import CategoryWriter
+from ciftools.writer.CategoryWriterProvider import CategoryWriterProvider
+from ciftools.writer.FieldDesc import FieldDesc, number_field, string_field
+from ciftools.writer.OutputStream import OutputStream
 
 
 class TestMetadata:

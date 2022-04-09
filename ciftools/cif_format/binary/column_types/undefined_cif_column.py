@@ -3,10 +3,10 @@ from __future__ import annotations  # supposed to be in python 3.10 but reverted
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 from pydantic import BaseModel
 
-from ciftools.cif_format.base import ICIFColumn
+from ciftools.cif_format.base import CIFColumnBase
 
 
-class UndefinedCIFColumn(ICIFColumn, BaseModel):
+class UndefinedCIFColumn(CIFColumnBase, BaseModel):
     def is_defined(self) -> bool:
         return False
 

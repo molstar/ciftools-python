@@ -3,7 +3,7 @@ from typing import Union
 import msgpack
 import numpy as np
 from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.cif_format.base import ICIFFile
+from ciftools.cif_format.base import CIFFileBase
 
 
 class BinaryCifParser:
@@ -16,7 +16,7 @@ class BinaryCifParser:
         return True
 
     @staticmethod
-    def parse(data: Union[np.ndarray, bytes, list]) -> ICIFFile:
+    def parse(data: Union[np.ndarray, bytes, list]) -> CIFFileBase:
         # min_version = [0, 3]
 
         try:

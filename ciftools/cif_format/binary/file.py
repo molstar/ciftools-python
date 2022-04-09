@@ -3,10 +3,10 @@ from typing import Union
 import msgpack
 from ciftools.cif_format.binary.category import BinaryCIFCategory
 from ciftools.cif_format.binary.data_block import BinaryCIFDataBlock
-from ciftools.cif_format.base import ICIFDataBlock, ICIFFile
+from ciftools.cif_format.base import CIFDataBlockBase, CIFFileBase
 
 
-class BinaryCIFFile(ICIFFile):
+class BinaryCIFFile(CIFFileBase):
     def __getitem__(self, index_or_name: Union[int, str]):
         """
         Access a data block by index or header (case sensitive)
@@ -24,7 +24,7 @@ class BinaryCIFFile(ICIFFile):
 
     def __init__(self, data_blocks: list[BinaryCIFDataBlock]):
         self.data_blocks = data_blocks
-        self._block_map: dict[str, ICIFDataBlock] = {b.header: b for b in data_blocks}
+        self._block_map: dict[str, CIFDataBlockBase] = {b.header: b for b in data_blocks}
 
     @staticmethod
     def loads(data: Union[bytes, dict], lazy=True) -> "BinaryCIFFile":
@@ -47,8 +47,8 @@ class BinaryCIFFile(ICIFFile):
 
         return BinaryCIFFile(data_blocks)
 
-    def data_blocks(self) -> list[ICIFDataBlock]:
+    def data_blocks(self) -> list[CIFDataBlockBase]:
         return list(self._block_map.values())
 
-    def data_block(self, name: str) -> Union[ICIFDataBlock, None]:
+    def data_block(self, name: str) -> Union[CIFDataBlockBase, None]:
         return self._block_map.get(name, None)

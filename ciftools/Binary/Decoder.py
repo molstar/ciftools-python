@@ -13,10 +13,10 @@ from ciftools.binary.encoding.encodings import (
 )
 from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
 from ciftools.cif_format.binary.column import BinaryCIFColumn
-from ciftools.cif_format.base import ICIFColumn
+from ciftools.cif_format.base import CIFColumnBase
 
 
-def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
+def decode_cif_column(column: EncodedCIFColumn) -> CIFColumnBase:
     values = decode_cif_data(column["data"])
     value_kinds = decode_cif_data(column["mask"]) if column["mask"] else None  # type: ignore
     return BinaryCIFColumn(column["name"], values, value_kinds)  # type: ignore

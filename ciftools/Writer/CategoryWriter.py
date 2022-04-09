@@ -1,4 +1,4 @@
-from ciftools.Writer.CategoryDesc import CategoryDesc
+from ciftools.writer.CategoryDesc import CategoryDesc
 
 
 class CategoryWriter:

@@ -2,10 +2,10 @@ from typing import Union
 
 import numpy as np
 from ciftools.cif_format import value_presence
-from ciftools.cif_format.base import ICIFColumn
+from ciftools.cif_format.base import CIFColumnBase
 
 
-class BinaryCIFColumn(ICIFColumn):
+class BinaryCIFColumn(CIFColumnBase):
     def __getitem__(self, idx: int) -> Union[str, float, int, None]:
         if self._value_kinds and self._value_kinds[idx]:
             return None

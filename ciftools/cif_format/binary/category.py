@@ -2,10 +2,10 @@ from ciftools.binary.decoder import decode_cif_column
 from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn
 from ciftools.cif_format.binary.column import BinaryCIFColumn
 from ciftools.cif_format.binary.column_types.undefined_cif_column import UndefinedCIFColumn
-from ciftools.cif_format.base import ICIFCategory, ICIFColumn
+from ciftools.cif_format.base import CIFCategoryBase, CIFColumnBase
 
 
-class BinaryCIFCategory(ICIFCategory):
+class BinaryCIFCategory(CIFCategoryBase):
     __undefined_column__ = UndefinedCIFColumn()
 
     def __getattr__(self, name: str) -> object:
@@ -42,7 +42,7 @@ class BinaryCIFCategory(ICIFCategory):
     def column_names(self) -> list[str]:
         return self.field_names
 
-    def get_column(self, name: str) -> ICIFColumn:
+    def get_column(self, name: str) -> CIFColumnBase:
         encoded_cif_column = self._columns.get(name, None)
         if encoded_cif_column is not None:
             return BinaryCIFCategory.__wrap_column__(encoded_cif_column)
@@ -50,7 +50,7 @@ class BinaryCIFCategory(ICIFCategory):
         return BinaryCIFCategory.__undefined_column__
 
     @staticmethod
-    def __wrap_column__(encoded_cif_column: EncodedCIFColumn) -> ICIFColumn:
+    def __wrap_column__(encoded_cif_column: EncodedCIFColumn) -> CIFColumnBase:
         if encoded_cif_column["data"]["data"] is None:
             return BinaryCIFCategory.__undefined_column__
 

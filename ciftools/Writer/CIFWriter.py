@@ -1,7 +1,7 @@
 import abc
 
-from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
-from ciftools.Writer.OutputStream import OutputStream
+from ciftools.writer.CategoryWriterProvider import CategoryWriterProvider
+from ciftools.writer.OutputStream import OutputStream
 
 
 class CIFWriter(abc.ABC):

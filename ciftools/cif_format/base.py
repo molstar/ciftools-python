@@ -5,7 +5,7 @@ from typing import Optional
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
 
-class ICIFColumn(abc.ABC):
+class CIFColumnBase(abc.ABC):
     @abc.abstractmethod
     def is_defined(self) -> bool:
         pass
@@ -35,7 +35,7 @@ class ICIFColumn(abc.ABC):
         pass
 
 
-class ICIFCategory(abc.ABC):
+class CIFCategoryBase(abc.ABC):
     @abc.abstractmethod
     def name(self) -> str:
         pass
@@ -53,7 +53,7 @@ class ICIFCategory(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_column(self, name: str) -> ICIFColumn:
+    def get_column(self, name: str) -> CIFColumnBase:
         pass
 
     # Category Helpers
@@ -96,24 +96,24 @@ class ICIFCategory(abc.ABC):
 
 
 
-class ICIFDataBlock(abc.ABC):
+class CIFDataBlockBase(abc.ABC):
     @abc.abstractmethod
     def header(self) -> str:
         pass
 
     @abc.abstractmethod
-    def categories(self) -> dict[str, ICIFCategory]:
+    def categories(self) -> dict[str, CIFCategoryBase]:
         pass
 
     @abc.abstractmethod
-    def get_category(self, name: str) -> ICIFCategory:
+    def get_category(self, name: str) -> CIFCategoryBase:
         pass
 
     @abc.abstractmethod
     def additional_data(self) -> dict:
         pass
 
-class ICIFFile(abc.ABC):
+class CIFFileBase(abc.ABC):
     @abc.abstractmethod
-    def data_blocks(self) -> list[ICIFDataBlock]:
+    def data_blocks(self) -> list[CIFDataBlockBase]:
         pass

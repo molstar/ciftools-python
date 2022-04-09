@@ -1,4 +1,4 @@
-from ciftools.Writer.FieldDesc import FieldDesc
+from ciftools.writer.FieldDesc import FieldDesc
 
 
 class CategoryDesc:

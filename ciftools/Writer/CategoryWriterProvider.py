@@ -1,6 +1,6 @@
 import abc
 
-from ciftools.Writer.CategoryWriter import CategoryWriter
+from ciftools.writer.CategoryWriter import CategoryWriter
 
 
 class CategoryWriterProvider(abc.ABC):
