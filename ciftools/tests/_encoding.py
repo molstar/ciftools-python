@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 from ciftools.Binary.Encoding import encoders, binarycif_encoder
-from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
+from ciftools.Binary.writer import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
 from ciftools.Writer.CategoryDesc import CategoryDesc
 from ciftools.Writer.CategoryWriter import CategoryWriter

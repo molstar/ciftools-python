@@ -23,6 +23,7 @@ class BinaryCifParser:
             array = bytes(data)
 
             unpacked = msgpack.loads(array)
+            # TODO: check min version
             # if not __checkVersions(min_version, unpacked.version.match(/(\d)\.(\d)\.\d/).slice(1))) {
             #    return ParserResult.error<CIFTools.File>(`Unsupported format version. Current ${unpacked.version}, required ${minVersion.join('.')}.`);
             # }

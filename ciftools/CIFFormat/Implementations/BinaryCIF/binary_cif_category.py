@@ -1,4 +1,4 @@
-from ciftools.Binary.Decoder import decode_cif_column
+from ciftools.Binary.decoder import decode_cif_column
 from ciftools.Binary.Encoding.types import EncodedCIFCategory, EncodedCIFColumn
 from ciftools.CIFFormat.i_cif_category import ICIFCategory
 from ciftools.CIFFormat.i_cif_column import ICIFColumn

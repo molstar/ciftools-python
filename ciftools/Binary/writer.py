@@ -13,7 +13,7 @@ from ciftools.Writer.FieldDesc import FieldDesc
 from ciftools.Writer.OutputStream import OutputStream
 
 
-class TMPData:
+class _ContextData:
     data: any
     count: int
 
@@ -23,7 +23,6 @@ class TMPData:
 
 
 _RLE_ENCODER = binarycif_encoder(encoders.RUN_LENGTH_CIF_ENCODER, encoders.BYTE_ARRAY_CIF_ENCODER)
-_STRING_ARRAY_ENCODER = binarycif_encoder(encoders.STRING_ARRAY_CIF_ENCODER)
 _BYTE_ARRAY_ENCODER = binarycif_encoder(encoders.BYTE_ARRAY_CIF_ENCODER)
 
 
@@ -71,7 +70,7 @@ class BinaryCIFWriter(CIFWriter):
 
         first = categories[0]
         cif_cat: EncodedCIFCategory = {"name": f"_{first.desc.name}", "rowCount": count, "columns": []}
-        data = [TMPData(c.data, c.count) for c in categories]
+        data = [_ContextData(c.data, c.count) for c in categories]
 
         for f in first.desc.fields:
             cif_cat["columns"].append(BinaryCIFWriter._encode_field(f, data, count))
@@ -87,7 +86,7 @@ class BinaryCIFWriter(CIFWriter):
         stream.write_binary(self._encoded_data)
 
     @staticmethod
-    def _encode_field(field: FieldDesc, data: list[TMPData], total_count: int) -> EncodedCIFColumn:
+    def _encode_field(field: FieldDesc, data: list[_ContextData], total_count: int) -> EncodedCIFColumn:
         array: np.ndarray
         array = field.create_array(total_count)
         is_native: bool = not hasattr(array, "dtype")
@@ -113,7 +112,7 @@ class BinaryCIFWriter(CIFWriter):
                 offset += 1
 
         print(field.encoder)
-        encoder = field.encoder(data[0].data) if len(data) > 0 else _STRING_ARRAY_ENCODER  # TODO: fix
+        encoder = field.encoder(data[0].data) if len(data) > 0 else _BYTE_ARRAY_ENCODER
         encoded = encoder.encode_cif_data(array)
 
         mask_data: Optional[EncodedCIFData] = None
