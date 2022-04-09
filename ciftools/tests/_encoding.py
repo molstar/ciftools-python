@@ -2,18 +2,41 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from ciftools.Binary.Encoding.Encoder import BinaryCIFEncoder, binarycif_encoder
+from ciftools.Binary.Encoding.Encoders import Delta_CIFEncoder, FixedPoint_CIFEncoder, IntegerPacking_CIFEncoder
 from ciftools.Binary.Writer.BinaryCIFWriter import BinaryCIFWriter
 from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_file import BinaryCIFFile
-from ciftools.tests.writing.Fields.annotation import TestFieldDesc_Annotation
-from ciftools.tests.writing.Fields.lattice import TestFieldDesc_Lattice
-from ciftools.tests.writing.Fields.lattice_ids import TestFieldDesc_LatticeIds
-from ciftools.tests.writing.Fields.volume import TestFieldDesc_Volume
 from ciftools.tests.writing.test_data import TestVolumeData, prepare_test_data
 from ciftools.Writer.CategoryDesc import CategoryDesc
 from ciftools.Writer.CategoryWriter import CategoryWriter
 from ciftools.Writer.CategoryWriterProvider import CategoryWriterProvider
-from ciftools.Writer.FieldDesc import FieldDesc
+from ciftools.Writer.FieldDesc import FieldDesc, number_field, string_field
 from ciftools.Writer.OutputStream import OutputStream
+
+
+class TestMetadata:
+    lattices_ids: np.ndarray
+
+
+class TestVolumeData:
+    metadata: TestMetadata
+    volume: any
+    lattices: dict[int, np.ndarray]
+    annotation: any
+
+
+def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
+    data = TestVolumeData()
+    data.lattices = dict()
+    data.metadata = TestMetadata()
+    data.metadata.lattices_ids = list(range(num_lattices))
+    for i in data.metadata.lattices_ids:
+        data.lattices[i] = np.arange(size) + i
+
+    data.volume = np.array([0.123 + 0.1 * i for i in range(size)])
+    data.annotation = [f"Annotation {i}" for i in range(size)]
+
+    return data
 
 
 class TestCategoryDesc(CategoryDesc):
@@ -36,7 +59,14 @@ class TestCategoryWriterProvider_LatticeIds(CategoryWriterProvider):
         self.length = length
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        field_desc: list[FieldDesc] = [TestFieldDesc_LatticeIds()]
+        field_desc: list[FieldDesc] = [
+            number_field(
+                name="id",
+                dtype="i4",
+                encoder=lambda _: BinaryCIFEncoder.by(IntegerPacking_CIFEncoder()),
+                value=lambda data, i: data.metadata.lattices_ids[i],
+            )
+        ]
         return TestCategoryWriter(ctx, self.length, TestCategoryDesc("lattice_ids", field_desc))
 
 
@@ -47,11 +77,36 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
         self.length = length
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        field_desc: list[FieldDesc] = [TestFieldDesc_Lattice(_id) for _id in ctx.metadata.lattices_ids]
-        field_desc.append(TestFieldDesc_Volume())
-        field_desc.append(TestFieldDesc_Annotation())
+        lattice_encoding = (
+            BinaryCIFEncoder.by(FixedPoint_CIFEncoder(1000)).and_(Delta_CIFEncoder()).and_(IntegerPacking_CIFEncoder())
+        )
 
-        return TestCategoryWriter(ctx, self.length, TestCategoryDesc("volume", field_desc))
+        def lattice_value_getter(lid: int):
+            return lambda data, i: data.lattices[lid][i]
+
+        fields = [
+            number_field(
+                name=f"lattice_{lid}",
+                dtype="i4",
+                encoder=lambda _: lattice_encoding,
+                value=lattice_value_getter(lid),
+            )
+            for lid in ctx.metadata.lattices_ids
+        ]
+        fields.append(
+            number_field(
+                name=f"volume",
+                dtype="f4",
+                # TODO: use interval quantization
+                encoder=lambda _: binarycif_encoder(
+                    FixedPoint_CIFEncoder(1000), Delta_CIFEncoder(), IntegerPacking_CIFEncoder()
+                ),
+                value=lambda data, i: data.volume[i],
+            )
+        )
+        fields.append(string_field(name="annotation", value=lambda data, i: data.annotation[i]))
+
+        return TestCategoryWriter(ctx, self.length, TestCategoryDesc("volume", fields))
 
 
 class TestOutputStream(OutputStream):
@@ -99,12 +154,8 @@ class TestEncodings_Encoding(unittest.TestCase):
         print("Decoded:")
         print("DataBlocks: " + str(len(parsed.data_blocks)))
 
-        # TODO: missing initial character a from category name -> bug may be in the encoder?
         lattice_ids = (
-            parsed.data_block("lattice_ids".upper())
-            .get_category("lattice_ids")
-            .get_column("lattice_ids")
-            .__dict__["_values"]
+            parsed.data_block("lattice_ids".upper()).get_category("lattice_ids").get_column("id").__dict__["_values"]
         )
         print("LatticeIds: " + str(lattice_ids))
         compare = np.array_equal(test_data.metadata.lattices_ids, lattice_ids)

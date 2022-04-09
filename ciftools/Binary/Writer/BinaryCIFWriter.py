@@ -29,6 +29,12 @@ class TMPData:
 
 
 _RLE_ENCODER = BinaryCIFEncoder.by(RunLength_CIFEncoder()).and_(ByteArray_CIFEncoder())
+_STRING_ARRAY_ENCODER = BinaryCIFEncoder.by(StringArray_CIFEncoder())
+_BYTE_ARRAY_ENCODER = BinaryCIFEncoder.by(ByteArray_CIFEncoder())
+
+
+def _always_present(data, i):
+    return EValuePresence.Present
 
 
 class BinaryCIFWriter(CIFWriter):
@@ -89,23 +95,18 @@ class BinaryCIFWriter(CIFWriter):
     @staticmethod
     def _encode_field(field: FieldDesc, data: list[TMPData], total_count: int) -> EncodedCIFColumn:
         array: np.ndarray
-        is_native: bool = False
-        if field.has_typed_array():
-            array = field.typed_array(total_count)
-        else:
-            is_native = True
-            array = [None] * total_count
+        array = field.create_array(total_count)
+        is_native: bool = not hasattr(array, "dtype")
 
         mask = np.ndarray(shape=[total_count], dtype=np.dtype(np.uint8))
-        presence = field.presence
-        getter = field.number if field.has_number() else field.string
+        presence = field.presence or _always_present
         all_present = True
 
         offset = 0
         for _d in data:
             d = _d.data
             for i in range(_d.count):
-                p = presence(d, i) if field.has_presence() else EValuePresence.Present
+                p = presence(d, i)
                 if p is not EValuePresence.Present:
                     mask[offset] = p
                     if is_native:
@@ -113,11 +114,12 @@ class BinaryCIFWriter(CIFWriter):
                     all_present = False
                 else:
                     mask[offset] = EValuePresence.Present
-                    array[offset] = getter(d, i)
+                    array[offset] = field.value(d, i)
 
                 offset += 1
 
-        encoder = field.encoder() if field.encoder else BinaryCIFEncoder.by(StringArray_CIFEncoder())
+        print(field.encoder)
+        encoder = field.encoder(data[0].data) if len(data) > 0 else _STRING_ARRAY_ENCODER  # TODO: fix
         encoded = encoder.encode_cif_data(array)
 
         mask_data: Optional[EncodedCIFData] = None
@@ -127,6 +129,6 @@ class BinaryCIFWriter(CIFWriter):
             if len(mask_rle["data"]) < len(mask):
                 mask_data = mask_rle
             else:
-                mask_data = BinaryCIFEncoder.by(ByteArray_CIFEncoder()).encode_cif_data(mask)
+                mask_data = _BYTE_ARRAY_ENCODER.encode_cif_data(mask)
 
         return {"name": field.name, "data": encoded, "mask": mask_data}

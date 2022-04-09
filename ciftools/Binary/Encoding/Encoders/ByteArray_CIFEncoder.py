@@ -22,9 +22,8 @@ class ByteArray_CIFEncoder(ICIFEncoder):
 
         bo = data.dtype.byteorder
         if bo == ">" or (bo == "=" and sys.byteorder == "big"):
-            new_bo = data.dtype.newbyteorder('<')
+            new_bo = data.dtype.newbyteorder("<")
             data = np.array(data, dtype=new_bo)
-
 
         # TODO: ensure little endian
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])

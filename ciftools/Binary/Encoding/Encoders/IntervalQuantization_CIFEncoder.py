@@ -15,6 +15,7 @@ class IntervalQuantization_CIFEncoder(ICIFEncoder):
     def encode(self, data: np.ndarray, *args, **kwargs) -> EncodedCIFData:
         src_data_type: EDataTypes = DataTypes.from_dtype(data.dtype)
 
+        # TODO: determine min/max from data if not set?
         if self._max < self._min:
             t = self._min
             self._min = self._max
