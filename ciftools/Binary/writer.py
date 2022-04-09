@@ -6,12 +6,7 @@ from ciftools.binary.encoding import encoders
 from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFData, EncodedCIFDataBlock, EncodedCIFFile
 from ciftools.binary.encoding import binarycif_encoder
 from ciftools.cif_format.value_presence import ValuePresenceEnum
-from ciftools.writer.CategoryWriter import CategoryWriter
-from ciftools.writer.CategoryWriterProvider import CategoryWriterProvider
-from ciftools.writer.CIFWriter import CIFWriter
-from ciftools.writer.FieldDesc import FieldDesc
-from ciftools.writer.OutputStream import OutputStream
-
+from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CIFWriter, FieldDesc, OutputStream
 
 class _ContextData:
     data: any
