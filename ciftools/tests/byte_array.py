@@ -3,7 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding import binarycif_encoder, encoders
+from ciftools.binary.encoding import BinaryCIFEncoder, encoders
 from ciftools.binary.encoding.data_types import DataTypeEnum
 
 
@@ -29,7 +29,7 @@ class TestEncodings_ByteArray(unittest.TestCase):
         ]
 
         for test_arr, expected_type in test_suite:
-            encoder = binarycif_encoder(encoders.BYTE_ARRAY_CIF_ENCODER)
+            encoder = BinaryCIFEncoder(encoders.BYTE_ARRAY_CIF_ENCODER)
             encoded = encoder.encode_cif_data(test_arr)
 
             msgpack.loads(msgpack.dumps(encoded))

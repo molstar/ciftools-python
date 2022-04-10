@@ -2,7 +2,7 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoding import binarycif_encoder, encoders
+from ciftools.binary.encoding import BinaryCIFEncoder, encoders
 from ciftools.binary.encoding.types import (
     EncodedCIFCategory,
     EncodedCIFColumn,
@@ -23,8 +23,8 @@ class _ContextData:
         self.count = count
 
 
-_RLE_ENCODER = binarycif_encoder(encoders.RUN_LENGTH_CIF_ENCODER, encoders.BYTE_ARRAY_CIF_ENCODER)
-_BYTE_ARRAY_ENCODER = binarycif_encoder(encoders.BYTE_ARRAY_CIF_ENCODER)
+_RLE_ENCODER = BinaryCIFEncoder(encoders.RUN_LENGTH_CIF_ENCODER, encoders.BYTE_ARRAY_CIF_ENCODER)
+_BYTE_ARRAY_ENCODER = BinaryCIFEncoder(encoders.BYTE_ARRAY_CIF_ENCODER)
 
 
 def _always_present(data, i):

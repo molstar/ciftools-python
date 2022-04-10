@@ -4,13 +4,8 @@ from ciftools.binary.encoding.types import EncodedCIFData
 
 
 class BinaryCIFEncoder:
-    encoders: list[CIFEncoderBase]
-
-    def __init__(self, encoders: list[CIFEncoderBase]):
+    def __init__(self, *encoders: list[CIFEncoderBase]):
         self.encoders: list[CIFEncoderBase] = encoders
-
-    def and_(self, f: CIFEncoderBase) -> "BinaryCIFEncoder":
-        return BinaryCIFEncoder([*self.encoders, f])
 
     def encode_cif_data(self, data: any) -> EncodedCIFData:
         encodings: list[EncodingBase] = []
@@ -32,10 +27,3 @@ class BinaryCIFEncoder:
 
         return {"encoding": encodings, "data": data}
 
-    @staticmethod
-    def by(f: CIFEncoderBase) -> "BinaryCIFEncoder":
-        return BinaryCIFEncoder([f])
-
-
-def binarycif_encoder(*encodings: list[CIFEncoderBase]):
-    return BinaryCIFEncoder(encodings)

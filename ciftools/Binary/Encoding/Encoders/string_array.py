@@ -1,13 +1,12 @@
 import numpy as np
-from ciftools.binary.encoding import encoders
-from ciftools.binary.encoding.encoder import binarycif_encoder
+from ciftools.binary.encoding import BinaryCIFEncoder, encoders
 from ciftools.binary.encoding.encoders.base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import EncodingEnun, StringArrayEncoding
 from ciftools.binary.encoding.types import EncodedCIFData
 
 # TODO: use classifier once implemented
-_OFFSET_ENCODER = binarycif_encoder(encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
-_DATA_ENCODER = binarycif_encoder(
+_OFFSET_ENCODER = BinaryCIFEncoder(encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
+_DATA_ENCODER = BinaryCIFEncoder(
     encoders.DELTA_CIF_ENCODER, encoders.RUN_LENGTH_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER
 )
 

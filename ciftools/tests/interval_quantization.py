@@ -3,7 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding import binarycif_encoder, encoders
+from ciftools.binary.encoding import BinaryCIFEncoder, encoders
 from ciftools.binary.encoding.data_types import DataTypeEnum
 
 
@@ -19,7 +19,7 @@ class TestEncodings_IntervalQuantization(unittest.TestCase):
 
         for test_arr, steps, dtype in test_suite:
             low, high = np.min(test_arr), np.max(test_arr)
-            encoder = binarycif_encoder(
+            encoder = BinaryCIFEncoder(
                 encoders.IntervalQuantizationCIFEncoder(low, high, steps, dtype), encoders.BYTE_ARRAY_CIF_ENCODER
             )
             encoded = encoder.encode_cif_data(test_arr)
