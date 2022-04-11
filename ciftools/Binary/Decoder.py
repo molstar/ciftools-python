@@ -1,11 +1,8 @@
-# TODO: refactor with new code format
-
 from typing import Union
 
-import numpy
 import numpy as np
-from ciftools.Binary.Encoding.data_types import DataTypes
-from ciftools.Binary.Encoding.Encoding import (
+from ciftools.binary.encoding.data_types import DataType
+from ciftools.binary.encoding.encodings import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
@@ -14,19 +11,18 @@ from ciftools.Binary.Encoding.Encoding import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_column import EncodedCIFColumn
-from ciftools.Binary.Encoding.EncodedCif.encoded_cif_data import EncodedCIFData
-from ciftools.CIFFormat.i_cif_column import ICIFColumn
-from ciftools.CIFFormat.Implementations.BinaryCIF.binary_cif_column import BinaryCIFColumn
+from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
+from ciftools.cif_format.base import CIFColumnBase
+from ciftools.cif_format.binary.column import BinaryCIFColumn
 
 
-def decode_cif_column(column: EncodedCIFColumn) -> ICIFColumn:
+def decode_cif_column(column: EncodedCIFColumn) -> CIFColumnBase:
     values = decode_cif_data(column["data"])
     value_kinds = decode_cif_data(column["mask"]) if column["mask"] else None  # type: ignore
     return BinaryCIFColumn(column["name"], values, value_kinds)  # type: ignore
 
 
-def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[str]]:
+def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]]:
     result = encoded_data["data"]
     for encoding in encoded_data["encoding"][::-1]:
         if encoding["kind"] in _decoders:
@@ -38,24 +34,24 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[numpy.ndarray, list[s
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + DataTypes.to_dtype(encoding["type"]))
+    return np.frombuffer(data, dtype="<" + DataType.to_dtype(encoding["type"]))
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
-    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) / encoding["factor"]
+    return np.array(data, dtype=DataType.to_dtype(encoding["srcType"])) / encoding["factor"]
 
 
 def _decode_interval_quantization(data: np.ndarray, encoding: IntervalQuantizationEncoding) -> np.ndarray:
     delta = (encoding["max"] - encoding["min"]) / (encoding["numSteps"] - 1)
-    return np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"])) * delta + encoding["min"]
+    return np.array(data, dtype=DataType.to_dtype(encoding["srcType"])) * delta + encoding["min"]
 
 
 def _decode_run_length(data: np.ndarray, encoding: RunLengthEncoding) -> np.ndarray:
-    return np.repeat(np.array(data[::2], dtype=DataTypes.to_dtype(encoding["srcType"])), repeats=data[1::2])
+    return np.repeat(np.array(data[::2], dtype=DataType.to_dtype(encoding["srcType"])), repeats=data[1::2])
 
 
 def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
-    result = np.array(data, dtype=DataTypes.to_dtype(encoding["srcType"]))
+    result = np.array(data, dtype=DataType.to_dtype(encoding["srcType"]))
     if encoding["origin"]:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
@@ -116,11 +112,12 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
     string_data = encoding["stringData"]
-    strings = [string_data[0 : offsets[0]]]
+    strings = [""]
+
     for i in range(1, len(offsets)):
         strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
 
-    return [strings[i] for i in indices]  # type: ignore
+    return [strings[i + 1] for i in indices]  # type: ignore
 
 
 _decoders = {
