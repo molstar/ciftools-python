@@ -1,7 +1,7 @@
 from typing import Any, Callable, Optional
 
 import numpy as np
-from ciftools.binary.encoding import BinaryCIFEncoder, encoders
+from ciftools.binary.encoding import encoders
 from ciftools.binary.encoding.encoder import BinaryCIFEncoder
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 from ciftools.writer.base import FieldDesc
@@ -10,7 +10,13 @@ _STRING_ARRAY_ENCODER = BinaryCIFEncoder(encoders.STRING_ARRAY_CIF_ENCODER)
 
 
 # TODO: derive from FieldDesc
-class _StringFieldDesc:
+class _StringFieldDesc(FieldDesc):
+    def value(self, data: Any, i: int) -> Any:
+        return str(self.value)
+
+    def presence(self, data: any, i: int) -> ValuePresenceEnum:
+        return self.presence(data, i) if self._presence else ValuePresenceEnum.Present
+
     def create_array(self, total_count: int):
         return [""] * total_count
 
@@ -24,8 +30,8 @@ class _StringFieldDesc:
         presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
     ) -> None:
         self.name = name
-        self.value = value
-        self.presence = presence
+        self._value = value
+        self._presence = presence
 
 
 def string_field(
@@ -38,7 +44,16 @@ def string_field(
 
 
 # TODO: derive from FieldDesc
-class _NumberFieldDesc:
+class _NumberFieldDesc(FieldDesc):
+    def value(self, data: Any, i: int) -> Any:
+        return self._value(data, i)
+
+    def encoder(self, data: Any) -> BinaryCIFEncoder:
+        return self._encoder(data)
+
+    def presence(self, data: any, i: int) -> ValuePresenceEnum:
+        return self.presence(data, i) if self._presence else ValuePresenceEnum.Present
+
     def create_array(self, total_count: int):
         return np.empty(total_count, dtype=self._dtype)
 
@@ -51,10 +66,10 @@ class _NumberFieldDesc:
         presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
     ) -> None:
         self.name = name
-        self.value = value
+        self._value = value
         self._dtype = dtype
-        self.encoder = encoder
-        self.presence = presence
+        self._encoder = encoder
+        self._presence = presence
 
 
 def number_field(
