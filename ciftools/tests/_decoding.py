@@ -17,7 +17,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         atom_site = parsed["1TQN"].atom_site
         entity = parsed[0]["entity"]
         label_comp_id = atom_site.label_comp_id
-        Cartn_x = atom_site["Cartn_x"]
+        cartn_x = atom_site["Cartn_x"]
 
         print("id" in entity)  # test if field is present in category
         print("atom_site" in parsed[0])  # test if category is present data block
@@ -27,7 +27,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         print(label_comp_id.values[-1])
         print(len(label_comp_id.values))
         print(len(label_comp_id))
-        print(Cartn_x.values[0:10])
+        print(cartn_x.values[0:10])
         print(atom_site["label_alt_id"].value_kinds[0] == ValuePresenceEnum.NotSpecified)
         # print([[f"_{c.name}.{f}" for f in c.field_names] for c in parsed[0].categories.values()])
 

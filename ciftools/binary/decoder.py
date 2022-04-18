@@ -115,7 +115,7 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     strings = [""]
 
     for i in range(1, len(offsets)):
-        strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
+        strings.append(string_data[offsets[i - 1]: offsets[i]])  # type: ignore
 
     return [strings[i + 1] for i in indices]  # type: ignore
 

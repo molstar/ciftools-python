@@ -1,10 +1,10 @@
-from ciftools.binary.encoding.encoders.base import CIFEncoderBase
+from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import EncodingBase
 from ciftools.binary.encoding.types import EncodedCIFData
 
 
 class BinaryCIFEncoder:
-    def __init__(self, *encoders: list[CIFEncoderBase]):
+    def __init__(self, encoders: list[CIFEncoderBase]):
         self.encoders: list[CIFEncoderBase] = encoders
 
     def encode_cif_data(self, data: any) -> EncodedCIFData:

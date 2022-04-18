@@ -2,7 +2,9 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoding import BinaryCIFEncoder, encoders
+from ciftools.binary.encoding import BinaryCIFEncoder
+from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
+from ciftools.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
 from ciftools.binary.encoding.types import (
     EncodedCIFCategory,
     EncodedCIFColumn,
@@ -23,8 +25,8 @@ class _ContextData:
         self.count = count
 
 
-_RLE_ENCODER = BinaryCIFEncoder(encoders.RUN_LENGTH_CIF_ENCODER, encoders.BYTE_ARRAY_CIF_ENCODER)
-_BYTE_ARRAY_ENCODER = BinaryCIFEncoder(encoders.BYTE_ARRAY_CIF_ENCODER)
+_RLE_ENCODER = BinaryCIFEncoder([RUN_LENGTH_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
+_BYTE_ARRAY_ENCODER = BinaryCIFEncoder([BYTE_ARRAY_CIF_ENCODER])
 
 
 def _always_present(data, i):
@@ -81,7 +83,7 @@ class BinaryCIFWriter(CIFWriter):
     def encode(self) -> None:
         self._encoded_data = msgpack.dumps(self._data)
         self._data = None
-        self._data_blocks = None
+        self._data_blocks = []
 
     def flush(self, stream: OutputStream) -> None:
         stream.write_binary(self._encoded_data)
