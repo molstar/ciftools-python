@@ -114,7 +114,6 @@ class BinaryCIFWriter(CIFWriter):
 
                 offset += 1
 
-        print(field.encoder)
         encoder = field.encoder(data[0].data) if len(data) > 0 else _BYTE_ARRAY_ENCODER
         encoded = encoder.encode_cif_data(array)
 

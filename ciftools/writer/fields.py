@@ -12,7 +12,7 @@ _STRING_ARRAY_ENCODER = BinaryCIFEncoder([STRING_ARRAY_CIF_ENCODER])
 # TODO: derive from FieldDesc
 class _StringFieldDesc(FieldDesc):
     def value(self, data: Any, i: int) -> Any:
-        return str(self.value)
+        return self._value(data, i)
 
     def presence(self, data: any, i: int) -> ValuePresenceEnum:
         return self.presence(data, i) if self._presence else ValuePresenceEnum.Present
@@ -26,7 +26,7 @@ class _StringFieldDesc(FieldDesc):
     def __init__(
         self,
         name: str,
-        value: Callable[[Any, int], Optional[int | float]],
+        value: Callable[[Any, int], Optional[str]],
         presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
     ) -> None:
         self.name = name
