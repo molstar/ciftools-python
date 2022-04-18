@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ciftools.binary.decoder import decode_cif_column
 from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn
 from ciftools.cif_format.base import CIFCategoryBase, CIFColumnBase
@@ -11,7 +13,7 @@ class BinaryCIFCategory(CIFCategoryBase):
     def __getattr__(self, name: str) -> object:
         return self[name]
 
-    def __getitem__(self, name: str) -> BinaryCIFColumn:
+    def __getitem__(self, name: str) -> Optional[BinaryCIFColumn]:
         if name not in self._field_cache:
             return None
 

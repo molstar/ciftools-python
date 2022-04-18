@@ -1,19 +1,20 @@
 import numpy as np
-from ciftools.binary.encoding import BinaryCIFEncoder, encoders
-from ciftools.binary.encoding.encoders.base import CIFEncoderBase
+from ciftools.binary.encoding import BinaryCIFEncoder
+from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
 from ciftools.binary.encoding.encodings import EncodingEnun, StringArrayEncoding
+from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
+from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
+from ciftools.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
 from ciftools.binary.encoding.types import EncodedCIFData
 
 # TODO: use classifier once implemented
-_OFFSET_ENCODER = BinaryCIFEncoder(encoders.DELTA_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER)
-_DATA_ENCODER = BinaryCIFEncoder(
-    encoders.DELTA_CIF_ENCODER, encoders.RUN_LENGTH_CIF_ENCODER, encoders.INTEGER_PACKING_CIF_ENCODER
-)
+_OFFSET_ENCODER = BinaryCIFEncoder([DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER])
+_DATA_ENCODER = BinaryCIFEncoder([DELTA_CIF_ENCODER, RUN_LENGTH_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER])
 
 
 class StringArrayCIFEncoder(CIFEncoderBase):
     def encode(self, data: np.ndarray | list[str]) -> EncodedCIFData:
-        map = dict()
+        _map = dict()
 
         strings: list[str] = []
         offsets = [0]
@@ -27,7 +28,7 @@ class StringArrayCIFEncoder(CIFEncoderBase):
                 output[i] = -1
                 continue
 
-            index = map.get(s)
+            index = _map.get(s)
             if index is None:
                 # increment the length
                 acc_len += len(s)
@@ -35,7 +36,7 @@ class StringArrayCIFEncoder(CIFEncoderBase):
                 # store the string and index
                 index = len(strings)
                 strings.append(s)
-                map[s] = index
+                _map[s] = index
 
                 # write the offset
                 offsets.append(acc_len)

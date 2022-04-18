@@ -1,12 +1,12 @@
 from typing import Any, Callable, Optional
 
 import numpy as np
-from ciftools.binary.encoding import encoders
-from ciftools.binary.encoding.encoder import BinaryCIFEncoder
+from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.binary.encoding.impl.encoders.string_array import STRING_ARRAY_CIF_ENCODER
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 from ciftools.writer.base import FieldDesc
 
-_STRING_ARRAY_ENCODER = BinaryCIFEncoder(encoders.STRING_ARRAY_CIF_ENCODER)
+_STRING_ARRAY_ENCODER = BinaryCIFEncoder(STRING_ARRAY_CIF_ENCODER)
 
 
 # TODO: derive from FieldDesc
