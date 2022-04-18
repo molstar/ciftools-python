@@ -61,7 +61,7 @@ class TestCategoryWriterProvider_LatticeIds(CategoryWriterProvider):
             number_field(
                 name="id",
                 dtype="i4",
-                encoder=lambda _: BinaryCIFEncoder(INTEGER_PACKING_CIF_ENCODER),
+                encoder=lambda _: BinaryCIFEncoder([INTEGER_PACKING_CIF_ENCODER]),
                 value=lambda data, i: data.metadata.lattices_ids[i],
             )
         ]
@@ -75,9 +75,9 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
         self.length = length
 
     def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        lattice_encoding = BinaryCIFEncoder(
-            [FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER]
-        )
+        lattice_encoding = BinaryCIFEncoder([
+            FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER
+        ])
 
         def lattice_value_getter(lid: int):
             return lambda data, i: data.lattices[lid][i]

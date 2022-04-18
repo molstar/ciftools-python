@@ -18,7 +18,7 @@ class TestEncodings_IntegerPackingSigned(unittest.TestCase):
         ]
 
         for test_arr, is_unsigned, byte_count in test_suite:
-            encoder = BinaryCIFEncoder(INTEGER_PACKING_CIF_ENCODER)
+            encoder = BinaryCIFEncoder([INTEGER_PACKING_CIF_ENCODER])
             encoded = encoder.encode_cif_data(test_arr)
             decoded = decode_cif_data(encoded)
             msgpack.loads(msgpack.dumps(encoded))

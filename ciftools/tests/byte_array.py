@@ -31,7 +31,7 @@ class TestEncodings_ByteArray(unittest.TestCase):
         ]
 
         for test_arr, expected_type in test_suite:
-            encoder = BinaryCIFEncoder(BYTE_ARRAY_CIF_ENCODER)
+            encoder = BinaryCIFEncoder([BYTE_ARRAY_CIF_ENCODER])
             encoded = encoder.encode_cif_data(test_arr)
 
             msgpack.loads(msgpack.dumps(encoded))

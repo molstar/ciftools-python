@@ -26,7 +26,7 @@ class _ContextData:
 
 
 _RLE_ENCODER = BinaryCIFEncoder([RUN_LENGTH_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
-_BYTE_ARRAY_ENCODER = BinaryCIFEncoder(BYTE_ARRAY_CIF_ENCODER)
+_BYTE_ARRAY_ENCODER = BinaryCIFEncoder([BYTE_ARRAY_CIF_ENCODER])
 
 
 def _always_present(data, i):

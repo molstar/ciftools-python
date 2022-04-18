@@ -27,7 +27,7 @@ class TestEncodings_StringArray(unittest.TestCase):
             "cat",
         ]
 
-        encoder = BinaryCIFEncoder(STRING_ARRAY_CIF_ENCODER)
+        encoder = BinaryCIFEncoder([STRING_ARRAY_CIF_ENCODER])
         encoded = encoder.encode_cif_data(test_arr)
         msgpack.loads(msgpack.dumps(encoded))
         decoded = decode_cif_data(encoded)
