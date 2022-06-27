@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 from ciftools.binary.encoding import BinaryCIFEncoder
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
@@ -13,7 +15,7 @@ _DATA_ENCODER = BinaryCIFEncoder([DELTA_CIF_ENCODER, RUN_LENGTH_CIF_ENCODER, INT
 
 
 class StringArrayCIFEncoder(CIFEncoderBase):
-    def encode(self, data: np.ndarray | list[str]) -> EncodedCIFData:
+    def encode(self, data: Union[np.ndarray, list[str]]) -> EncodedCIFData:
         _map = dict()
 
         strings: list[str] = []

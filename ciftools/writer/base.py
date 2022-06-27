@@ -1,5 +1,5 @@
 import abc
-from typing import Any
+from typing import Any, Union
 
 import numpy as np
 from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
@@ -10,7 +10,7 @@ class FieldDesc(abc.ABC):
     name: str
 
     @abc.abstractmethod
-    def create_array(self, total_count: int) -> np.ndarray | list:
+    def create_array(self, total_count: int) -> Union[np.ndarray, list]:
         pass
 
     @abc.abstractmethod

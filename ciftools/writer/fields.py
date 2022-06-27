@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 import numpy as np
 from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
@@ -60,7 +60,7 @@ class _NumberFieldDesc(FieldDesc):
     def __init__(
         self,
         name: str,
-        value: Callable[[Any, int], Optional[int | float]],
+        value: Callable[[Any, int], Optional[Union[int, float]]],
         dtype: np.dtype,
         encoder: Callable[[Any], BinaryCIFEncoder],
         presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
@@ -75,7 +75,7 @@ class _NumberFieldDesc(FieldDesc):
 def number_field(
     *,
     name: str,
-    value: Callable[[Any, int], Optional[int | float]],
+    value: Callable[[Any, int], Optional[Union[int, float]]],
     dtype: np.dtype,
     encoder: Callable[[Any], BinaryCIFEncoder],
     presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,

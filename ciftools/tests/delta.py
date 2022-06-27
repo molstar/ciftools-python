@@ -1,3 +1,4 @@
+import timeit
 import unittest
 
 import msgpack
@@ -13,6 +14,7 @@ class TestEncodings_Delta(unittest.TestCase):
         test_arr = np.array([1, 1, 2, 2, 10, -10])
 
         encoder = BinaryCIFEncoder([DELTA_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
+
         encoded = encoder.encode_cif_data(test_arr)
         msgpack.loads(msgpack.dumps(encoded))
         decoded = decode_cif_data(encoded)

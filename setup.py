@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="CifTools",
-    version="0.1.0",
+    version="0.1.1",
     url="https://github.com/molstar/ciftools-python",
     author="Ravi Ramos",
     author_email="souoravi@gmail.com",
