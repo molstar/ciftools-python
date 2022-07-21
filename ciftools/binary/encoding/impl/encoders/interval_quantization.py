@@ -22,8 +22,8 @@ class IntervalQuantizationCIFEncoder(CIFEncoderBase):
             self._max = t
 
         encoding: IntervalQuantizationEncoding = {
-            "min": self._min,
-            "max": self._max,
+            "min": float(self._min),
+            "max": float(self._max),
             "numSteps": self._num_steps,
             "srcType": src_data_type,
             "kind": EncodingEnun.IntervalQuantization,
@@ -39,7 +39,8 @@ class IntervalQuantizationCIFEncoder(CIFEncoderBase):
         quantized = np.clip(data, self._min, self._max)
         np.subtract(quantized, self._min, out=quantized)
         np.divide(quantized, delta, out=quantized)
+        np.round(quantized, 0, out=quantized)
 
         encoded_data = np.array(quantized, dtype=dtype)
-
+       
         return EncodedCIFData(data=encoded_data, encoding=[encoding])

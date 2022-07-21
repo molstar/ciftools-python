@@ -14,9 +14,10 @@ class TestEncodings_IntervalQuantization(unittest.TestCase):
 
         test_suite = [
             (np.random.rand(100) * 100, 100, DataTypeEnum.Uint8),
-            (np.random.rand(100) * 100, 2**8 - 1, DataTypeEnum.Uint8),
-            (np.random.rand(100) * 100, 2**16 - 1, DataTypeEnum.Uint16),
-            (np.random.rand(100) * 100, 2**24 - 1, DataTypeEnum.Uint32),
+            (np.random.rand(100) * 100, 2**8, DataTypeEnum.Uint8),
+            (np.array([0, 255], dtype='f4'), 2**8, DataTypeEnum.Uint8),
+            (np.random.rand(100) * 100, 2**16, DataTypeEnum.Uint16),
+            (np.random.rand(100) * 100, 2**24, DataTypeEnum.Uint32),
         ]
 
         for test_arr, steps, dtype in test_suite:
