@@ -2,18 +2,18 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.src.binary.encoding.impl import BYTE_ARRAY_CIF_ENCODER
-from ciftools.src.binary.encoding.impl import RUN_LENGTH_CIF_ENCODER
-from ciftools.binary.encoding.types import (
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
+from ciftools.src.binary.encoding.types import (
     EncodedCIFCategory,
     EncodedCIFColumn,
     EncodedCIFData,
     EncodedCIFDataBlock,
     EncodedCIFFile,
 )
-from ciftools.cif_format.value_presence import ValuePresenceEnum
-from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CIFWriter, FieldDesc, OutputStream
+from ciftools.src.cif_format.value_presence import ValuePresenceEnum
+from ciftools.src.writer.base import CategoryWriter, CategoryWriterProvider, CIFWriter, FieldDesc, OutputStream
 
 
 class _ContextData:

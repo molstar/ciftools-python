@@ -1,7 +1,7 @@
 from typing import Union
 
 import numpy as np
-from ciftools.cif_format import value_presence
+from ciftools.src.cif_format import value_presence
 from ciftools.src.cif_format.base import CIFColumnBase
 
 

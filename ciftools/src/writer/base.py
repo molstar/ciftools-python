@@ -2,8 +2,8 @@ import abc
 from typing import Any, Union
 
 import numpy as np
-from ciftools.src.binary.encoding.impl import BinaryCIFEncoder
-from ciftools.cif_format.value_presence import ValuePresenceEnum
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.cif_format.value_presence import ValuePresenceEnum
 
 
 class FieldDesc(abc.ABC):

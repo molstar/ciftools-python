@@ -2,14 +2,14 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.src.binary.encoding.impl import DELTA_CIF_ENCODER
-from ciftools.src.binary.encoding.impl import FixedPointCIFEncoder
-from ciftools.src.binary.encoding.impl import INTEGER_PACKING_CIF_ENCODER
-from ciftools.binary.writer import BinaryCIFWriter
-from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldDesc, OutputStream
-from ciftools.writer.fields import number_field, string_field
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
+from ciftools.src.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
+from ciftools.src.binary.writer import BinaryCIFWriter
+from ciftools.src.cif_format.binary.file import BinaryCIFFile
+from ciftools.src.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldDesc, OutputStream
+from ciftools.src.writer.fields import number_field, string_field
 
 
 class TestMetadata:

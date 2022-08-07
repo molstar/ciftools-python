@@ -1,10 +1,10 @@
 from typing import Any, Callable, Optional, Union
 
 import numpy as np
-from ciftools.src.binary.encoding.impl import BinaryCIFEncoder
-from ciftools.src.binary.encoding.impl import STRING_ARRAY_CIF_ENCODER
-from ciftools.cif_format.value_presence import ValuePresenceEnum
-from ciftools.writer.base import FieldDesc
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.string_array import STRING_ARRAY_CIF_ENCODER
+from ciftools.src.cif_format.value_presence import ValuePresenceEnum
+from ciftools.src.writer.base import FieldDesc
 
 _STRING_ARRAY_ENCODER = BinaryCIFEncoder([STRING_ARRAY_CIF_ENCODER])
 

@@ -2,9 +2,9 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.src.binary.encoding.impl import INTEGER_PACKING_CIF_ENCODER
+from ciftools.src.binary.decoder import decode_cif_data
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
 
 
 # noinspection PyTypedDict

@@ -3,7 +3,7 @@ from typing import Union
 import msgpack
 import numpy as np
 from ciftools.src.cif_format.base import CIFFileBase
-from ciftools.cif_format.binary.file import BinaryCIFFile
+from ciftools.src.cif_format.binary.file import BinaryCIFFile
 
 
 class BinaryCifParser:

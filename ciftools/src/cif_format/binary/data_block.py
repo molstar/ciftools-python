@@ -1,7 +1,7 @@
 from typing import Union
 
 from ciftools.src.cif_format.base import CIFCategoryBase, CIFDataBlockBase
-from ciftools.cif_format.binary.category import BinaryCIFCategory
+from ciftools.src.cif_format.binary.category import BinaryCIFCategory
 
 
 class BinaryCIFDataBlock(CIFDataBlockBase):

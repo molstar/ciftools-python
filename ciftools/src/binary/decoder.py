@@ -1,7 +1,7 @@
 from typing import Union
 
 import numpy as np
-from ciftools.binary.encoding.data_types import DataType
+from ciftools.src.binary.encoding.data_types import DataType
 from ciftools.src.binary.encoding.encodings import (
     ByteArrayEncoding,
     DeltaEncoding,
@@ -11,9 +11,9 @@ from ciftools.src.binary.encoding.encodings import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
+from ciftools.src.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
 from ciftools.src.cif_format.base import CIFColumnBase
-from ciftools.cif_format.binary.column import BinaryCIFColumn
+from ciftools.src.cif_format.binary.column import BinaryCIFColumn
 
 
 def decode_cif_column(column: EncodedCIFColumn) -> CIFColumnBase:

@@ -2,11 +2,11 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.src.binary.encoding.impl import BYTE_ARRAY_CIF_ENCODER
-from ciftools.src.binary.encoding.impl import DELTA_CIF_ENCODER
-from ciftools.src.binary.encoding.impl import FixedPointCIFEncoder
+from ciftools.src.binary.decoder import decode_cif_data
+from ciftools.src.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.src.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
+from ciftools.src.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEncoder
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):

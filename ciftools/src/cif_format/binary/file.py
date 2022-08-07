@@ -2,8 +2,8 @@ from typing import Union
 
 import msgpack
 from ciftools.src.cif_format.base import CIFDataBlockBase, CIFFileBase
-from ciftools.cif_format.binary.category import BinaryCIFCategory
-from ciftools.cif_format.binary.data_block import BinaryCIFDataBlock
+from ciftools.src.cif_format.binary.category import BinaryCIFCategory
+from ciftools.src.cif_format.binary.data_block import BinaryCIFDataBlock
 
 
 class BinaryCIFFile(CIFFileBase):
