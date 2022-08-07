@@ -5,8 +5,8 @@ import numpy as np
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoding import BinaryCIFEncoder
 from ciftools.binary.encoding.data_types import DataTypeEnum
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.interval_quantization import IntervalQuantizationCIFEncoder
+from ciftools.src.binary.encoding.impl import BYTE_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import IntervalQuantizationCIFEncoder
 
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):

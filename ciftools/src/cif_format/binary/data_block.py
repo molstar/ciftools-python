@@ -1,6 +1,6 @@
 from typing import Union
 
-from ciftools.cif_format.base import CIFCategoryBase, CIFDataBlockBase
+from ciftools.src.cif_format.base import CIFCategoryBase, CIFDataBlockBase
 from ciftools.cif_format.binary.category import BinaryCIFCategory
 
 

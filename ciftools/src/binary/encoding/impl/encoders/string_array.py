@@ -3,10 +3,10 @@ from typing import Union
 import numpy as np
 from ciftools.binary.encoding import BinaryCIFEncoder
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
-from ciftools.binary.encoding.encodings import EncodingEnun, StringArrayEncoding
-from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
+from ciftools.src.binary.encoding.encodings import EncodingEnun, StringArrayEncoding
+from ciftools.src.binary.encoding.impl import DELTA_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import INTEGER_PACKING_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import RUN_LENGTH_CIF_ENCODER
 from ciftools.binary.encoding.types import EncodedCIFData
 
 # TODO: use classifier once implemented

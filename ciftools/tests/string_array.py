@@ -4,7 +4,7 @@ import msgpack
 import numpy as np
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.string_array import STRING_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import STRING_ARRAY_CIF_ENCODER
 
 
 class TestEncodings_StringArray(unittest.TestCase):

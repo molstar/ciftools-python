@@ -2,7 +2,7 @@ from typing import Optional
 
 from ciftools.binary.decoder import decode_cif_column
 from ciftools.binary.encoding.types import EncodedCIFCategory, EncodedCIFColumn
-from ciftools.cif_format.base import CIFCategoryBase, CIFColumnBase
+from ciftools.src.cif_format.base import CIFCategoryBase, CIFColumnBase
 from ciftools.cif_format.binary.column import BinaryCIFColumn
 from ciftools.cif_format.binary.column_types.undefined_cif_column import UndefinedCIFColumn
 

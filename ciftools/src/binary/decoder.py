@@ -2,7 +2,7 @@ from typing import Union
 
 import numpy as np
 from ciftools.binary.encoding.data_types import DataType
-from ciftools.binary.encoding.encodings import (
+from ciftools.src.binary.encoding.encodings import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
@@ -12,7 +12,7 @@ from ciftools.binary.encoding.encodings import (
     StringArrayEncoding,
 )
 from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
-from ciftools.cif_format.base import CIFColumnBase
+from ciftools.src.cif_format.base import CIFColumnBase
 from ciftools.cif_format.binary.column import BinaryCIFColumn
 
 

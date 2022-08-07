@@ -4,7 +4,7 @@ setup(
     name="CifTools",
     version="0.1.1",
     url="https://github.com/molstar/ciftools-python",
-    author="Ravi Ramos",
+    author="Ravi Jose Tristao Ramos",
     author_email="souoravi@gmail.com",
     description="A library for handling CIF and BinaryCIF files.",
     packages=find_packages(),

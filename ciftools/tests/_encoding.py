@@ -3,9 +3,9 @@ from pathlib import Path
 
 import numpy as np
 from ciftools.binary.encoding import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEncoder
-from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import DELTA_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import FixedPointCIFEncoder
+from ciftools.src.binary.encoding.impl import INTEGER_PACKING_CIF_ENCODER
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.cif_format.binary.file import BinaryCIFFile
 from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldDesc, OutputStream

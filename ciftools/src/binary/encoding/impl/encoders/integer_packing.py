@@ -2,8 +2,8 @@ import math
 
 import numpy as np
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
-from ciftools.binary.encoding.encodings import EncodingEnun, IntegerPackingEncoding
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.encodings import EncodingEnun, IntegerPackingEncoding
+from ciftools.src.binary.encoding.impl import BYTE_ARRAY_CIF_ENCODER
 from ciftools.binary.encoding.types import EncodedCIFData
 from numpy import int8, int16, uint8, uint16
 

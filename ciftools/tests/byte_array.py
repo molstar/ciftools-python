@@ -5,7 +5,7 @@ import numpy as np
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoding import BinaryCIFEncoder
 from ciftools.binary.encoding.data_types import DataTypeEnum
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
+from ciftools.src.binary.encoding.impl import BYTE_ARRAY_CIF_ENCODER
 
 
 # noinspection PyTypedDict

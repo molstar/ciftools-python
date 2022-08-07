@@ -2,7 +2,7 @@ from typing import Union
 
 import numpy as np
 from ciftools.cif_format import value_presence
-from ciftools.cif_format.base import CIFColumnBase
+from ciftools.src.cif_format.base import CIFColumnBase
 
 
 class BinaryCIFColumn(CIFColumnBase):
