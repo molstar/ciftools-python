@@ -1,7 +1,8 @@
 import unittest
+import urllib.request
 
 import msgpack
-import requests
+
 from ciftools.cif_format.binary.file import BinaryCIFFile
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
@@ -11,7 +12,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         # TODO: set assert expectations
 
         print("mmCIF test")
-        data = requests.get("https://models.rcsb.org/1tqn.bcif").content
+        data =  urllib.request.urlopen("https://models.rcsb.org/1tqn.bcif").read()
         parsed = BinaryCIFFile.loads(data, lazy=False)
 
         atom_site = parsed["1TQN"].atom_site
@@ -32,9 +33,9 @@ class TestEncodings_Decoding(unittest.TestCase):
         # print([[f"_{c.name}.{f}" for f in c.field_names] for c in parsed[0].categories.values()])
 
         print("Volume Data test")
-        data = requests.get(
+        data = urllib.request.urlopen(
             "https://ds.litemol.org/x-ray/1tqn/box/-22.367,-33.367,-21.634/-7.106,-10.042,-0.937?detail=1"
-        ).content
+        ).read()
         parsed = BinaryCIFFile.loads(msgpack.loads(data))
 
         print([b.header for b in parsed.data_blocks])
