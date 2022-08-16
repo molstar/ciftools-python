@@ -2,7 +2,6 @@ import unittest
 import urllib.request
 
 import msgpack
-
 from ciftools.cif_format.binary.file import BinaryCIFFile
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
@@ -12,7 +11,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         # TODO: set assert expectations
 
         print("mmCIF test")
-        data =  urllib.request.urlopen("https://models.rcsb.org/1tqn.bcif").read()
+        data = urllib.request.urlopen("https://models.rcsb.org/1tqn.bcif").read()
         parsed = BinaryCIFFile.loads(data, lazy=False)
 
         atom_site = parsed["1TQN"].atom_site

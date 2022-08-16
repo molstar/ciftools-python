@@ -20,7 +20,7 @@ class TestEncodings_FixedPoint(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = BinaryCIFEncoder([FixedPointCIFEncoder(10 ** e), BYTE_ARRAY_CIF_ENCODER])
+            encoder = BinaryCIFEncoder([FixedPointCIFEncoder(10**e), BYTE_ARRAY_CIF_ENCODER])
             encoded = encoder.encode_cif_data(test_arr)
             decoded = decode_cif_data(encoded)
 
@@ -39,9 +39,7 @@ class TestEncodings_FixedPointDelta(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = BinaryCIFEncoder([
-                FixedPointCIFEncoder(10 ** e), DELTA_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER
-            ])
+            encoder = BinaryCIFEncoder([FixedPointCIFEncoder(10**e), DELTA_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
             encoded = encoder.encode_cif_data(test_arr)
             msgpack.loads(msgpack.dumps(encoded))
             decoded = decode_cif_data(encoded)

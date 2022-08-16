@@ -1,6 +1,6 @@
 import numpy as np
-from ciftools.binary.encoding.data_types import DataTypeEnum
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
+from ciftools.binary.encoding.data_types import DataTypeEnum
 from ciftools.binary.encoding.encodings import EncodingEnun, FixedPointEncoding
 from ciftools.binary.encoding.types import EncodedCIFData
 from numpy import float64

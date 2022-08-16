@@ -7,5 +7,5 @@ A library for reading and writing (Binary)CIF files in Python.
 ## Linting
 
 ```
-autoflake --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports -ir ciftools && isort . && black .
+autoflake --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports -ir . && isort . && black .
 ```

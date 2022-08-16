@@ -26,4 +26,3 @@ class BinaryCIFEncoder:
             )
 
         return {"encoding": encodings, "data": data}
-
