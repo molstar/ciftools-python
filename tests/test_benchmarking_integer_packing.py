@@ -11,8 +11,6 @@ from numba import jit
 from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
 
 # TODO:
-# Uncomment inputs for encoding
-# Uncomment test_integer_packing_encoding_WITH_negatives
 # Next - next encoder (quantization?)
 
 # NOTE: Later:
@@ -24,13 +22,13 @@ INPUTS_FOR_ENCODING_NO_NEGATIVES = [
     # 0.8, 8, 80 MB
     np.random.randint(low=0, high=100, size=(2*10**5), dtype=INPUT_DTYPE),
     np.random.randint(low=0, high=100, size=(2*10**6), dtype=INPUT_DTYPE),
-    np.random.randint(low=0, high=100, size=(2*10**7), dtype=INPUT_DTYPE)
+    # np.random.randint(low=0, high=100, size=(2*10**7), dtype=INPUT_DTYPE)
 ]
 
 INPUTS_FOR_ENCODING_WITH_NEGATIVES = [
     np.random.randint(low=-50, high=50, size=(2*10**5), dtype=INPUT_DTYPE),
     np.random.randint(low=-50, high=50, size=(2*10**6), dtype=INPUT_DTYPE),
-    np.random.randint(low=-50, high=50, size=(2*10**7), dtype=INPUT_DTYPE)
+    # np.random.randint(low=-50, high=50, size=(2*10**7), dtype=INPUT_DTYPE)
 ]
 
 def compute_inputs_for_decoding(inputs_for_encoding: list):
