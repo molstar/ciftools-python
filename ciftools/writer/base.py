@@ -8,7 +8,7 @@ from ciftools.cif_format.value_presence import ValuePresenceEnum
 
 @dataclass
 class FieldArrays:
-    values: Union[np.ndarray, List[str]]
+    values: Union[np.ndarray, List[str], List[int], List[float]]
     # uint8 array, 0 = defined, 1 = ., 2 = ?
     mask: Optional[np.ndarray] = None
 
