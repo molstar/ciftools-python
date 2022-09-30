@@ -101,18 +101,32 @@ class BinaryCIFWriter(CIFWriter):
         offset = 0
         for _d in data:
             d = _d.data
-            for i in range(_d.count):
-                p = presence(d, i)
-                if p is not ValuePresenceEnum.Present:
-                    mask[offset] = p
-                    if is_native:
-                        array[offset] = None
-                    all_present = False
-                else:
-                    mask[offset] = ValuePresenceEnum.Present
-                    array[offset] = field.value(d, i)
 
-                offset += 1
+            arrays = field.arrays(d)
+            if arrays is not None:
+                if len(arrays.values) != _d.count:
+                    raise ValueError(f"values provided in arrays() must have the same length as the category count field")
+
+                if arrays.mask is not None:
+                    if len(arrays.mask) != _d.count:
+                        raise ValueError(f"mask provided in arrays() must have the same length as the category count field")
+                    mask[offset:offset + _d.count] = arrays.mask
+                offset += _d.count
+
+            else:
+                # TODO: use numba JIT for this
+                for i in range(_d.count):
+                    p = presence(d, i)
+                    if p is not ValuePresenceEnum.Present:
+                        mask[offset] = p
+                        if is_native:
+                            array[offset] = None
+                        all_present = False
+                    else:
+                        mask[offset] = ValuePresenceEnum.Present
+                        array[offset] = field.value(d, i)
+
+                    offset += 1
 
         encoder = field.encoder(data[0].data) if len(data) > 0 else _BYTE_ARRAY_ENCODER
         encoded = encoder.encode_cif_data(array)

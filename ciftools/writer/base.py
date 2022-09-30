@@ -1,10 +1,16 @@
 import abc
-from typing import Any, Union
+from dataclasses import dataclass
+from typing import Any, List, Optional, Union
 
 import numpy as np
 from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
+@dataclass
+class FieldArrays:
+    values: Union[np.ndarray, List[str]]
+    # uint8 array, 0 = defined, 1 = ., 2 = ?
+    mask: Optional[np.ndarray] = None
 
 class FieldDesc(abc.ABC):
     name: str
@@ -18,6 +24,10 @@ class FieldDesc(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def arrays(self, data: Any) -> Optional[FieldArrays]:
+        pass
+
+    @abc.abstractmethod
     def encoder(self, data: Any) -> BinaryCIFEncoder:
         pass
 
@@ -25,12 +35,13 @@ class FieldDesc(abc.ABC):
     def presence(self, data: any, i: int) -> ValuePresenceEnum:
         pass
 
-
+@dataclass
 class CategoryDesc:
     name: str
     fields: list[FieldDesc]
 
 
+@dataclass
 class CategoryWriter:
     data: any
     count: int
