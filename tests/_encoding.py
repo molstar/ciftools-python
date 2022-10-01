@@ -8,7 +8,7 @@ from ciftools.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEnco
 from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldDesc, OutputStream
+from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldArrays, FieldDesc, OutputStream
 from ciftools.writer.fields import number_field, string_field
 
 
@@ -102,6 +102,17 @@ class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
                 value=lambda data, i: data.volume[i],
             )
         )
+        fields.append(
+            number_field(
+                name=f"volume_array",
+                dtype="f4",
+                encoder=lambda _: BinaryCIFEncoder(
+                    [FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER]
+                ),
+                value=lambda data, i: data.volume[i],
+                arrays=lambda data: FieldArrays(values=data.volume),
+            )
+        )
         fields.append(string_field(name="annotation", value=lambda data, i: data.annotation[i]))
 
         return TestCategoryWriter(ctx, self.length, TestCategoryDesc("volume", fields))
@@ -168,6 +179,11 @@ class TestEncodings_Encoding(unittest.TestCase):
         print("Volume (input): " + str(test_data.volume))
         compare = np.allclose(test_data.volume, volume, atol=1e-3)
         self.assertTrue(compare, "Volume did not match original data")
+
+        volume_array = volume_and_lattices.get_column("volume_array").__dict__["_values"]
+        print("Volume Array (parsed): " + str(volume_array))
+        compare = np.allclose(test_data.volume, volume_array, atol=1e-3)
+        self.assertTrue(compare, "Volume Array did not match original data")
 
         for lattice_id in lattice_ids:
             print("Lattice: " + str(lattice_id))

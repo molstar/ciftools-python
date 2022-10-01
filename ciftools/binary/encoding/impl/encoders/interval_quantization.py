@@ -6,9 +6,9 @@ from ciftools.binary.encoding.types import EncodedCIFData
 
 
 class IntervalQuantizationCIFEncoder(CIFEncoderBase):
-    def __init__(self, arg_min: int, arg_max: int, num_steps: int, array_type: DataTypeEnum = DataTypeEnum.Uint32):
-        self._min = arg_min
-        self._max = arg_max
+    def __init__(self, minimum: int, maximum: int, num_steps: int, array_type: DataTypeEnum = DataTypeEnum.Uint32):
+        self._min = minimum
+        self._max = maximum
         self._num_steps = num_steps
         self._array_type = array_type
 
