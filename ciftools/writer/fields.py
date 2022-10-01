@@ -14,7 +14,7 @@ class _StringFieldDesc(FieldDesc):
     def value(self, data: Any, i: int) -> Any:
         return self._value(data, i)
 
-    def presence(self, data: any, i: int) -> ValuePresenceEnum:
+    def presence(self, data: Any, i: int) -> ValuePresenceEnum:
         return self.presence(data, i) if self._presence else ValuePresenceEnum.Present
 
     def create_array(self, total_count: int):
@@ -57,7 +57,7 @@ class _NumberFieldDesc(FieldDesc):
     def encoder(self, data: Any) -> BinaryCIFEncoder:
         return self._encoder(data)
 
-    def presence(self, data: any, i: int) -> ValuePresenceEnum:
+    def presence(self, data: Any, i: int) -> ValuePresenceEnum:
         return self.presence(data, i) if self._presence else ValuePresenceEnum.Present
 
     def create_array(self, total_count: int):

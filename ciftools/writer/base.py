@@ -33,7 +33,7 @@ class FieldDesc(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def presence(self, data: any, i: int) -> ValuePresenceEnum:
+    def presence(self, data: Any, i: int) -> ValuePresenceEnum:
         pass
 
 @dataclass
@@ -44,14 +44,14 @@ class CategoryDesc:
 
 @dataclass
 class CategoryWriter:
-    data: any
+    data: Any
     count: int
     desc: CategoryDesc
 
 
 class CategoryWriterProvider(abc.ABC):
     @abc.abstractmethod
-    def category_writer(self, ctx: any) -> CategoryWriter:
+    def category_writer(self, ctx: Any) -> CategoryWriter:
         pass
 
 

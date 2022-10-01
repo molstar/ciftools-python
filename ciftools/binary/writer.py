@@ -17,10 +17,10 @@ from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CIFWrit
 
 
 class _ContextData:
-    data: any
+    data: Any
     count: int
 
-    def __init__(self, data: any, count: int):
+    def __init__(self, data: Any, count: int):
         self.data = data
         self.count = count
 

@@ -1,3 +1,4 @@
+from typing import Any
 import unittest
 from pathlib import Path
 
@@ -18,9 +19,9 @@ class TestMetadata:
 
 class TestVolumeData:
     metadata: TestMetadata
-    volume: any
+    volume: Any
     lattices: dict[int, np.ndarray]
-    annotation: any
+    annotation: Any
 
 
 def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
