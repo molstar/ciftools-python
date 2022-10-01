@@ -9,8 +9,9 @@ from ciftools.cif_format.value_presence import ValuePresenceEnum
 @dataclass
 class FieldArrays:
     values: Union[np.ndarray, List[str], List[int], List[float]]
-    # uint8 array, 0 = defined, 1 = ., 2 = ?
+    '''Array of the values themselves'''
     mask: Optional[np.ndarray] = None
+    '''Optional uint8 array for specifying the missing values. 0 = defined, 1 = ., 2 = ?'''
 
 class FieldDesc(abc.ABC):
     name: str
