@@ -136,6 +136,9 @@ class CIFFile(Protocol):
         """
         ...
 
+    def __getattr__(self, name: str) -> Optional[CIFDataBlock]:
+        ...
+
     def __len__(self) -> int:
         ...
 

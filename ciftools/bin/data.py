@@ -142,6 +142,9 @@ class BinaryCIFFile(CIFFile):
                 else None
             )
 
+    def __getattr__(self, name: str) -> Optional[CIFDataBlock]:
+        return self[name]
+
     def __len__(self):
         return len(self._data_blocks)
 

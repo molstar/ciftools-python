@@ -9,7 +9,7 @@ testmodules = [
     "run_length",
     "string_array",
     "_decoding",
-    # "_encoding",
+    "_encoding",
 ]
 
 suite = unittest.TestSuite()

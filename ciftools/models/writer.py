@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, List, Optional, Protocol, Union
 
 import numpy as np
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
+from ciftools.bin.encoder import BYTE_ARRAY, STRING_ARRAY, BinaryCIFEncoder
 from ciftools.models.data import CIFValuePresenceEnum
 
 
@@ -28,20 +28,50 @@ class CIFFieldDesc:
 class CIFCategoryDesc:
     name: str
     fields: List[CIFFieldDesc]
-
-
-@dataclass
-class CIFCategoryData:
-    count: int = 1
-    data: Optional[Any] = None
+    get_count: Callable[[Any], int]
 
 
 class CIFWriter(Protocol):
     def start_data_block(self, header: str) -> None:
         ...
 
-    def write_category(self, category: CIFCategoryDesc, data: List[CIFCategoryData]) -> None:
+    def write_category(self, category: CIFCategoryDesc, data: List[Any]) -> None:
         ...
 
     def encode(self) -> Union[str, bytes]:
         ...
+
+
+def number_field(
+    *,
+    name: str,
+    value: Optional[Callable[[Any, int], Optional[Union[int, float]]]] = None,
+    dtype: np.dtype,
+    encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
+    presence: Optional[Callable[[Any, int], Optional[CIFValuePresenceEnum]]] = None,
+    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
+) -> CIFFieldDesc:
+    return CIFFieldDesc(
+        name=name,
+        value=value,
+        create_array=lambda size:  np.empty(size, dtype=dtype),
+        encoder=encoder,
+        presence=presence,
+        arrays=arrays
+    )
+
+def string_field(
+    *,
+    name: str,
+    value: Callable[[Any, int], Optional[str]] = None,
+    presence: Optional[Callable[[Any, int], Optional[CIFValuePresenceEnum]]] = None,
+    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
+) -> CIFFieldDesc:
+    return CIFFieldDesc(
+        name=name,
+        value=value,
+        create_array=lambda size: [""] * size,
+        encoder=lambda _: STRING_ARRAY,
+        presence=presence,
+        arrays=arrays
+    )

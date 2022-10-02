@@ -10,12 +10,20 @@ from ciftools.bin.encoded_data import (
     EncodedCIFDataBlock,
     EncodedCIFFile,
 )
-from ciftools.models.writer import CIFWriter, CIFCategoryDesc, CIFCategoryData, CIFFieldDesc
+from ciftools.models.writer import CIFWriter, CIFCategoryDesc, CIFFieldDesc
 
 
 def _always_present(data, i):
     return 0
 
+
+class _DataWrapper:
+    data: Any
+    count: int
+
+    def __init__(self, data: Any, count: int):
+        self.data = data
+        self.count = count
 
 class BinaryCIFWriter(CIFWriter):
     _data: Optional[EncodedCIFFile]
@@ -31,26 +39,27 @@ class BinaryCIFWriter(CIFWriter):
         _header = header.replace(" ", "").replace("\n", "").replace("\t", "").upper()
         self._data_blocks.append({"header": _header, "categories": []})
 
-    def write_category(self, category: CIFCategoryDesc, data: List[CIFCategoryData]) -> None:
+    def write_category(self, category: CIFCategoryDesc, data: List[Any]) -> None:
         if not self._data:
             raise Exception("The writer contents have already been encoded, no more writing.")
 
         if not self._data_blocks:
             raise Exception("No data block created.")
 
-        filtered_data = list(filter(lambda c: c.count > 0, data))
-        if not filtered_data:
+        instances = [_DataWrapper(data=d, count=category.get_count(d)) for d in data]
+        instances = list(filter(lambda i: i.count > 0, instances))
+        if not instances:
             return
 
         total_count = 0
-        for cat in filtered_data:
+        for cat in instances:
             total_count += cat.count
         if not total_count:
             return
 
         encoded: EncodedCIFCategory = {"name": f"_{category.name}", "rowCount": total_count, "columns": []}
         for f in category.fields:
-            encoded["columns"].append(_encode_field(f, filtered_data, total_count))
+            encoded["columns"].append(_encode_field(f, instances, total_count))
 
         self._data_blocks[-1]["categories"].append(encoded)
 
@@ -61,7 +70,7 @@ class BinaryCIFWriter(CIFWriter):
         return encoded_data
 
 
-def _encode_field(field: CIFFieldDesc, data: List[CIFCategoryData], total_count: int) -> EncodedCIFColumn:
+def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: int) -> EncodedCIFColumn:
     array = field.create_array(total_count)
     is_native: bool = not hasattr(array, "dtype")
 
@@ -73,7 +82,7 @@ def _encode_field(field: CIFFieldDesc, data: List[CIFCategoryData], total_count:
     for category in data:
         d = category.data
 
-        arrays = field.arrays(d)
+        arrays = field.arrays and field.arrays(d)
         if arrays is not None:
             if len(arrays.values) != category.count:
                 raise ValueError(
@@ -105,7 +114,7 @@ def _encode_field(field: CIFFieldDesc, data: List[CIFCategoryData], total_count:
                 offset += 1
 
     encoder = field.encoder(data[0].data) if len(data) > 0 else BYTE_ARRAY
-    encoded = encoder.encode_cif_data(array)
+    encoded = encoder.encode(array)
 
     mask_data: Optional[EncodedCIFData] = None
 
