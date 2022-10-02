@@ -62,25 +62,23 @@ def create_volume_category(lattice_ids: List[int]):
         )
         for lid in lattice_ids
     ]
-    fields.append(
+    fields.extend([
         number_field(
             name=f"volume",
             dtype="f4",
             # TODO: use interval quantization
             encoder=lambda _: lattice_encoding,
             value=lambda data, i: data.volume[i],
-        )
-    )
-    fields.append(
+        ),
         number_field(
             name=f"volume_array",
             dtype="f4",
             encoder=lambda _: lattice_encoding,
             value=lambda data, i: data.volume[i],
             arrays=lambda data: CIFFieldArrays(values=data.volume),
-        )
-    )
-    fields.append(string_field(name="annotation", value=lambda data, i: data.annotation[i]))
+        ),
+        string_field(name="annotation", value=lambda data, i: data.annotation[i])
+    ])
 
     return CIFCategoryDesc(
         name="volume",
