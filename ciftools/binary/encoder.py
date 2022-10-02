@@ -2,6 +2,7 @@ import math
 import sys
 from typing import Any, List, Protocol, Union
 
+from numba import jit
 import numpy as np
 from ciftools.binary.data_types import DataType, DataTypeEnum
 from ciftools.binary.encoded_data import EncodedCIFData
@@ -105,8 +106,7 @@ class FixedPoint(BinaryCIFEncoder):
 class IntegerPacking(BinaryCIFEncoder):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
 
-        # TODO: must be 32bit integer
-
+        # TODO: must be 32bit integer?
         packing = _determine_packing(data)
         if packing.bytesPerElement == 4:
             return BYTE_ARRAY.encode(data)
@@ -130,8 +130,6 @@ class IntegerPacking(BinaryCIFEncoder):
 
         lower_limit = -upper_limit - 1
 
-        # TODO: figure out if there is a way to implement this
-        # better & faster with numpy methods.
         _pack_values(data, upper_limit, lower_limit, packed)
 
         byte_array_result = BYTE_ARRAY.encode(packed)
@@ -154,6 +152,7 @@ class _PackingInfo:
     bytesPerElement: int
 
 
+@jit(nopython=True)
 def _pack_values(data: np.ndarray, upper_limit: int, lower_limit: int, target: np.ndarray) -> None:
     offset = 0
     for value in data:
@@ -200,6 +199,7 @@ def _determine_packing(data: np.ndarray) -> _PackingInfo:
     return packing
 
 
+@jit(nopython=True)
 def _packing_size_signed(data: np.ndarray, upper_limit: int) -> int:
     lower_limit = -upper_limit - 1
     size = 0
@@ -213,6 +213,7 @@ def _packing_size_signed(data: np.ndarray, upper_limit: int) -> int:
     return size + len(data)
 
 
+@jit(nopython=True)
 def _packing_size_unsigned(data: np.ndarray, upper_limit: int) -> int:
     size = 0
 
@@ -299,34 +300,16 @@ _DATA_ENCODER = ComposeEncoders(DELTA, RUN_LENGTH, INTEGER_PACKING)
 
 class StringArray(BinaryCIFEncoder):
     def encode(self, data: Union[np.ndarray, list[str]]) -> EncodedCIFData:
-        _map = dict()
-
         strings: list[str] = []
         offsets = [0]
         indices = np.empty(len(data), dtype="<i4")
 
-        acc_len = 0
-
-        for i, s in enumerate(data):
-            # handle null strings.
-            if not s:
-                indices[i] = -1
-                continue
-
-            index = _map.get(s)
-            if index is None:
-                # increment the length
-                acc_len += len(s)
-
-                # store the string and index
-                index = len(strings)
-                strings.append(s)
-                _map[s] = index
-
-                # write the offset
-                offsets.append(acc_len)
-
-            indices[i] = index
+        _pack_strings(
+            data,
+            indices,
+            strings,
+            offsets,
+        )
 
         encoded_offsets = _OFFSET_ENCODER.encode(np.array(offsets, dtype="<i4"))
         encoded_data = _DATA_ENCODER.encode(indices)
@@ -340,5 +323,32 @@ class StringArray(BinaryCIFEncoder):
         }
 
         return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
+
+# TODO: benchmark if JIT helps here
+@jit(nopython=False, forceobj=True)
+def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
+    acc_len = 0
+    str_map = dict()
+
+    for i, s in enumerate(data):
+        # handle null strings.
+        if not s:
+            indices[i] = -1
+            continue
+
+        index = str_map.get(s)
+        if index is None:
+            # increment the length
+            acc_len += len(s)
+
+            # store the string and index
+            index = len(strings)
+            strings.append(s)
+            str_map[s] = index
+
+            # write the offset
+            offsets.append(acc_len)
+
+        indices[i] = index
 
 STRING_ARRAY = StringArray()

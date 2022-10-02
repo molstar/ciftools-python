@@ -13,7 +13,6 @@ from ciftools.binary.encoding_types import (
     StringArrayEncoding,
 )
 
-
 def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]]:
     result = encoded_data["data"]
     for encoding in encoded_data["encoding"][::-1]:
@@ -48,7 +47,7 @@ def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
 
-
+# TODO: JIT
 def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0x7F if encoding["byteCount"] == 1 else 0x7FFF
     lower_limit = -upper_limit - 1
@@ -70,6 +69,7 @@ def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEnc
     return output
 
 
+# TODO: JIT
 def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0xFF if encoding["byteCount"] == 1 else 0xFFFF
     n = len(data)
