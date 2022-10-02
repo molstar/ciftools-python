@@ -2,7 +2,6 @@ import math
 import sys
 from typing import Any, Dict, List, Protocol, Tuple, Union
 
-from numba import jit
 import numpy as np
 from ciftools.binary.data_types import DataType, DataTypeEnum
 from ciftools.binary.encoded_data import EncodedCIFData
@@ -16,11 +15,13 @@ from ciftools.binary.encoding_types import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
+from numba import jit
 
 
 class BinaryCIFEncoder(Protocol):
     def encode(self, data: Any) -> EncodedCIFData:
         ...
+
 
 class ComposeEncoders(BinaryCIFEncoder):
     def __init__(self, *encoders):
@@ -58,7 +59,9 @@ class ByteArray(BinaryCIFEncoder):
 
         return EncodedCIFData(data=data.tobytes(), encoding=[encoding])
 
+
 BYTE_ARRAY = ByteArray()
+
 
 class Delta(BinaryCIFEncoder):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
@@ -80,7 +83,9 @@ class Delta(BinaryCIFEncoder):
 
         return EncodedCIFData(data=encoded_data, encoding=[encoding])
 
+
 DELTA = Delta()
+
 
 class FixedPoint(BinaryCIFEncoder):
     def __init__(self, factor: float):
@@ -323,6 +328,7 @@ class StringArray(BinaryCIFEncoder):
 
         return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
 
+
 # TODO: benchmark if JIT helps here
 @jit(nopython=False, forceobj=True)
 def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
@@ -349,5 +355,6 @@ def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offs
             offsets.append(acc_len)
 
         indices[i] = index
+
 
 STRING_ARRAY = StringArray()

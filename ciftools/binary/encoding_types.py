@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import TypedDict
 
-import numpy as np
-
 
 class EncodingEnun(str, Enum):
     ByteArray = "ByteArray"

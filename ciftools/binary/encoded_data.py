@@ -1,4 +1,5 @@
 from typing import Optional, TypedDict, Union
+
 import numpy as np
 from ciftools.binary.encoding_types import EncodingBase
 

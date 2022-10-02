@@ -1,5 +1,3 @@
-from typing import Union
-
 import numpy as np
 from ciftools.binary.data_types import DataType
 from ciftools.binary.encoded_data import EncodedCIFData
@@ -12,6 +10,7 @@ from ciftools.binary.encoding_types import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
+
 
 def decode_cif_data(encoded_data: EncodedCIFData) -> np.ndarray:
     result = encoded_data["data"]
@@ -46,6 +45,7 @@ def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
     if encoding["origin"]:
         result[0] += encoding["origin"]
     return np.cumsum(result, out=result)
+
 
 # TODO: JIT
 def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:

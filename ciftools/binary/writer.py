@@ -2,7 +2,6 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoder import BYTE_ARRAY, RUN_LENGTH
 from ciftools.binary.encoded_data import (
     EncodedCIFCategory,
     EncodedCIFColumn,
@@ -10,7 +9,8 @@ from ciftools.binary.encoded_data import (
     EncodedCIFDataBlock,
     EncodedCIFFile,
 )
-from ciftools.models.writer import CIFWriter, CIFCategoryDesc, CIFFieldDesc
+from ciftools.binary.encoder import BYTE_ARRAY, RUN_LENGTH
+from ciftools.models.writer import CIFCategoryDesc, CIFFieldDesc, CIFWriter
 
 
 def _always_present(data, i):
@@ -24,6 +24,7 @@ class _DataWrapper:
     def __init__(self, data: Any, count: int):
         self.data = data
         self.count = count
+
 
 class BinaryCIFWriter(CIFWriter):
     _data: Optional[EncodedCIFFile]
@@ -72,7 +73,7 @@ class BinaryCIFWriter(CIFWriter):
 
 def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: int) -> EncodedCIFColumn:
     array = field.create_array(total_count)
-    
+
     mask = np.zeros(total_count, dtype=np.dtype(np.uint8))
     presence = field.presence
     all_present = True
@@ -84,17 +85,13 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
         arrays = field.arrays and field.arrays(d)
         if arrays is not None:
             if len(arrays.values) != category.count:
-                raise ValueError(
-                    f"values provided in arrays() must have the same length as the category count field"
-                )
+                raise ValueError(f"values provided in arrays() must have the same length as the category count field")
 
             array[offset : offset + category.count] = arrays.values  # type: ignore
 
             if arrays.mask is not None:
                 if len(arrays.mask) != category.count:
-                    raise ValueError(
-                        f"mask provided in arrays() must have the same length as the category count field"
-                    )
+                    raise ValueError(f"mask provided in arrays() must have the same length as the category count field")
                 mask[offset : offset + category.count] = arrays.mask
             offset += category.count
 
@@ -118,7 +115,9 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
     encoded = encoder.encode(array)
 
     if not isinstance(encoded["data"], bytes):
-        raise ValueError(f"The encoding must result in bytes but it was {str(type(encoded['data']))}. Fix the encoding chain.")
+        raise ValueError(
+            f"The encoding must result in bytes but it was {str(type(encoded['data']))}. Fix the encoding chain."
+        )
 
     mask_data: Optional[EncodedCIFData] = None
 

@@ -54,11 +54,12 @@ def number_field(
     return CIFFieldDesc(
         name=name,
         value=value,
-        create_array=lambda size:  np.empty(size, dtype=dtype),
+        create_array=lambda size: np.empty(size, dtype=dtype),
         encoder=encoder,
         presence=presence,
-        arrays=arrays
+        arrays=arrays,
     )
+
 
 def string_field(
     *,
@@ -73,5 +74,5 @@ def string_field(
         create_array=lambda size: [""] * size,
         encoder=lambda _: STRING_ARRAY,
         presence=presence,
-        arrays=arrays
+        arrays=arrays,
     )

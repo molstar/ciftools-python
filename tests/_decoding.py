@@ -1,9 +1,8 @@
 import unittest
 import urllib.request
 
-import msgpack
-from ciftools.serialization import loads
 from ciftools.models.data import CIFValuePresenceEnum
+from ciftools.serialization import loads
 
 
 class TestEncodings_Decoding(unittest.TestCase):
@@ -27,7 +26,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         print(label_comp_id[-1])
         print(len(label_comp_id))
         print(cartn_x[0:10])
-        value_slice = cartn_x.as_ndarray(start=1, end=10, dtype='i4')
+        value_slice = cartn_x.as_ndarray(start=1, end=10, dtype="i4")
         print(value_slice)
         print(atom_site["label_alt_id"].value_presences[0] == CIFValuePresenceEnum.NotSpecified)
         # print([[f"_{c.name}.{f}" for f in c.field_names] for c in parsed[0].categories.values()])
