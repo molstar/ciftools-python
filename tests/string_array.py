@@ -2,8 +2,8 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.encoder import STRING_ARRAY
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.encoder import STRING_ARRAY
 
 
 class TestEncodings_StringArray(unittest.TestCase):

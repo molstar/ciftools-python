@@ -1,6 +1,6 @@
 from typing import Optional, TypedDict
 
-from ciftools.bin.encoding_types import EncodingBase
+from ciftools.binary.encoding_types import EncodingBase
 
 
 class EncodedCIFData(TypedDict):

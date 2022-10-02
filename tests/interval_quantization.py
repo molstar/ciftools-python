@@ -2,9 +2,9 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.data_types import DataTypeEnum
-from ciftools.bin.encoder import IntervalQuantization, BYTE_ARRAY, ComposeEncoders
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.data_types import DataTypeEnum
+from ciftools.binary.encoder import IntervalQuantization, BYTE_ARRAY, ComposeEncoders
 
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):

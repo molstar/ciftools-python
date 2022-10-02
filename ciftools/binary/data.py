@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.encoded_data import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFFile
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.encoded_data import EncodedCIFCategory, EncodedCIFColumn, EncodedCIFFile
 from ciftools.models.data import CIFCategory, CIFColumn, CIFDataBlock, CIFFile, CIFValuePresenceEnum
 
 

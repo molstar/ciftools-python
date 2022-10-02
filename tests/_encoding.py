@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from ciftools.bin.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
+from ciftools.binary.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
 
 from ciftools.models.writer import CIFCategoryDesc, CIFFieldArrays, number_field, string_field
 from ciftools.serialization import create_binary_writer, loads as loads_bcif

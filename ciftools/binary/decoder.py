@@ -1,9 +1,9 @@
 from typing import Union
 
 import numpy as np
-from ciftools.bin.data_types import DataType
-from ciftools.bin.encoded_data import EncodedCIFData
-from ciftools.bin.encoding_types import (
+from ciftools.binary.data_types import DataType
+from ciftools.binary.encoded_data import EncodedCIFData
+from ciftools.binary.encoding_types import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,

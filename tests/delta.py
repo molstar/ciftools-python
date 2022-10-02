@@ -2,8 +2,8 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.encoder import BYTE_ARRAY, DELTA, ComposeEncoders
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.encoder import BYTE_ARRAY, DELTA, ComposeEncoders
 
 
 class TestEncodings_Delta(unittest.TestCase):

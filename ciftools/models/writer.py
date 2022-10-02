@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, List, Optional, Protocol, Union
 
 import numpy as np
-from ciftools.bin.encoder import BYTE_ARRAY, STRING_ARRAY, BinaryCIFEncoder
+from ciftools.binary.encoder import BYTE_ARRAY, STRING_ARRAY, BinaryCIFEncoder
 from ciftools.models.data import CIFValuePresenceEnum
 
 

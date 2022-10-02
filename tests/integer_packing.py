@@ -3,8 +3,8 @@ import unittest
 import msgpack
 import numpy as np
 
-from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.encoder import INTEGER_PACKING
+from ciftools.binary.decoder import decode_cif_data
+from ciftools.binary.encoder import INTEGER_PACKING
 
 
 # noinspection PyTypedDict

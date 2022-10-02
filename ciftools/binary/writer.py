@@ -2,8 +2,8 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.bin.encoder import BYTE_ARRAY, RUN_LENGTH
-from ciftools.bin.encoded_data import (
+from ciftools.binary.encoder import BYTE_ARRAY, RUN_LENGTH
+from ciftools.binary.encoded_data import (
     EncodedCIFCategory,
     EncodedCIFColumn,
     EncodedCIFData,
