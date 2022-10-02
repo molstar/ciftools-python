@@ -8,7 +8,7 @@ testmodules = [
     "interval_quantization",
     "run_length",
     "string_array",
-    # "_decoding",
+    "_decoding",
     # "_encoding",
 ]
 

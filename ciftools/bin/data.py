@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from ciftools.bin.decoder import decode_cif_data
@@ -11,11 +11,11 @@ class BinaryCIFColumn(CIFColumn):
         self,
         name: str,
         values: Union[np.ndarray, list[str]],
-        value_kinds: Union[np.ndarray, None],
+        value_mask: Union[np.ndarray, None],
     ):
         self.name = name
         self._values = values
-        self._value_kinds = value_kinds
+        self._value_mask = value_mask
         self._row_count = len(values)
 
     def get_string(self, row: int) -> str:
@@ -28,8 +28,8 @@ class BinaryCIFColumn(CIFColumn):
         return float(self._values[row])
 
     def get_value_presence(self, row: int) -> CIFValuePresenceEnum:
-        if self._value_kinds:
-            return self._value_kinds[row]
+        if self._value_mask:
+            return self._value_mask[row]
         return 0
 
     def are_values_equal(self, row_a: int, row_b: int) -> bool:
@@ -49,19 +49,23 @@ class BinaryCIFColumn(CIFColumn):
             return self._values[start:end]
         return self._values[start:end].astype(dtype)
 
-    def __getitem__(self, idx: int) -> Union[str, float, int, None]:
-        if self._value_kinds and self._value_kinds[idx]:
+    def __getitem__(self, idx: Any) -> Any:
+        if isinstance(idx, int) and self._value_mask and self._value_mask[idx]:
             return None
         return self._values[idx]
 
     def __len__(self):
         return self._row_count
 
+    @property
+    def value_presences(self) -> Optional[np.ndarray]:
+        return self._value_mask
+
 
 def _decode_cif_column(column: EncodedCIFColumn) -> CIFColumn:
     values = decode_cif_data(column["data"])
-    value_kinds = decode_cif_data(column["mask"]) if column["mask"] else None
-    return BinaryCIFColumn(column["name"], values, value_kinds)
+    value_mask = decode_cif_data(column["mask"]) if column["mask"] else None
+    return BinaryCIFColumn(column["name"], values, value_mask)
 
 
 class BinaryCIFCategory(CIFCategory):
@@ -100,7 +104,7 @@ class BinaryCIFCategory(CIFCategory):
         return len
 
     @property
-    def column_names(self) -> list[str]:
+    def field_names(self) -> list[str]:
         return self._field_names
 
 
@@ -156,8 +160,8 @@ class BinaryCIFFile(CIFFile):
             - False: decode all columns immediately
         """
 
-        min_version = [0, 3, 0]
-        version = map(int, data["version"].split("."))
+        min_version = (0, 3, 0)
+        version = tuple(map(int, data["version"].split(".")))
         if version < min_version:
             raise ValueError(f"Invalid version {data['version']}, expected >={'.'.join(map(str, min_version))}")
 

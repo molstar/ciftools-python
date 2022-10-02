@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Dict, List, Optional, Protocol, Union
+from typing import Any, Dict, List, Optional, Protocol, Union
 
 import numpy as np
 
@@ -34,7 +34,7 @@ class CIFColumn(Protocol):
     ) -> np.ndarray:
         ...
 
-    def __getitem__(self, idx: int) -> Union[str, float, int, None]:
+    def __getitem__(self, idx: Any) -> Any:
         ...
 
     def __len__(self) -> int:
@@ -62,7 +62,7 @@ class CIFCategory(Protocol):
         ...
 
     @property
-    def column_names(self) -> List[str]:
+    def field_names(self) -> List[str]:
         ...
 
     def __getattr__(self, name: str) -> Optional[CIFColumn]:
