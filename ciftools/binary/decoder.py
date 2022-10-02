@@ -13,7 +13,7 @@ from ciftools.binary.encoding_types import (
     StringArrayEncoding,
 )
 
-def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]]:
+def decode_cif_data(encoded_data: EncodedCIFData) -> np.ndarray:
     result = encoded_data["data"]
     for encoding in encoded_data["encoding"][::-1]:
         if encoding["kind"] in _decoders:
@@ -21,11 +21,11 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]
         else:
             raise ValueError(f"Unsupported encoding '{encoding['kind']}'")
 
-    return result
+    return result  # type: ignore
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + DataType.to_dtype(encoding["type"]))
+    return np.frombuffer(data, dtype=f"<{str(DataType.to_dtype(encoding['type']))}")
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
@@ -99,7 +99,7 @@ def _decode_integer_packing(data: np.ndarray, encoding: IntegerPackingEncoding) 
         return _decode_integer_packing_signed(data, encoding)
 
 
-def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> list[str]:
+def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> np.ndarray:
     offsets = decode_cif_data(EncodedCIFData(encoding=encoding["offsetEncoding"], data=encoding["offsets"]))
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
@@ -109,7 +109,8 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     for i in range(1, len(offsets)):
         strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
 
-    return [strings[i + 1] for i in indices]  # type: ignore
+    return np.array([strings[i + 1] for i in indices], dtype=np.object_)
+    # return [strings[i + 1] for i in indices]
 
 
 _decoders = {

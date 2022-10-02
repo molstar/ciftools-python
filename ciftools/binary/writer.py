@@ -72,10 +72,9 @@ class BinaryCIFWriter(CIFWriter):
 
 def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: int) -> EncodedCIFColumn:
     array = field.create_array(total_count)
-    is_native: bool = not hasattr(array, "dtype")
-
+    
     mask = np.zeros(total_count, dtype=np.dtype(np.uint8))
-    presence = field.presence or _always_present
+    presence = field.presence
     all_present = True
 
     offset = 0
@@ -89,7 +88,7 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
                     f"values provided in arrays() must have the same length as the category count field"
                 )
 
-            array[offset : offset + category.count] = arrays.values
+            array[offset : offset + category.count] = arrays.values  # type: ignore
 
             if arrays.mask is not None:
                 if len(arrays.mask) != category.count:
@@ -99,22 +98,27 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
                 mask[offset : offset + category.count] = arrays.mask
             offset += category.count
 
-        else:
-            # TODO: use numba JIT for this
+        elif presence is not None:
+            # TODO: check if JIT will help
             for i in range(category.count):
                 p = presence(d, i)
                 if p:
                     mask[offset] = p
-                    if is_native:
-                        array[offset] = None
                     all_present = False
                 else:
-                    array[offset] = field.value(d, i)
-
+                    array[offset] = field.value(d, i)  # type: ignore
+                offset += 1
+        else:
+            # TODO: check if JIT will help
+            for i in range(category.count):
+                array[offset] = field.value(d, i)  # type: ignore
                 offset += 1
 
     encoder = field.encoder(data[0].data) if len(data) > 0 else BYTE_ARRAY
     encoded = encoder.encode(array)
+
+    if not isinstance(encoded["data"], bytes):
+        raise ValueError(f"The encoding must result in bytes but it was {str(type(encoded['data']))}. Fix the encoding chain.")
 
     mask_data: Optional[EncodedCIFData] = None
 

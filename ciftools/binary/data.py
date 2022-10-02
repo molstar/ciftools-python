@@ -10,7 +10,7 @@ class BinaryCIFColumn(CIFColumn):
     def __init__(
         self,
         name: str,
-        values: Union[np.ndarray, list[str]],
+        values: np.ndarray,
         value_mask: Union[np.ndarray, None],
     ):
         self.name = name
@@ -30,7 +30,7 @@ class BinaryCIFColumn(CIFColumn):
     def get_value_presence(self, row: int) -> CIFValuePresenceEnum:
         if self._value_mask:
             return self._value_mask[row]
-        return 0
+        return 0  # type: ignore
 
     def are_values_equal(self, row_a: int, row_b: int) -> bool:
         return self._values[row_a] == self._values[row_b]
@@ -69,17 +69,17 @@ def _decode_cif_column(column: EncodedCIFColumn) -> CIFColumn:
 
 
 class BinaryCIFCategory(CIFCategory):
-    def __getattr__(self, name: str) -> object:
+    def __getattr__(self, name: str) -> BinaryCIFColumn:
         return self[name]
 
-    def __getitem__(self, name: str) -> Optional[BinaryCIFColumn]:
+    def __getitem__(self, name: str) -> BinaryCIFColumn:
         if name not in self._field_cache:
-            return None
+            raise ValueError(f"{name} is not a valid category name")
 
         if not self._field_cache[name]:
             self._field_cache[name] = _decode_cif_column(self._columns[name])
 
-        return self._field_cache[name]
+        return self._field_cache[name]  # type: ignore
 
     def __contains__(self, key: str):
         return key in self._columns
@@ -88,7 +88,8 @@ class BinaryCIFCategory(CIFCategory):
         self._field_names = [c["name"] for c in category["columns"]]
         self._field_cache = {c["name"]: None if lazy else _decode_cif_column(c) for c in category["columns"]}
         self._columns: dict[str, EncodedCIFColumn] = {c["name"]: c for c in category["columns"]}
-        self._row_count = category["rowCount"]
+        self._n_columns = len(category["columns"])
+        self._n_rows = category["rowCount"]
         self._name = category["name"][1:]
 
     @property
@@ -97,23 +98,23 @@ class BinaryCIFCategory(CIFCategory):
 
     @property
     def n_rows(self) -> int:
-        return self._row_count
+        return self._n_rows
 
     @property
     def n_columns(self) -> int:
-        return len
+        return self._n_columns
 
     @property
-    def field_names(self) -> list[str]:
+    def field_names(self) -> List[str]:
         return self._field_names
 
 
 class BinaryCIFDataBlock(CIFDataBlock):
-    def __getattr__(self, name: str) -> Optional[CIFCategory]:
-        return self._categories.get(name)
+    def __getattr__(self, name: str) -> CIFCategory:
+        return self._categories[name]
 
-    def __getitem__(self, name: str) -> Optional[CIFCategory]:
-        return self._categories.get(name)
+    def __getitem__(self, name: str) -> CIFCategory:
+        return self._categories[name]
 
     def __contains__(self, key: str):
         return key in self._categories
@@ -128,7 +129,7 @@ class BinaryCIFDataBlock(CIFDataBlock):
 
     @property
     def categories(self) -> Dict[str, CIFCategory]:
-        return self._categories
+        return self._categories  # type: ignore
 
 
 class BinaryCIFFile(CIFFile):
@@ -142,7 +143,7 @@ class BinaryCIFFile(CIFFile):
                 else None
             )
 
-    def __getattr__(self, name: str) -> Optional[CIFDataBlock]:
+    def __getattr__(self, name: str) -> CIFDataBlock:
         return self[name]
 
     def __len__(self):
@@ -180,4 +181,4 @@ class BinaryCIFFile(CIFFile):
 
     @property
     def data_blocks(self) -> List[CIFDataBlock]:
-        return self._data_blocks
+        return self._data_blocks  # type: ignore

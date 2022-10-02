@@ -65,10 +65,10 @@ class CIFCategory(Protocol):
     def field_names(self) -> List[str]:
         ...
 
-    def __getattr__(self, name: str) -> Optional[CIFColumn]:
+    def __getattr__(self, name: str) -> CIFColumn:
         ...
 
-    def __getitem__(self, name: str) -> Optional[CIFColumn]:
+    def __getitem__(self, name: str) -> CIFColumn:
         ...
 
     def __contains__(self, key: str) -> bool:
@@ -88,7 +88,7 @@ class CIFCategory(Protocol):
         for i in range(1, rows + 1):
             row = np.empty(cols)
             for j in range(1, cols + 1):
-                row[j - 1] = self[field + "[" + str(i) + "][" + str(j) + "]"].get_float(row_index)
+                row[j - 1] = self[f"{field}[{i}][{j}]"].get_float(row_index)
 
             matrix[i - 1] = row
 
@@ -105,16 +105,16 @@ class CIFCategory(Protocol):
         """
         vector = np.empty(rows, float)
         for i in range(1, rows + 1):
-            vector[i - 1] = self[field + "[" + str(i) + "]"].get_float(row_index)
+            vector[i - 1] = self[f"{field}[{i}]"].get_float(row_index)
 
         return vector
 
 
 class CIFDataBlock(Protocol):
-    def __getattr__(self, name: str) -> Optional[CIFCategory]:
+    def __getattr__(self, name: str) -> CIFCategory:
         ...
 
-    def __getitem__(self, name: str) -> Optional[CIFCategory]:
+    def __getitem__(self, name: str) -> CIFCategory:
         ...
 
     def __contains__(self, key: str):
@@ -130,13 +130,13 @@ class CIFDataBlock(Protocol):
 
 
 class CIFFile(Protocol):
-    def __getitem__(self, index_or_name: Union[int, str]) -> Optional[CIFDataBlock]:
+    def __getitem__(self, index_or_name: Union[int, str]) -> CIFDataBlock:
         """
         Access a data block by index or header (case sensitive)
         """
         ...
 
-    def __getattr__(self, name: str) -> Optional[CIFDataBlock]:
+    def __getattr__(self, name: str) -> CIFDataBlock:
         ...
 
     def __len__(self) -> int:

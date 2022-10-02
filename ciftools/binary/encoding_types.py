@@ -65,4 +65,4 @@ class StringArrayEncoding(EncodingBase):
     dataEncoding: list[EncodingBase]
     stringData: str
     offsetEncoding: list[EncodingBase]
-    offsets: np.ndarray
+    offsets: bytes

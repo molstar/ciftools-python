@@ -10,7 +10,7 @@ from ciftools.models.writer import CIFCategoryDesc, CIFFieldArrays, number_field
 from ciftools.serialization import create_binary_writer, loads as loads_bcif
 
 class TestMetadata:
-    lattices_ids: np.ndarray
+    lattices_ids: List[int]
 
 
 class TestVolumeData:

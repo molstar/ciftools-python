@@ -1,11 +1,11 @@
-from typing import Optional, TypedDict
-
+from typing import Optional, TypedDict, Union
+import numpy as np
 from ciftools.binary.encoding_types import EncodingBase
 
 
 class EncodedCIFData(TypedDict):
     encoding: list[EncodingBase]
-    data: bytes
+    data: Union[bytes, np.ndarray]
 
 
 class EncodedCIFColumn(TypedDict):

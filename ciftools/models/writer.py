@@ -17,7 +17,7 @@ class CIFFieldArrays:
 @dataclass
 class CIFFieldDesc:
     name: str
-    create_array: Callable[[int], np.ndarray]
+    create_array: Callable[[int], Union[np.ndarray, List[str]]]
     encoder: Callable[[Any], BinaryCIFEncoder]
     value: Optional[Callable[[Any, int], Any]] = None
     presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None
@@ -46,9 +46,9 @@ def number_field(
     *,
     name: str,
     value: Optional[Callable[[Any, int], Optional[Union[int, float]]]] = None,
-    dtype: np.dtype,
+    dtype: Union[np.dtype, str],
     encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
-    presence: Optional[Callable[[Any, int], Optional[CIFValuePresenceEnum]]] = None,
+    presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
     arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
 ) -> CIFFieldDesc:
     return CIFFieldDesc(
@@ -64,7 +64,7 @@ def string_field(
     *,
     name: str,
     value: Callable[[Any, int], Optional[str]] = None,
-    presence: Optional[Callable[[Any, int], Optional[CIFValuePresenceEnum]]] = None,
+    presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
     arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
 ) -> CIFFieldDesc:
     return CIFFieldDesc(

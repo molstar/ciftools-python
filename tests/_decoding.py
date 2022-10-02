@@ -22,7 +22,7 @@ class TestEncodings_Decoding(unittest.TestCase):
         print("id" in entity)  # test if field is present in category
         print("atom_site" in parsed[0])  # test if category is present data block
         print(entity.field_names)
-        print(atom_site.rowCount)
+        print(atom_site.n_rows)
         print(label_comp_id[0])
         print(label_comp_id[-1])
         print(len(label_comp_id))

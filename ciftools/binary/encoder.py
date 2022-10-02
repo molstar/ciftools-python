@@ -1,6 +1,6 @@
 import math
 import sys
-from typing import Any, List, Protocol, Union
+from typing import Any, Dict, List, Protocol, Tuple, Union
 
 from numba import jit
 import numpy as np
@@ -23,8 +23,8 @@ class BinaryCIFEncoder(Protocol):
         ...
 
 class ComposeEncoders(BinaryCIFEncoder):
-    def __init__(self, *encoders: List["BinaryCIFEncoder"]):
-        self.encoders = encoders
+    def __init__(self, *encoders):
+        self.encoders: Tuple["BinaryCIFEncoder"] = encoders
 
     def encode(self, data: Any) -> EncodedCIFData:
         encodings: List[Any] = []
@@ -68,12 +68,11 @@ class Delta(BinaryCIFEncoder):
             data = data.astype(dtype="i4")
             src_data_type = DataTypeEnum.Int32
 
-        encoding: DeltaEncoding = {"kind": EncodingEnun.Delta, "srcType": src_data_type}
+        encoding: DeltaEncoding = {"kind": EncodingEnun.Delta, "srcType": src_data_type, "origin": 0}
 
         data_length = len(data)
 
         if not data_length:
-            encoding.origin = 0
             return EncodedCIFData(data=np.empty(0, dtype="i4"), encoding=[encoding])
 
         encoded_data = np.diff(data, prepend=data[0])
@@ -173,7 +172,7 @@ def _pack_values(data: np.ndarray, upper_limit: int, lower_limit: int, target: n
 
 def _determine_packing(data: np.ndarray) -> _PackingInfo:
     # determine sign
-    is_signed = np.any(data < 0)
+    is_signed: bool = bool(np.any(data < 0))
 
     # determine packing size
     size8 = _packing_size_signed(data, 0x7F) if is_signed else _packing_size_unsigned(data, 0xFF)
@@ -299,8 +298,8 @@ _DATA_ENCODER = ComposeEncoders(DELTA, RUN_LENGTH, INTEGER_PACKING)
 
 
 class StringArray(BinaryCIFEncoder):
-    def encode(self, data: Union[np.ndarray, list[str]]) -> EncodedCIFData:
-        strings: list[str] = []
+    def encode(self, data: Union[np.ndarray, List[str]]) -> EncodedCIFData:
+        strings: List[str] = []
         offsets = [0]
         indices = np.empty(len(data), dtype="<i4")
 
@@ -319,7 +318,7 @@ class StringArray(BinaryCIFEncoder):
             "kind": EncodingEnun.StringArray,
             "stringData": "".join(strings),
             "offsetEncoding": encoded_offsets["encoding"],
-            "offsets": encoded_offsets["data"],
+            "offsets": encoded_offsets["data"],  # type: ignore
         }
 
         return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
@@ -328,7 +327,7 @@ class StringArray(BinaryCIFEncoder):
 @jit(nopython=False, forceobj=True)
 def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
     acc_len = 0
-    str_map = dict()
+    str_map: Dict[str, int] = dict()
 
     for i, s in enumerate(data):
         # handle null strings.

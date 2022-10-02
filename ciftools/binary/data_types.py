@@ -35,7 +35,7 @@ class DataType:
 
     @staticmethod
     def from_dtype(dtype: Union[np.dtype, str]) -> DataTypeEnum:
-        t = str(dtype.str)
+        t = dtype if isinstance(dtype, str) else str(dtype.str)
         if t[0] in (">", "<", "|"):
             t = t[1:]
         return DataTypeEnum(DataType.__dtypes_to_data_types[t])

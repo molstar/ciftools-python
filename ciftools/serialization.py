@@ -3,8 +3,6 @@ from ciftools.binary.data import BinaryCIFFile
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.models.data import CIFFile
 
-
-@staticmethod
 def loads(data: bytes, *, lazy: bool = True) -> CIFFile:
     unpacked = msgpack.loads(data)
     return BinaryCIFFile.from_data(unpacked, lazy=lazy)
