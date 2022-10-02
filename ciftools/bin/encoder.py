@@ -1,6 +1,6 @@
 import math
 import sys
-from typing import Any, List, Union
+from typing import Any, List, Protocol, Union
 
 import numpy as np
 from ciftools.bin.data_types import DataType, DataTypeEnum
@@ -17,8 +17,12 @@ from ciftools.bin.encoding_types import (
 )
 
 
-class BinaryCIFEncoder:
-    def __init__(self, encoders: List["BinaryCIFEncoder"]):
+class BinaryCIFEncoder(Protocol):
+    def encode(self, data: Any) -> EncodedCIFData:
+        ...
+
+class Compose(BinaryCIFEncoder):
+    def __init__(self, *encoders: List["BinaryCIFEncoder"]):
         self.encoders = encoders
 
     def encode(self, data: Any) -> EncodedCIFData:
@@ -289,8 +293,8 @@ RUN_LENGTH = RunLength()
 
 
 # TODO: use classifier once implemented
-_OFFSET_ENCODER = BinaryCIFEncoder([DELTA, INTEGER_PACKING])
-_DATA_ENCODER = BinaryCIFEncoder([DELTA, RUN_LENGTH, INTEGER_PACKING])
+_OFFSET_ENCODER = Compose(DELTA, INTEGER_PACKING)
+_DATA_ENCODER = Compose(DELTA, RUN_LENGTH, INTEGER_PACKING)
 
 
 class StringArray(BinaryCIFEncoder):

@@ -2,10 +2,9 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
+from ciftools.bin.decoder import decode_cif_data
+from ciftools.bin.encoder import RUN_LENGTH, BYTE_ARRAY, Compose
+
 
 
 class TestEncodings_RunLength(unittest.TestCase):
@@ -14,8 +13,8 @@ class TestEncodings_RunLength(unittest.TestCase):
         suite = [np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12), np.arange(10)]
 
         for test_arr in suite:
-            encoder = BinaryCIFEncoder([RUN_LENGTH_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
-            encoded = encoder.encode_cif_data(test_arr)
+            encoder = Compose(RUN_LENGTH, BYTE_ARRAY)
+            encoded = encoder.encode(test_arr)
             msgpack.loads(msgpack.dumps(encoded))
             decoded = decode_cif_data(encoded)
 

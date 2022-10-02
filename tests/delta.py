@@ -2,19 +2,17 @@ import unittest
 
 import msgpack
 import numpy as np
-from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
+from ciftools.bin.decoder import decode_cif_data
+from ciftools.bin.encoder import BYTE_ARRAY, DELTA, Compose
 
 
 class TestEncodings_Delta(unittest.TestCase):
     def test(self):
         test_arr = np.array([1, 1, 2, 2, 10, -10])
 
-        encoder = BinaryCIFEncoder([DELTA_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
+        encoder = Compose(DELTA, BYTE_ARRAY)
 
-        encoded = encoder.encode_cif_data(test_arr)
+        encoded = encoder.encode(test_arr)
         msgpack.loads(msgpack.dumps(encoded))
         decoded = decode_cif_data(encoded)
 

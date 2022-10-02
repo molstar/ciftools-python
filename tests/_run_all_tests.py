@@ -8,8 +8,8 @@ testmodules = [
     "interval_quantization",
     "run_length",
     "string_array",
-    "_decoding",
-    "_encoding",
+    # "_decoding",
+    # "_encoding",
 ]
 
 suite = unittest.TestSuite()
