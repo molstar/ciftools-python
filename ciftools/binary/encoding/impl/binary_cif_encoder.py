@@ -12,14 +12,23 @@ class BinaryCIFEncoder:
         encodings: list[EncodingBase] = []
 
         for encoder in self.encoders:
+            # get EncodedCIFData typeddict with 'data' and 'encoding'
             encoded = encoder.encode(data)
+            # get ref to 'encoding' of that typeddict
             added_encodings = encoded["encoding"]
 
+            # if 'encoding' is None or 0 - raise Error
             if not added_encodings or not len(added_encodings):
                 raise ValueError("Encodings must be non-empty.")
 
+            # get ref to 'data' of typeddict
             data = encoded["data"]
+
+            # add 'encoding' to list of encodings
             encodings.extend(added_encodings)
+
+            # on next iteration, already encoded data by the first encoder,
+            # is encoded by the 2nd, then by 3rd, each time encoding is added to list
 
         if not isinstance(data, bytes):
             raise ValueError(

@@ -1,4 +1,5 @@
 import math
+from numba import jit
 
 import numpy as np
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
@@ -6,7 +7,6 @@ from ciftools.binary.encoding.encodings import EncodingEnun, IntegerPackingEncod
 from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
 from ciftools.binary.encoding.types import EncodedCIFData
 from numpy import int8, int16, uint8, uint16
-
 
 class IntegerPackingCIFEncoder(CIFEncoderBase):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
@@ -38,22 +38,61 @@ class IntegerPackingCIFEncoder(CIFEncoderBase):
 
         # TODO: figure out if there is a way to implement this
         # better & faster with numpy methods.
-        packed_index = 0
-        for _v in data:
-            value = _v
-            if value >= 0:
-                while value >= upper_limit:
-                    packed[packed_index] = upper_limit
-                    packed_index += 1
-                    value -= upper_limit
-            else:
-                while value <= lower_limit:
-                    packed[packed_index] = lower_limit
-                    packed_index += 1
-                    value -= lower_limit
+        packed = _packing_loop(
+            data=data,
+            upper_limit=upper_limit,
+            lower_limit=lower_limit,
+            packed=packed
+        )
 
-            packed[packed_index] = value
-            packed_index += 1
+        byte_array_result = BYTE_ARRAY_CIF_ENCODER.encode(packed)
+
+        integer_packing_encoding: IntegerPackingEncoding = {
+            "kind": EncodingEnun.IntegerPacking,
+            "isUnsigned": not packing.isSigned,
+            "srcSize": len(data),
+            "byteCount": packing.bytesPerElement,
+        }
+
+        return EncodedCIFData(
+            data=byte_array_result["data"], encoding=[integer_packing_encoding, byte_array_result["encoding"][0]]
+        )
+
+    def encode_optimized(self, data: np.ndarray) -> EncodedCIFData:
+
+        # TODO: must be 32bit integer
+
+        packing = _determine_packing_optimized(data)
+        if packing.bytesPerElement == 4:
+            return BYTE_ARRAY_CIF_ENCODER.encode(data)
+
+        # integer packing
+
+        if packing.isSigned:
+            if packing.bytesPerElement == 1:
+                upper_limit = 0x7F
+                packed = np.empty(packing.size, dtype=int8)
+            else:
+                upper_limit = 0x7FFF
+                packed = np.empty(packing.size, dtype=int16)
+        else:
+            if packing.bytesPerElement == 1:
+                upper_limit = 0xFF
+                packed = np.empty(packing.size, dtype=uint8)
+            else:
+                upper_limit = 0xFFFF
+                packed = np.empty(packing.size, dtype=uint16)
+
+        lower_limit = -upper_limit - 1
+
+        # TODO: figure out if there is a way to implement this
+        # better & faster with numpy methods.
+        packed = _packing_loop_optimized(
+            data=data,
+            upper_limit=upper_limit,
+            lower_limit=lower_limit,
+            packed=packed
+        )
 
         byte_array_result = BYTE_ARRAY_CIF_ENCODER.encode(packed)
 
@@ -74,6 +113,46 @@ class _PackingInfo:
     size: int
     bytesPerElement: int
 
+def _packing_loop(data: np.ndarray, upper_limit, lower_limit, packed: np.ndarray) -> np.ndarray:
+    packed_index = 0
+    for _v in data:
+        value = _v
+        if value >= 0:
+            while value >= upper_limit:
+                packed[packed_index] = upper_limit
+                packed_index += 1
+                value -= upper_limit
+        else:
+            while value <= lower_limit:
+                packed[packed_index] = lower_limit
+                packed_index += 1
+                value -= lower_limit
+
+        packed[packed_index] = value
+        packed_index += 1
+
+    return packed
+
+@jit(nopython=True)
+def _packing_loop_optimized(data: np.ndarray, upper_limit, lower_limit, packed: np.ndarray) -> np.ndarray:
+    packed_index = 0
+    for _v in data:
+        value = _v
+        if value >= 0:
+            while value >= upper_limit:
+                packed[packed_index] = upper_limit
+                packed_index += 1
+                value -= upper_limit
+        else:
+            while value <= lower_limit:
+                packed[packed_index] = lower_limit
+                packed_index += 1
+                value -= lower_limit
+
+        packed[packed_index] = value
+        packed_index += 1
+
+    return packed
 
 def _determine_packing(data: np.ndarray) -> _PackingInfo:
     # determine sign
@@ -102,6 +181,32 @@ def _determine_packing(data: np.ndarray) -> _PackingInfo:
 
     return packing
 
+def _determine_packing_optimized(data: np.ndarray) -> _PackingInfo:
+    # determine sign
+    is_signed = np.any(data < 0)
+
+    # determine packing size
+    size8 = _packing_size_optimized(data, 0x7F) if is_signed else _packing_size_optimized(data, 0xFF)
+    size16 = _packing_size_optimized(data, 0x7FFF) if is_signed else _packing_size_optimized(data, 0xFFFF)
+
+    packing = _PackingInfo()
+    packing.isSigned = is_signed
+
+    data_len = len(data)
+
+    if data_len * 4 < size16 * 2:
+        packing.size = data_len
+        packing.bytesPerElement = 4
+
+    elif size16 * 2 < size8:
+        packing.size = size16
+        packing.bytesPerElement = 2
+
+    else:
+        packing.size = size8
+        packing.bytesPerElement = 1
+
+    return packing
 
 def _packing_size(data: np.ndarray, upper_limit: int) -> int:
     lower_limit = -upper_limit - 1
@@ -121,5 +226,23 @@ def _packing_size(data: np.ndarray, upper_limit: int) -> int:
 
     return size
 
+@jit(nopython=True)
+def _packing_size_optimized(data: np.ndarray, upper_limit: int) -> int:
+    lower_limit = -upper_limit - 1
+    size = 0
+
+    for value in data:
+        if value == 0:
+            size = size + 1
+        elif value > 0:
+            size = size + math.ceil(value / upper_limit)
+            if value % upper_limit == 0:
+                size = size + 1
+        else:
+            size = size + math.ceil(value / lower_limit)
+            if value % lower_limit == 0:
+                size = size + 1
+
+    return size
 
 INTEGER_PACKING_CIF_ENCODER = IntegerPackingCIFEncoder()
