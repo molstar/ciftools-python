@@ -73,7 +73,7 @@ class _NumberFieldDesc(FieldDesc):
         dtype: np.dtype,
         encoder: Callable[[Any], BinaryCIFEncoder],
         presence: Optional[Callable[[Any, int], Optional[ValuePresenceEnum]]] = None,
-        arrays: Optional[Callable[[Any], FieldArrays]] = None
+        arrays: Optional[Callable[[Any], FieldArrays]] = None,
     ) -> None:
         self.name = name
         self._value = value

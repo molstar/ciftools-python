@@ -105,13 +105,17 @@ class BinaryCIFWriter(CIFWriter):
             arrays = field.arrays(d)
             if arrays is not None:
                 if len(arrays.values) != _d.count:
-                    raise ValueError(f"values provided in arrays() must have the same length as the category count field")
+                    raise ValueError(
+                        f"values provided in arrays() must have the same length as the category count field"
+                    )
 
-                array[offset:offset + _d.count] = arrays.values
+                array[offset : offset + _d.count] = arrays.values
                 if arrays.mask is not None:
                     if len(arrays.mask) != _d.count:
-                        raise ValueError(f"mask provided in arrays() must have the same length as the category count field")
-                    mask[offset:offset + _d.count] = arrays.mask
+                        raise ValueError(
+                            f"mask provided in arrays() must have the same length as the category count field"
+                        )
+                    mask[offset : offset + _d.count] = arrays.mask
                 offset += _d.count
 
             else:

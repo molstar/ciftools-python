@@ -6,12 +6,14 @@ import numpy as np
 from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
 from ciftools.cif_format.value_presence import ValuePresenceEnum
 
+
 @dataclass
 class FieldArrays:
     values: Union[np.ndarray, List[str], List[int], List[float]]
-    '''Array of the values themselves'''
+    """Array of the values themselves"""
     mask: Optional[np.ndarray] = None
-    '''Optional uint8 array for specifying the missing values. 0 = defined, 1 = ., 2 = ?'''
+    """Optional uint8 array for specifying the missing values. 0 = defined, 1 = ., 2 = ?"""
+
 
 class FieldDesc(abc.ABC):
     name: str
@@ -35,6 +37,7 @@ class FieldDesc(abc.ABC):
     @abc.abstractmethod
     def presence(self, data: Any, i: int) -> ValuePresenceEnum:
         pass
+
 
 @dataclass
 class CategoryDesc:
