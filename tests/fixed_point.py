@@ -3,7 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.bin.decoder import decode_cif_data
-from ciftools.bin.encoder import BYTE_ARRAY, DELTA, FixedPoint, Compose
+from ciftools.bin.encoder import BYTE_ARRAY, DELTA, FixedPoint, ComposeEncoders
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestEncodings_FixedPoint(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = Compose(FixedPoint(10**e), BYTE_ARRAY)
+            encoder = ComposeEncoders(FixedPoint(10**e), BYTE_ARRAY)
             encoded = encoder.encode(test_arr)
             decoded = decode_cif_data(encoded)
 
@@ -36,7 +36,7 @@ class TestEncodings_FixedPointDelta(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = Compose(FixedPoint(10**e), DELTA, BYTE_ARRAY)
+            encoder = ComposeEncoders(FixedPoint(10**e), DELTA, BYTE_ARRAY)
             encoded = encoder.encode(test_arr)
             msgpack.loads(msgpack.dumps(encoded))
             decoded = decode_cif_data(encoded)

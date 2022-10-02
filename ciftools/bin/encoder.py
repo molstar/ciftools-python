@@ -21,7 +21,7 @@ class BinaryCIFEncoder(Protocol):
     def encode(self, data: Any) -> EncodedCIFData:
         ...
 
-class Compose(BinaryCIFEncoder):
+class ComposeEncoders(BinaryCIFEncoder):
     def __init__(self, *encoders: List["BinaryCIFEncoder"]):
         self.encoders = encoders
 
@@ -293,8 +293,8 @@ RUN_LENGTH = RunLength()
 
 
 # TODO: use classifier once implemented
-_OFFSET_ENCODER = Compose(DELTA, INTEGER_PACKING)
-_DATA_ENCODER = Compose(DELTA, RUN_LENGTH, INTEGER_PACKING)
+_OFFSET_ENCODER = ComposeEncoders(DELTA, INTEGER_PACKING)
+_DATA_ENCODER = ComposeEncoders(DELTA, RUN_LENGTH, INTEGER_PACKING)
 
 
 class StringArray(BinaryCIFEncoder):
