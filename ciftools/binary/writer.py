@@ -2,21 +2,22 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.run_length import RUN_LENGTH_CIF_ENCODER
-from ciftools.binary.encoding.types import (
+from ciftools.binary.encoded_data import (
     EncodedCIFCategory,
     EncodedCIFColumn,
     EncodedCIFData,
     EncodedCIFDataBlock,
     EncodedCIFFile,
 )
-from ciftools.cif_format.value_presence import ValuePresenceEnum
-from ciftools.writer.base import CategoryWriter, CategoryWriterProvider, CIFWriter, FieldDesc, OutputStream
+from ciftools.binary.encoder import BYTE_ARRAY, RUN_LENGTH
+from ciftools.models.writer import CIFCategoryDesc, CIFFieldDesc, CIFWriter
 
 
-class _ContextData:
+def _always_present(data, i):
+    return 0
+
+
+class _DataWrapper:
     data: Any
     count: int
 
@@ -25,16 +26,7 @@ class _ContextData:
         self.count = count
 
 
-_RLE_ENCODER = BinaryCIFEncoder([RUN_LENGTH_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
-_BYTE_ARRAY_ENCODER = BinaryCIFEncoder([BYTE_ARRAY_CIF_ENCODER])
-
-
-def _always_present(data, i):
-    return ValuePresenceEnum.Present
-
-
 class BinaryCIFWriter(CIFWriter):
-
     _data: Optional[EncodedCIFFile]
     _data_blocks: list[EncodedCIFDataBlock]
     _encoded_data: np.ndarray  # bytes -> uint8
@@ -44,101 +36,98 @@ class BinaryCIFWriter(CIFWriter):
         self._data = {"version": "0.3.0", "encoder": encoder, "dataBlocks": self._data_blocks}
 
     def start_data_block(self, header: str) -> None:
-        # TODO: optimize if needed
+        # TODO: should we call upper() here?
         _header = header.replace(" ", "").replace("\n", "").replace("\t", "").upper()
         self._data_blocks.append({"header": _header, "categories": []})
 
-    def write_category(self, writer_provider: CategoryWriterProvider, contexts: List[Any]) -> None:
-
+    def write_category(self, category: CIFCategoryDesc, data: List[Any]) -> None:
         if not self._data:
             raise Exception("The writer contents have already been encoded, no more writing.")
 
         if not self._data_blocks:
             raise Exception("No data block created.")
 
-        if not contexts:
-            src = [writer_provider.category_writer(None)]
-        else:
-            src = [writer_provider.category_writer(ctx) for ctx in contexts]
-
-        categories: list[CategoryWriter] = list(filter(lambda writer: writer.count > 0, src))
-        if not categories:
+        instances = [_DataWrapper(data=d, count=category.get_count(d)) for d in data]
+        instances = list(filter(lambda i: i.count > 0, instances))
+        if not instances:
             return
 
-        count = 0
-        for cat in categories:
-            count += cat.count
-        if not count:
+        total_count = 0
+        for cat in instances:
+            total_count += cat.count
+        if not total_count:
             return
 
-        first = categories[0]
-        cif_cat: EncodedCIFCategory = {"name": f"_{first.desc.name}", "rowCount": count, "columns": []}
-        data = [_ContextData(c.data, c.count) for c in categories]
+        encoded: EncodedCIFCategory = {"name": f"_{category.name}", "rowCount": total_count, "columns": []}
+        for f in category.fields:
+            encoded["columns"].append(_encode_field(f, instances, total_count))
 
-        for f in first.desc.fields:
-            cif_cat["columns"].append(BinaryCIFWriter._encode_field(f, data, count))
+        self._data_blocks[-1]["categories"].append(encoded)
 
-        self._data_blocks[len(self._data_blocks) - 1]["categories"].append(cif_cat)
-
-    def encode(self) -> None:
-        self._encoded_data = msgpack.dumps(self._data)
+    def encode(self) -> bytes:
+        encoded_data = msgpack.dumps(self._data)
         self._data = None
         self._data_blocks = []
+        return encoded_data
 
-    def flush(self, stream: OutputStream) -> None:
-        stream.write_binary(self._encoded_data)
 
-    @staticmethod
-    def _encode_field(field: FieldDesc, data: list[_ContextData], total_count: int) -> EncodedCIFColumn:
-        array: np.ndarray
-        array = field.create_array(total_count)
-        is_native: bool = not hasattr(array, "dtype")
+def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: int) -> EncodedCIFColumn:
+    array = field.create_array(total_count)
 
-        mask = np.ndarray(shape=[total_count], dtype=np.dtype(np.uint8))
-        presence = field.presence or _always_present
-        all_present = True
+    mask = np.zeros(total_count, dtype=np.dtype(np.uint8))
+    presence = field.presence
+    all_present = True
 
-        offset = 0
-        for _d in data:
-            d = _d.data
+    offset = 0
+    for category in data:
+        d = category.data
 
-            arrays = field.arrays(d)
-            if arrays is not None:
-                if len(arrays.values) != _d.count:
-                    raise ValueError(f"values provided in arrays() must have the same length as the category count field")
+        category_array = field.value_array and field.value_array(d)
+        if category_array is not None:
+            if len(category_array) != category.count:
+                raise ValueError(f"provided values array must have the same length as the category count field")
 
-                array[offset:offset + _d.count] = arrays.values
-                if arrays.mask is not None:
-                    if len(arrays.mask) != _d.count:
-                        raise ValueError(f"mask provided in arrays() must have the same length as the category count field")
-                    mask[offset:offset + _d.count] = arrays.mask
-                offset += _d.count
+            array[offset : offset + category.count] = category_array  # type: ignore
 
-            else:
-                # TODO: use numba JIT for this
-                for i in range(_d.count):
-                    p = presence(d, i)
-                    if p is not ValuePresenceEnum.Present:
-                        mask[offset] = p
-                        if is_native:
-                            array[offset] = None
-                        all_present = False
-                    else:
-                        mask[offset] = ValuePresenceEnum.Present
-                        array[offset] = field.value(d, i)
+            category_mask = field.presence_array and field.presence_array(d)
+            if category_mask is not None:
+                if len(category_mask) != category.count:
+                    raise ValueError(f"provided mask array must have the same length as the category count field")
+                mask[offset : offset + category.count] = category_mask
 
-                    offset += 1
+            offset += category.count
 
-        encoder = field.encoder(data[0].data) if len(data) > 0 else _BYTE_ARRAY_ENCODER
-        encoded = encoder.encode_cif_data(array)
+        elif presence is not None:
+            # TODO: check if JIT will help
+            for i in range(category.count):
+                p = presence(d, i)
+                if p:
+                    mask[offset] = p
+                    all_present = False
+                else:
+                    array[offset] = field.value(d, i)  # type: ignore
+                offset += 1
+        else:
+            # TODO: check if JIT will help
+            for i in range(category.count):
+                array[offset] = field.value(d, i)  # type: ignore
+                offset += 1
 
-        mask_data: Optional[EncodedCIFData] = None
+    encoder = field.encoder(data[0].data) if len(data) > 0 else BYTE_ARRAY
+    encoded = encoder.encode(array)
 
-        if not all_present:
-            mask_rle = _RLE_ENCODER.encode_cif_data(mask)
-            if len(mask_rle["data"]) < len(mask):
-                mask_data = mask_rle
-            else:
-                mask_data = _BYTE_ARRAY_ENCODER.encode_cif_data(mask)
+    if not isinstance(encoded["data"], bytes):
+        raise ValueError(
+            f"The encoding must result in bytes but it was {str(type(encoded['data']))}. Fix the encoding chain."
+        )
 
-        return {"name": field.name, "data": encoded, "mask": mask_data}
+    mask_data: Optional[EncodedCIFData] = None
+
+    if not all_present:
+        mask_rle = RUN_LENGTH.encode(mask)
+        if len(mask_rle["data"]) < len(mask):
+            mask_data = mask_rle
+        else:
+            mask_data = BYTE_ARRAY.encode(mask)
+
+    return {"name": field.name, "data": encoded, "mask": mask_data}

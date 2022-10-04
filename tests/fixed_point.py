@@ -3,10 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.byte_array import BYTE_ARRAY_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEncoder
+from ciftools.binary.encoder import BYTE_ARRAY, DELTA, ComposeEncoders, FixedPoint
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):
@@ -20,8 +17,8 @@ class TestEncodings_FixedPoint(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = BinaryCIFEncoder([FixedPointCIFEncoder(10**e), BYTE_ARRAY_CIF_ENCODER])
-            encoded = encoder.encode_cif_data(test_arr)
+            encoder = ComposeEncoders(FixedPoint(10**e), BYTE_ARRAY)
+            encoded = encoder.encode(test_arr)
             decoded = decode_cif_data(encoded)
 
             self.assertTrue(np.allclose(test_arr, decoded, atol=10 ** (-e)))
@@ -39,8 +36,8 @@ class TestEncodings_FixedPointDelta(unittest.TestCase):
         ]
 
         for test_arr, e in test_suite:
-            encoder = BinaryCIFEncoder([FixedPointCIFEncoder(10**e), DELTA_CIF_ENCODER, BYTE_ARRAY_CIF_ENCODER])
-            encoded = encoder.encode_cif_data(test_arr)
+            encoder = ComposeEncoders(FixedPoint(10**e), DELTA, BYTE_ARRAY)
+            encoded = encoder.encode(test_arr)
             msgpack.loads(msgpack.dumps(encoded))
             decoded = decode_cif_data(encoded)
 

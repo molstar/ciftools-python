@@ -3,8 +3,7 @@ import unittest
 import msgpack
 import numpy as np
 from ciftools.binary.decoder import decode_cif_data
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.string_array import STRING_ARRAY_CIF_ENCODER
+from ciftools.binary.encoder import STRING_ARRAY
 
 
 class TestEncodings_StringArray(unittest.TestCase):
@@ -27,8 +26,7 @@ class TestEncodings_StringArray(unittest.TestCase):
             "cat",
         ]
 
-        encoder = BinaryCIFEncoder([STRING_ARRAY_CIF_ENCODER])
-        encoded = encoder.encode_cif_data(test_arr)
+        encoded = STRING_ARRAY.encode(test_arr)
         msgpack.loads(msgpack.dumps(encoded))
         decoded = decode_cif_data(encoded)
 

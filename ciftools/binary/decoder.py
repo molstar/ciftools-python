@@ -1,8 +1,7 @@
-from typing import Union
-
 import numpy as np
-from ciftools.binary.encoding.data_types import DataType
-from ciftools.binary.encoding.encodings import (
+from ciftools.binary.data_types import DataType
+from ciftools.binary.encoded_data import EncodedCIFData
+from ciftools.binary.encoding_types import (
     ByteArrayEncoding,
     DeltaEncoding,
     FixedPointEncoding,
@@ -11,18 +10,9 @@ from ciftools.binary.encoding.encodings import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from ciftools.binary.encoding.types import EncodedCIFColumn, EncodedCIFData
-from ciftools.cif_format.base import CIFColumnBase
-from ciftools.cif_format.binary.column import BinaryCIFColumn
 
 
-def decode_cif_column(column: EncodedCIFColumn) -> CIFColumnBase:
-    values = decode_cif_data(column["data"])
-    value_kinds = decode_cif_data(column["mask"]) if column["mask"] else None  # type: ignore
-    return BinaryCIFColumn(column["name"], values, value_kinds)  # type: ignore
-
-
-def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]]:
+def decode_cif_data(encoded_data: EncodedCIFData) -> np.ndarray:
     result = encoded_data["data"]
     for encoding in encoded_data["encoding"][::-1]:
         if encoding["kind"] in _decoders:
@@ -30,11 +20,11 @@ def decode_cif_data(encoded_data: EncodedCIFData) -> Union[np.ndarray, list[str]
         else:
             raise ValueError(f"Unsupported encoding '{encoding['kind']}'")
 
-    return result
+    return result  # type: ignore
 
 
 def _decode_byte_array(data: bytes, encoding: ByteArrayEncoding) -> np.ndarray:
-    return np.frombuffer(data, dtype="<" + DataType.to_dtype(encoding["type"]))
+    return np.frombuffer(data, dtype=f"<{str(DataType.to_dtype(encoding['type']))}")
 
 
 def _decode_fixed_point(data: np.ndarray, encoding: FixedPointEncoding) -> np.ndarray:
@@ -57,6 +47,7 @@ def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
     return np.cumsum(result, out=result)
 
 
+# TODO: JIT
 def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0x7F if encoding["byteCount"] == 1 else 0x7FFF
     lower_limit = -upper_limit - 1
@@ -78,6 +69,7 @@ def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEnc
     return output
 
 
+# TODO: JIT
 def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     upper_limit = 0xFF if encoding["byteCount"] == 1 else 0xFFFF
     n = len(data)
@@ -107,7 +99,7 @@ def _decode_integer_packing(data: np.ndarray, encoding: IntegerPackingEncoding) 
         return _decode_integer_packing_signed(data, encoding)
 
 
-def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> list[str]:
+def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> np.ndarray:
     offsets = decode_cif_data(EncodedCIFData(encoding=encoding["offsetEncoding"], data=encoding["offsets"]))
     indices = decode_cif_data(EncodedCIFData(encoding=encoding["dataEncoding"], data=data))
 
@@ -117,7 +109,8 @@ def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> lis
     for i in range(1, len(offsets)):
         strings.append(string_data[offsets[i - 1] : offsets[i]])  # type: ignore
 
-    return [strings[i + 1] for i in indices]  # type: ignore
+    return np.array([strings[i + 1] for i in indices], dtype=np.object_)
+    # return [strings[i + 1] for i in indices]
 
 
 _decoders = {

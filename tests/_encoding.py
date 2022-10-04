@@ -1,27 +1,24 @@
-from typing import Any
 import unittest
 from pathlib import Path
+from typing import List
 
 import numpy as np
-from ciftools.binary.encoding.impl.binary_cif_encoder import BinaryCIFEncoder
-from ciftools.binary.encoding.impl.encoders.delta import DELTA_CIF_ENCODER
-from ciftools.binary.encoding.impl.encoders.fixed_point import FixedPointCIFEncoder
-from ciftools.binary.encoding.impl.encoders.integer_packing import INTEGER_PACKING_CIF_ENCODER
-from ciftools.binary.writer import BinaryCIFWriter
-from ciftools.cif_format.binary.file import BinaryCIFFile
-from ciftools.writer.base import CategoryDesc, CategoryWriter, CategoryWriterProvider, FieldArrays, FieldDesc, OutputStream
-from ciftools.writer.fields import number_field, string_field
+from ciftools.binary.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
+from ciftools.models.writer import CIFCategoryDesc
+from ciftools.models.writer import CIFFieldDesc as Field
+from ciftools.serialization import create_binary_writer
+from ciftools.serialization import loads as loads_bcif
 
 
 class TestMetadata:
-    lattices_ids: np.ndarray
+    lattices_ids: List[int]
 
 
 class TestVolumeData:
     metadata: TestMetadata
-    volume: Any
+    volume: np.ndarray
     lattices: dict[int, np.ndarray]
-    annotation: Any
+    annotation: List[str]
 
 
 def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
@@ -38,97 +35,59 @@ def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
     return data
 
 
-class TestCategoryDesc(CategoryDesc):
-    def __init__(self, name: str, fields: list[FieldDesc]):
-        self.name = name
-        self.fields = fields
-
-
-class TestCategoryWriter(CategoryWriter):
-    def __init__(self, data: TestVolumeData, count: int, category_desc: TestCategoryDesc):
-        self.data = data
-        self.count = count
-        self.desc = category_desc
-
-
-class TestCategoryWriterProvider_LatticeIds(CategoryWriterProvider):
-    length: int
-
-    def __init__(self, length: int):
-        self.length = length
-
-    def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        field_desc: list[FieldDesc] = [
-            number_field(
-                name="id",
-                dtype="i4",
-                encoder=lambda _: BinaryCIFEncoder([INTEGER_PACKING_CIF_ENCODER]),
-                value=lambda data, i: data.metadata.lattices_ids[i],
-            )
-        ]
-        return TestCategoryWriter(ctx, self.length, TestCategoryDesc("lattice_ids", field_desc))
-
-
-class TestCategoryWriterProvider_Volume(CategoryWriterProvider):
-    length: int
-
-    def __init__(self, length: int):
-        self.length = length
-
-    def category_writer(self, ctx: TestVolumeData) -> CategoryWriter:
-        lattice_encoding = BinaryCIFEncoder(
-            [FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER]
+LATTICE_IDS = CIFCategoryDesc[TestVolumeData](
+    name="lattice_ids",
+    fields=[
+        Field[TestVolumeData].numbers(
+            name="id",
+            dtype="i4",
+            encoder=lambda _: INTEGER_PACKING,
+            value=lambda data, i: data.metadata.lattices_ids[i],
         )
+    ],
+    get_count=lambda data: len(data.metadata.lattices_ids),
+)
 
-        def lattice_value_getter(lid: int):
-            return lambda data, i: data.lattices[lid][i]
 
-        fields = [
-            number_field(
-                name=f"lattice_{lid}",
-                dtype="i4",
+def create_volume_category(lattice_ids: List[int]):
+    lattice_encoding = ComposeEncoders(FixedPoint(1000), DELTA, INTEGER_PACKING)
+
+    def lattice_value_getter(lid: int):
+        return lambda data, i: data.lattices[lid][i]
+
+    fields = [
+        Field[TestVolumeData].numbers(
+            name=f"lattice_{lid}",
+            dtype="i4",
+            encoder=lambda _: lattice_encoding,
+            value=lattice_value_getter(lid),
+        )
+        for lid in lattice_ids
+    ]
+    fields.extend(
+        [
+            Field[TestVolumeData].numbers(
+                name="volume",
+                dtype="f4",
                 encoder=lambda _: lattice_encoding,
-                value=lattice_value_getter(lid),
-            )
-            for lid in ctx.metadata.lattices_ids
+                value=lambda data, i: data.volume[i],
+            ),
+            Field[TestVolumeData].number_array(
+                name="volume_array",
+                dtype="f4",
+                encoder=lambda _: lattice_encoding,
+                array=lambda data: data.volume,
+            ),
+            Field[TestVolumeData].strings(name="annotation", value=lambda data, i: data.annotation[i]),
+            Field[TestVolumeData].string_array(name="annotation_array", array=lambda data: data.annotation),
         ]
-        fields.append(
-            number_field(
-                name=f"volume",
-                dtype="f4",
-                # TODO: use interval quantization
-                encoder=lambda _: BinaryCIFEncoder(
-                    [FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER]
-                ),
-                value=lambda data, i: data.volume[i],
-            )
-        )
-        fields.append(
-            number_field(
-                name=f"volume_array",
-                dtype="f4",
-                encoder=lambda _: BinaryCIFEncoder(
-                    [FixedPointCIFEncoder(1000), DELTA_CIF_ENCODER, INTEGER_PACKING_CIF_ENCODER]
-                ),
-                value=lambda data, i: data.volume[i],
-                arrays=lambda data: FieldArrays(values=data.volume),
-            )
-        )
-        fields.append(string_field(name="annotation", value=lambda data, i: data.annotation[i]))
+    )
 
-        return TestCategoryWriter(ctx, self.length, TestCategoryDesc("volume", fields))
-
-
-class TestOutputStream(OutputStream):
-    encoded_output = None
-
-    def write_string(self, data: str) -> bool:
-        self.encoded_output = data
-        return True
-
-    def write_binary(self, data: np.ndarray) -> bool:
-        self.encoded_output = data
-        return True
+    return CIFCategoryDesc[TestVolumeData](
+        name="volume",
+        fields=fields,
+        get_count=lambda data: len(data.volume),
+    )
 
 
 class TestEncodings_Encoding(unittest.TestCase):
@@ -138,58 +97,58 @@ class TestEncodings_Encoding(unittest.TestCase):
         test_data = prepare_test_data(5, 3)
         # print("Original data: " + str(test_data.__dict__))
 
-        writer = BinaryCIFWriter("my_encoder")
+        writer = create_binary_writer(encoder="ciftools-test")
 
         # write lattice ids
-        category_writer_provider = TestCategoryWriterProvider_LatticeIds(len(test_data.metadata.lattices_ids))
         writer.start_data_block("lattice_ids")
-        writer.write_category(category_writer_provider, [test_data])
+        writer.write_category(LATTICE_IDS, [test_data])
 
-        # write lattices and volume
-        category_writer_provider = TestCategoryWriterProvider_Volume(len(test_data.volume))
         writer.start_data_block("volume_data")
-        writer.write_category(category_writer_provider, [test_data])
+        writer.write_category(create_volume_category(test_data.metadata.lattices_ids), [test_data])
 
-        # encode and flush
-        writer.encode()
-        output_stream = TestOutputStream()
-        writer.flush(output_stream)
-
-        encoded = output_stream.encoded_output
+        encoded = writer.encode()
         (Path(__file__).parent / "lattices.bcif").write_bytes(encoded)
 
         # load encoded lattice ids
-        parsed = BinaryCIFFile.loads(encoded, lazy=False)
+        parsed = loads_bcif(encoded, lazy=False)
 
         print("Decoded:")
-        print("DataBlocks: " + str(len(parsed.data_blocks)))
+        print(f"DataBlocks: {len(parsed.data_blocks)}")
 
-        lattice_ids = (
-            parsed.data_block("lattice_ids".upper()).get_category("lattice_ids").get_column("id").__dict__["_values"]
-        )
-        print("LatticeIds: " + str(lattice_ids))
+        lattice_ids = parsed["LATTICE_IDS"].lattice_ids.id.as_ndarray()
+        print(f"LatticeIds: {lattice_ids}")
         compare = np.array_equal(test_data.metadata.lattices_ids, lattice_ids)
         self.assertTrue(compare, "LatticeIds did not match original data")
 
         # load encoded data
-        volume_and_lattices = parsed.data_block("volume_data".upper()).get_category("volume")
+        volume_and_lattices = parsed.VOLUME_DATA.volume
 
-        print("Lattices: " + str(volume_and_lattices.column_names()))
-        volume = volume_and_lattices.get_column("volume").__dict__["_values"]
-        print("Volume (parsed): " + str(volume))
-        print("Volume (input): " + str(test_data.volume))
+        print(f"Lattices: {volume_and_lattices.field_names}")
+        volume = volume_and_lattices.volume.as_ndarray()
+        print(f"Volume (parsed): {volume}")
+        print(f"Volume (input): {test_data.volume}")
         compare = np.allclose(test_data.volume, volume, atol=1e-3)
         self.assertTrue(compare, "Volume did not match original data")
 
-        volume_array = volume_and_lattices.get_column("volume_array").__dict__["_values"]
-        print("Volume Array (parsed): " + str(volume_array))
+        volume_array = volume_and_lattices.volume_array.as_ndarray()
+        print(f"Volume Array (parsed): {volume_array}")
         compare = np.allclose(test_data.volume, volume_array, atol=1e-3)
         self.assertTrue(compare, "Volume Array did not match original data")
 
+        annotations = volume_and_lattices.annotation.as_ndarray()
+        annotations_array = volume_and_lattices.annotation_array.as_ndarray()
+        print(f"Annotations (parsed): {annotations}")
+        print(f"Annotations (parsed array): {annotations_array}")
+        print(f"Annotations (input): {test_data.annotation}")
+        compare = np.array_equal(test_data.annotation, annotations)
+        compare_arrays = np.array_equal(test_data.annotation, annotations_array)
+        self.assertTrue(compare, "Annotations did not match original data")
+        self.assertTrue(compare_arrays, "Annotations array did not match original data")
+
         for lattice_id in lattice_ids:
-            print("Lattice: " + str(lattice_id))
-            lattice_value = volume_and_lattices.get_column("lattice_" + str(lattice_id)).__dict__["_values"]
-            print("LatticeValue (parsed): " + str(lattice_value))
-            print("LatticeValue (input): " + str(test_data.lattices[lattice_id]))
+            print(f"Lattice: {lattice_id}")
+            lattice_value = volume_and_lattices[f"lattice_{lattice_id}"].as_ndarray()
+            print(f"LatticeValue (parsed): {lattice_value}")
+            print(f"LatticeValue (input): {test_data.lattices[lattice_id]}")
             compare = np.array_equal(test_data.lattices[lattice_id], lattice_value)
-            self.assertTrue(compare, str("Lattice id " + str(lattice_id) + " did not match original data"))
+            self.assertTrue(compare, f"Lattice id {lattice_id} did not match original data")
