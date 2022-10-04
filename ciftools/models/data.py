@@ -32,6 +32,12 @@ class CIFColumn(Protocol):
     def as_ndarray(
         self, *, dtype: Optional[Union[np.dtype, str]] = None, start: Optional[int] = None, end: Optional[int] = None
     ) -> np.ndarray:
+        """
+        Return the column represented as a numpy array.
+        
+        - If dtype is specified, a copy of the underlying array is returned.
+        - Otherwise returns a view of the underlying data.
+        """
         ...
 
     def __getitem__(self, idx: Any) -> Any:
@@ -43,7 +49,7 @@ class CIFColumn(Protocol):
     @property
     def value_presences(self) -> Optional[np.ndarray]:
         """
-        Presences represented as nd byte array
+        Presences represented as numpy byte array (see `CIFValuePresenceEnum` explanation)
         """
         ...
 
@@ -66,7 +72,7 @@ class CIFCategory(Protocol):
         ...
 
     def __getattr__(self, name: str) -> CIFColumn:
-        ...
+        return self[name]
 
     def __getitem__(self, name: str) -> CIFColumn:
         ...
@@ -112,7 +118,7 @@ class CIFCategory(Protocol):
 
 class CIFDataBlock(Protocol):
     def __getattr__(self, name: str) -> CIFCategory:
-        ...
+        return self[name]
 
     def __getitem__(self, name: str) -> CIFCategory:
         ...
@@ -137,7 +143,7 @@ class CIFFile(Protocol):
         ...
 
     def __getattr__(self, name: str) -> CIFDataBlock:
-        ...
+        return self[name]
 
     def __len__(self) -> int:
         ...

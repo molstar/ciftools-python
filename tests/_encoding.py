@@ -4,7 +4,7 @@ from typing import Any, List
 
 import numpy as np
 from ciftools.binary.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
-from ciftools.models.writer import CIFCategoryDesc, CIFFieldArrays, number_field, string_field
+from ciftools.models.writer import CIFCategoryDesc, CIFFieldArrays, number_array_field, number_field, string_field
 from ciftools.serialization import create_binary_writer
 from ciftools.serialization import loads as loads_bcif
 
@@ -72,11 +72,10 @@ def create_volume_category(lattice_ids: List[int]):
                 encoder=lambda _: lattice_encoding,
                 value=lambda data, i: data.volume[i],
             ),
-            number_field(
+            number_array_field(
                 name=f"volume_array",
                 dtype="f4",
                 encoder=lambda _: lattice_encoding,
-                value=lambda data, i: data.volume[i],
                 arrays=lambda data: CIFFieldArrays(values=data.volume),
             ),
             string_field(name="annotation", value=lambda data, i: data.annotation[i]),

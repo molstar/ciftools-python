@@ -49,7 +49,6 @@ def number_field(
     dtype: Union[np.dtype, str],
     encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
     presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
-    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
 ) -> CIFFieldDesc:
     return CIFFieldDesc(
         name=name,
@@ -57,6 +56,20 @@ def number_field(
         create_array=lambda size: np.empty(size, dtype=dtype),
         encoder=encoder,
         presence=presence,
+    )
+
+
+def number_array_field(
+    *,
+    name: str,
+    dtype: Union[np.dtype, str],
+    encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
+    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
+) -> CIFFieldDesc:
+    return CIFFieldDesc(
+        name=name,
+        create_array=lambda size: np.empty(size, dtype=dtype),
+        encoder=encoder,
         arrays=arrays,
     )
 
@@ -66,7 +79,6 @@ def string_field(
     name: str,
     value: Callable[[Any, int], Optional[str]] = None,
     presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
-    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
 ) -> CIFFieldDesc:
     return CIFFieldDesc(
         name=name,
@@ -74,5 +86,17 @@ def string_field(
         create_array=lambda size: [""] * size,
         encoder=lambda _: STRING_ARRAY,
         presence=presence,
+    )
+
+
+def string_array_field(
+    *,
+    name: str,
+    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
+) -> CIFFieldDesc:
+    return CIFFieldDesc(
+        name=name,
+        create_array=lambda size: [""] * size,
+        encoder=lambda _: STRING_ARRAY,
         arrays=arrays,
     )

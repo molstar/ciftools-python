@@ -43,8 +43,6 @@ class BinaryCIFColumn(CIFColumn):
     ) -> np.ndarray:
         if dtype is None and start is None and end is None:
             return self._values
-        start = start or 0
-        end = end if end is not None else len(self._values)
         if dtype is None:
             return self._values[start:end]
         return self._values[start:end].astype(dtype)
@@ -69,9 +67,6 @@ def _decode_cif_column(column: EncodedCIFColumn) -> CIFColumn:
 
 
 class BinaryCIFCategory(CIFCategory):
-    def __getattr__(self, name: str) -> BinaryCIFColumn:
-        return self[name]
-
     def __getitem__(self, name: str) -> BinaryCIFColumn:
         if name not in self._field_cache:
             raise ValueError(f"{name} is not a valid category name")
@@ -110,9 +105,6 @@ class BinaryCIFCategory(CIFCategory):
 
 
 class BinaryCIFDataBlock(CIFDataBlock):
-    def __getattr__(self, name: str) -> CIFCategory:
-        return self._categories[name]
-
     def __getitem__(self, name: str) -> CIFCategory:
         return self._categories[name]
 
@@ -142,9 +134,6 @@ class BinaryCIFFile(CIFFile):
                 if index_or_name < len(self.data_blocks) and index_or_name >= 0
                 else None
             )
-
-    def __getattr__(self, name: str) -> CIFDataBlock:
-        return self[name]
 
     def __len__(self):
         return len(self._data_blocks)
