@@ -91,11 +91,11 @@ class CIFCategoryDesc(Protocol):
         ...
 
     @staticmethod
-    def get_fields(data: Any) -> Collection[CIFFieldDesc]:
+    def get_row_count(data: Any) -> int:
         ...
 
     @staticmethod
-    def get_field_descriptors(data: Any) -> int:
+    def get_field_descriptors(data: Any) -> Collection[CIFFieldDesc]:
         ...
 
 
