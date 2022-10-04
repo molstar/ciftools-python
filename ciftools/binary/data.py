@@ -11,11 +11,11 @@ class BinaryCIFColumn(CIFColumn):
         self,
         name: str,
         values: np.ndarray,
-        value_mask: Union[np.ndarray, None],
+        value_presence: Optional[np.ndarray],
     ):
         self.name = name
         self._values = values
-        self._value_mask = value_mask
+        self._value_presence = value_presence
         self._row_count = len(values)
 
     def get_string(self, row: int) -> str:
@@ -28,8 +28,8 @@ class BinaryCIFColumn(CIFColumn):
         return float(self._values[row])
 
     def get_value_presence(self, row: int) -> CIFValuePresenceEnum:
-        if self._value_mask:
-            return self._value_mask[row]
+        if self._value_presence:
+            return self._value_presence[row]
         return 0  # type: ignore
 
     def are_values_equal(self, row_a: int, row_b: int) -> bool:
@@ -48,7 +48,7 @@ class BinaryCIFColumn(CIFColumn):
         return self._values[start:end].astype(dtype)
 
     def __getitem__(self, idx: Any) -> Any:
-        if isinstance(idx, int) and self._value_mask and self._value_mask[idx]:
+        if isinstance(idx, int) and self._value_presence and self._value_presence[idx]:
             return None
         return self._values[idx]
 
@@ -57,7 +57,7 @@ class BinaryCIFColumn(CIFColumn):
 
     @property
     def value_presences(self) -> Optional[np.ndarray]:
-        return self._value_mask
+        return self._value_presence
 
 
 def _decode_cif_column(column: EncodedCIFColumn) -> CIFColumn:

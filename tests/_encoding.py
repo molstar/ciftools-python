@@ -1,10 +1,11 @@
 import unittest
 from pathlib import Path
-from typing import Any, List
+from typing import List
 
 import numpy as np
 from ciftools.binary.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
-from ciftools.models.writer import CIFCategoryDesc, CIFFieldArrays, number_array_field, number_field, string_field
+from ciftools.models.writer import CIFCategoryDesc
+from ciftools.models.writer import CIFFieldDesc as Field
 from ciftools.serialization import create_binary_writer
 from ciftools.serialization import loads as loads_bcif
 
@@ -15,9 +16,9 @@ class TestMetadata:
 
 class TestVolumeData:
     metadata: TestMetadata
-    volume: Any
+    volume: np.ndarray
     lattices: dict[int, np.ndarray]
-    annotation: Any
+    annotation: List[str]
 
 
 def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
@@ -34,10 +35,10 @@ def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
     return data
 
 
-LATTICE_IDS = CIFCategoryDesc(
+LATTICE_IDS = CIFCategoryDesc[TestVolumeData](
     name="lattice_ids",
     fields=[
-        number_field(
+        Field[TestVolumeData].numbers(
             name="id",
             dtype="i4",
             encoder=lambda _: INTEGER_PACKING,
@@ -55,7 +56,7 @@ def create_volume_category(lattice_ids: List[int]):
         return lambda data, i: data.lattices[lid][i]
 
     fields = [
-        number_field(
+        Field[TestVolumeData].numbers(
             name=f"lattice_{lid}",
             dtype="i4",
             encoder=lambda _: lattice_encoding,
@@ -65,24 +66,24 @@ def create_volume_category(lattice_ids: List[int]):
     ]
     fields.extend(
         [
-            number_field(
-                name=f"volume",
+            Field[TestVolumeData].numbers(
+                name="volume",
                 dtype="f4",
-                # TODO: use interval quantization
                 encoder=lambda _: lattice_encoding,
                 value=lambda data, i: data.volume[i],
             ),
-            number_array_field(
-                name=f"volume_array",
+            Field[TestVolumeData].number_array(
+                name="volume_array",
                 dtype="f4",
                 encoder=lambda _: lattice_encoding,
-                arrays=lambda data: CIFFieldArrays(values=data.volume),
+                array=lambda data: data.volume,
             ),
-            string_field(name="annotation", value=lambda data, i: data.annotation[i]),
+            Field[TestVolumeData].strings(name="annotation", value=lambda data, i: data.annotation[i]),
+            Field[TestVolumeData].string_array(name="annotation_array", array=lambda data: data.annotation),
         ]
     )
 
-    return CIFCategoryDesc(
+    return CIFCategoryDesc[TestVolumeData](
         name="volume",
         fields=fields,
         get_count=lambda data: len(data.volume),
@@ -135,10 +136,14 @@ class TestEncodings_Encoding(unittest.TestCase):
         self.assertTrue(compare, "Volume Array did not match original data")
 
         annotations = volume_and_lattices.annotation.as_ndarray()
+        annotations_array = volume_and_lattices.annotation_array.as_ndarray()
         print(f"Annotations (parsed): {annotations}")
+        print(f"Annotations (parsed array): {annotations_array}")
         print(f"Annotations (input): {test_data.annotation}")
         compare = np.array_equal(test_data.annotation, annotations)
+        compare_arrays = np.array_equal(test_data.annotation, annotations_array)
         self.assertTrue(compare, "Annotations did not match original data")
+        self.assertTrue(compare_arrays, "Annotations array did not match original data")
 
         for lattice_id in lattice_ids:
             print(f"Lattice: {lattice_id}")

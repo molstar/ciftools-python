@@ -1,34 +1,95 @@
 from dataclasses import dataclass
-from typing import Any, Callable, List, Optional, Protocol, Union
+from typing import Any, Callable, Generic, List, Optional, Protocol, TypeVar, Union
 
 import numpy as np
 from ciftools.binary.encoder import BYTE_ARRAY, STRING_ARRAY, BinaryCIFEncoder
 from ciftools.models.data import CIFValuePresenceEnum
 
-
-@dataclass
-class CIFFieldArrays:
-    values: Union[np.ndarray, List[str], List[int], List[float]]
-    """Array of the values themselves"""
-    mask: Optional[np.ndarray] = None
-    """Optional uint8 array for specifying the missing values. 0 = defined, 1 = ., 2 = ?"""
+TData = TypeVar("TData")
+TArrays = Union[np.ndarray, List[str], List[int], List[float]]
 
 
 @dataclass
-class CIFFieldDesc:
+class CIFFieldDesc(Generic[TData]):
     name: str
     create_array: Callable[[int], Union[np.ndarray, List[str]]]
     encoder: Callable[[Any], BinaryCIFEncoder]
     value: Optional[Callable[[Any, int], Any]] = None
     presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None
-    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None
+    value_array: Optional[Callable[[Any], TArrays]] = None
+    presence_array: Optional[Callable[[Any], Optional[np.ndarray]]] = None
+    """Optional uint8 array for specifying the missing values. 0 = defined, 1 = ., 2 = ?"""
+
+    @staticmethod
+    def numbers(
+        *,
+        name: str,
+        value: Optional[Callable[[TData, int], Optional[Union[int, float]]]] = None,
+        dtype: Union[np.dtype, str],
+        encoder: Callable[[TData], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
+        presence: Optional[Callable[[TData, int], CIFValuePresenceEnum]] = None,
+    ) -> "CIFFieldDesc":
+        return CIFFieldDesc(
+            name=name,
+            value=value,
+            create_array=lambda size: np.empty(size, dtype=dtype),
+            encoder=encoder,
+            presence=presence,
+        )
+
+    @staticmethod
+    def number_array(
+        *,
+        name: str,
+        dtype: Union[np.dtype, str],
+        encoder: Callable[[TData], BinaryCIFEncoder] = lambda _: BYTE_ARRAY,
+        array: Callable[[TData], TArrays],
+        presence: Optional[Callable[[TData], Optional[np.ndarray]]] = None,
+    ) -> "CIFFieldDesc":
+        return CIFFieldDesc(
+            name=name,
+            create_array=lambda size: np.empty(size, dtype=dtype),
+            encoder=encoder,
+            value_array=array,
+            presence_array=presence,
+        )
+
+    @staticmethod
+    def strings(
+        *,
+        name: str,
+        value: Callable[[TData, int], Optional[str]] = None,
+        presence: Optional[Callable[[TData, int], CIFValuePresenceEnum]] = None,
+    ) -> "CIFFieldDesc":
+        return CIFFieldDesc(
+            name=name,
+            value=value,
+            create_array=lambda size: [""] * size,
+            encoder=lambda _: STRING_ARRAY,
+            presence=presence,
+        )
+
+    @staticmethod
+    def string_array(
+        *,
+        name: str,
+        array: Optional[Callable[[TData], TArrays]] = None,
+        mask: Optional[Callable[[TData], Optional[np.ndarray]]] = None,
+    ) -> "CIFFieldDesc":
+        return CIFFieldDesc(
+            name=name,
+            create_array=lambda size: [""] * size,
+            encoder=lambda _: STRING_ARRAY,
+            value_array=array,
+            presence_array=mask,
+        )
 
 
 @dataclass
-class CIFCategoryDesc:
+class CIFCategoryDesc(Generic[TData]):
     name: str
-    fields: List[CIFFieldDesc]
-    get_count: Callable[[Any], int]
+    fields: List[CIFFieldDesc[TData]]
+    get_count: Callable[[TData], int]
 
 
 class CIFWriter(Protocol):
@@ -40,63 +101,3 @@ class CIFWriter(Protocol):
 
     def encode(self) -> Union[str, bytes]:
         ...
-
-
-def number_field(
-    *,
-    name: str,
-    value: Optional[Callable[[Any, int], Optional[Union[int, float]]]] = None,
-    dtype: Union[np.dtype, str],
-    encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
-    presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
-) -> CIFFieldDesc:
-    return CIFFieldDesc(
-        name=name,
-        value=value,
-        create_array=lambda size: np.empty(size, dtype=dtype),
-        encoder=encoder,
-        presence=presence,
-    )
-
-
-def number_array_field(
-    *,
-    name: str,
-    dtype: Union[np.dtype, str],
-    encoder: Callable[[Any], BinaryCIFEncoder] = lambda data: BYTE_ARRAY,
-    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
-) -> CIFFieldDesc:
-    return CIFFieldDesc(
-        name=name,
-        create_array=lambda size: np.empty(size, dtype=dtype),
-        encoder=encoder,
-        arrays=arrays,
-    )
-
-
-def string_field(
-    *,
-    name: str,
-    value: Callable[[Any, int], Optional[str]] = None,
-    presence: Optional[Callable[[Any, int], CIFValuePresenceEnum]] = None,
-) -> CIFFieldDesc:
-    return CIFFieldDesc(
-        name=name,
-        value=value,
-        create_array=lambda size: [""] * size,
-        encoder=lambda _: STRING_ARRAY,
-        presence=presence,
-    )
-
-
-def string_array_field(
-    *,
-    name: str,
-    arrays: Optional[Callable[[Any], CIFFieldArrays]] = None,
-) -> CIFFieldDesc:
-    return CIFFieldDesc(
-        name=name,
-        create_array=lambda size: [""] * size,
-        encoder=lambda _: STRING_ARRAY,
-        arrays=arrays,
-    )

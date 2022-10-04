@@ -34,7 +34,7 @@ class CIFColumn(Protocol):
     ) -> np.ndarray:
         """
         Return the column represented as a numpy array.
-        
+
         - If dtype is specified, a copy of the underlying array is returned.
         - Otherwise returns a view of the underlying data.
         """

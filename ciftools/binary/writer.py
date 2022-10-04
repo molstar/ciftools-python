@@ -82,17 +82,19 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
     for category in data:
         d = category.data
 
-        arrays = field.arrays and field.arrays(d)
-        if arrays is not None:
-            if len(arrays.values) != category.count:
-                raise ValueError(f"values provided in arrays() must have the same length as the category count field")
+        category_array = field.value_array and field.value_array(d)
+        if category_array is not None:
+            if len(category_array) != category.count:
+                raise ValueError(f"provided values array must have the same length as the category count field")
 
-            array[offset : offset + category.count] = arrays.values  # type: ignore
+            array[offset : offset + category.count] = category_array  # type: ignore
 
-            if arrays.mask is not None:
-                if len(arrays.mask) != category.count:
-                    raise ValueError(f"mask provided in arrays() must have the same length as the category count field")
-                mask[offset : offset + category.count] = arrays.mask
+            category_mask = field.presence_array and field.presence_array(d)
+            if category_mask is not None:
+                if len(category_mask) != category.count:
+                    raise ValueError(f"provided mask array must have the same length as the category count field")
+                mask[offset : offset + category.count] = category_mask
+
             offset += category.count
 
         elif presence is not None:
