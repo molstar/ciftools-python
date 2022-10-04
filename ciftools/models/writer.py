@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Generic, List, Optional, Protocol, TypeVar, Union
+from typing import Any, Callable, Collection, Generic, List, Optional, Protocol, TypeVar, Union
 
 import numpy as np
 from ciftools.binary.encoder import BYTE_ARRAY, STRING_ARRAY, BinaryCIFEncoder
@@ -85,11 +85,18 @@ class CIFFieldDesc(Generic[TData]):
         )
 
 
-@dataclass
-class CIFCategoryDesc(Generic[TData]):
-    name: str
-    fields: List[CIFFieldDesc[TData]]
-    get_count: Callable[[TData], int]
+class CIFCategoryDesc(Protocol):
+    @property
+    def name(self) -> str:
+        ...
+
+    @staticmethod
+    def get_fields(data: Any) -> Collection[CIFFieldDesc]:
+        ...
+
+    @staticmethod
+    def get_field_descriptors(data: Any) -> int:
+        ...
 
 
 class CIFWriter(Protocol):

@@ -35,59 +35,70 @@ def prepare_test_data(size: int, num_lattices=2) -> TestVolumeData:
     return data
 
 
-LATTICE_IDS = CIFCategoryDesc[TestVolumeData](
-    name="lattice_ids",
-    fields=[
-        Field[TestVolumeData].numbers(
-            name="id",
-            dtype="i4",
-            encoder=lambda _: INTEGER_PACKING,
-            value=lambda data, i: data.metadata.lattices_ids[i],
-        )
-    ],
-    get_count=lambda data: len(data.metadata.lattices_ids),
-)
+class LatticeIdsCategory(CIFCategoryDesc):
+    name = "lattice_ids"
 
-
-def create_volume_category(lattice_ids: List[int]):
-    lattice_encoding = ComposeEncoders(FixedPoint(1000), DELTA, INTEGER_PACKING)
-
-    def lattice_value_getter(lid: int):
-        return lambda data, i: data.lattices[lid][i]
-
-    fields = [
-        Field[TestVolumeData].numbers(
-            name=f"lattice_{lid}",
-            dtype="i4",
-            encoder=lambda _: lattice_encoding,
-            value=lattice_value_getter(lid),
-        )
-        for lid in lattice_ids
-    ]
-    fields.extend(
-        [
+    @staticmethod
+    def get_field_descriptors(_):
+        return [
             Field[TestVolumeData].numbers(
-                name="volume",
-                dtype="f4",
-                encoder=lambda _: lattice_encoding,
-                value=lambda data, i: data.volume[i],
-            ),
-            Field[TestVolumeData].number_array(
-                name="volume_array",
-                dtype="f4",
-                encoder=lambda _: lattice_encoding,
-                array=lambda data: data.volume,
-            ),
-            Field[TestVolumeData].strings(name="annotation", value=lambda data, i: data.annotation[i]),
-            Field[TestVolumeData].string_array(name="annotation_array", array=lambda data: data.annotation),
+                name="id",
+                dtype="i4",
+                encoder=lambda _: INTEGER_PACKING,
+                value=lambda data, i: data.metadata.lattices_ids[i],
+            )
         ]
-    )
 
-    return CIFCategoryDesc[TestVolumeData](
-        name="volume",
-        fields=fields,
-        get_count=lambda data: len(data.volume),
-    )
+    @staticmethod
+    def get_row_count(data: TestVolumeData) -> int:
+        return len(data.metadata.lattices_ids)
+
+
+_LATTICE_ENCODING = ComposeEncoders(FixedPoint(1000), DELTA, INTEGER_PACKING)
+
+
+def lattice_value_getter(lid: int):
+    return lambda data, i: data.lattices[lid][i]
+
+
+class VolumeCategory(CIFCategoryDesc):
+    name = "volume"
+
+    @staticmethod
+    def get_field_descriptors(data: TestVolumeData):
+        lattice_ids = data.metadata.lattices_ids
+        fields = [
+            Field[TestVolumeData].numbers(
+                name=f"lattice_{lid}",
+                dtype="i4",
+                encoder=lambda _: _LATTICE_ENCODING,
+                value=lattice_value_getter(lid),
+            )
+            for lid in lattice_ids
+        ]
+        fields.extend(
+            [
+                Field[TestVolumeData].numbers(
+                    name="volume",
+                    dtype="f4",
+                    encoder=lambda _: _LATTICE_ENCODING,
+                    value=lambda data, i: data.volume[i],
+                ),
+                Field[TestVolumeData].number_array(
+                    name="volume_array",
+                    dtype="f4",
+                    encoder=lambda _: _LATTICE_ENCODING,
+                    array=lambda data: data.volume,
+                ),
+                Field[TestVolumeData].strings(name="annotation", value=lambda data, i: data.annotation[i]),
+                Field[TestVolumeData].string_array(name="annotation_array", array=lambda data: data.annotation),
+            ]
+        )
+        return fields
+
+    @staticmethod
+    def get_row_count(data: TestVolumeData) -> int:
+        return len(data.volume)
 
 
 class TestEncodings_Encoding(unittest.TestCase):
@@ -101,10 +112,10 @@ class TestEncodings_Encoding(unittest.TestCase):
 
         # write lattice ids
         writer.start_data_block("lattice_ids")
-        writer.write_category(LATTICE_IDS, [test_data])
+        writer.write_category(LatticeIdsCategory, [test_data])
 
         writer.start_data_block("volume_data")
-        writer.write_category(create_volume_category(test_data.metadata.lattices_ids), [test_data])
+        writer.write_category(VolumeCategory, [test_data])
 
         encoded = writer.encode()
         (Path(__file__).parent / "lattices.bcif").write_bytes(encoded)

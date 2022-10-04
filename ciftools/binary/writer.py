@@ -47,7 +47,7 @@ class BinaryCIFWriter(CIFWriter):
         if not self._data_blocks:
             raise Exception("No data block created.")
 
-        instances = [_DataWrapper(data=d, count=category.get_count(d)) for d in data]
+        instances = [_DataWrapper(data=d, count=category.get_row_count(d)) for d in data]
         instances = list(filter(lambda i: i.count > 0, instances))
         if not instances:
             return
@@ -58,8 +58,9 @@ class BinaryCIFWriter(CIFWriter):
         if not total_count:
             return
 
+        fields = category.get_field_descriptors(instances[0].data)
         encoded: EncodedCIFCategory = {"name": f"_{category.name}", "rowCount": total_count, "columns": []}
-        for f in category.fields:
+        for f in fields:
             encoded["columns"].append(_encode_field(f, instances, total_count))
 
         self._data_blocks[-1]["categories"].append(encoded)
