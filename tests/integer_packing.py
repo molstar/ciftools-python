@@ -26,3 +26,14 @@ class TestEncodings_IntegerPackingSigned(unittest.TestCase):
             self.assertTrue(np.array_equal(test_arr, decoded))
             self.assertEqual(is_unsigned, encoded["encoding"][0]["isUnsigned"])
             self.assertEqual(byte_count, encoded["encoding"][0]["byteCount"])
+        
+        # testing optimized versions too
+        for test_arr, is_unsigned, byte_count in test_suite:
+            encoder = INTEGER_PACKING_CIF_ENCODER
+            encoded = encoder.encode_optimized(test_arr)
+            decoded = decode_cif_data(encoded)
+            msgpack.loads(msgpack.dumps(encoded))
+
+            self.assertTrue(np.array_equal(test_arr, decoded))
+            self.assertEqual(is_unsigned, encoded["encoding"][0]["isUnsigned"])
+            self.assertEqual(byte_count, encoded["encoding"][0]["byteCount"])

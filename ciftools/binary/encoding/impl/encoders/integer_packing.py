@@ -1,5 +1,5 @@
 import math
-from numba import jit
+from numba import jit, int32, uint32, njit
 
 import numpy as np
 from ciftools.binary.encoding.base.cif_encoder_base import CIFEncoderBase
@@ -189,6 +189,9 @@ def _determine_packing_optimized(data: np.ndarray) -> _PackingInfo:
     size8 = _packing_size_optimized(data, 0x7F) if is_signed else _packing_size_optimized(data, 0xFF)
     size16 = _packing_size_optimized(data, 0x7FFF) if is_signed else _packing_size_optimized(data, 0xFFFF)
 
+    # size8 = _packing_size_signed_optimized(data, 0x7F) if is_signed else _packing_size_unsigned_optimized(data, 0xFF)
+    # size16 = _packing_size_signed_optimized(data, 0x7FFF) if is_signed else _packing_size_unsigned_optimized(data, 0xFFFF)
+
     packing = _PackingInfo()
     packing.isSigned = is_signed
 
@@ -227,21 +230,71 @@ def _packing_size(data: np.ndarray, upper_limit: int) -> int:
     return size
 
 @jit(nopython=True)
-def _packing_size_optimized(data: np.ndarray, upper_limit: int) -> int:
+def _packing_size_unsigned_optimized(data: np.ndarray, upper_limit: int) -> int:
+    # lower_limit = -upper_limit - 1
+    size = 0
+
+    for value in data:
+        size = size + math.floor(value / upper_limit) + 1
+
+    return size
+
+@jit(nopython=True)
+def _packing_size_signed_optimized(data: np.ndarray, upper_limit: int) -> int:
     lower_limit = -upper_limit - 1
     size = 0
 
     for value in data:
-        if value == 0:
-            size = size + 1
-        elif value > 0:
-            size = size + math.ceil(value / upper_limit)
-            if value % upper_limit == 0:
-                size = size + 1
+        if value >= 0:
+            size = size + math.floor(value / upper_limit) + 1
         else:
-            size = size + math.ceil(value / lower_limit)
-            if value % lower_limit == 0:
-                size = size + 1
+            size = size + math.floor(value / lower_limit) + 1
+
+    return size
+
+# works, but no difference in time
+# @njit([(int32[:], int32), (uint32[:], int32)])
+@njit
+def _packing_size_optimized(data: np.ndarray, upper_limit: int) -> int:
+    lower_limit = -upper_limit - 1
+    size = 0
+
+    # Fastest
+    for value in data:
+        if value >= 0:
+            size = size + math.floor(value / upper_limit) + 1
+        else:
+            size = size + math.floor(value / lower_limit) + 1
+
+    # Masks - slower x3 times
+    # positives = data[data >= 0]
+    # positive_size = np.sum(np.floor(positives / upper_limit)) + len(positives)
+
+    # negatives = data[data < 0]
+    # negative_size = np.sum(np.floor(negatives / lower_limit)) + len(negatives)
+
+    # size = int(positive_size + negative_size)
+
+    # x3 times slower, //
+    # for value in data:
+    #     if value >= 0:
+    #         size = size + value // upper_limit + 1
+    #     else:
+    #         size = size + value // lower_limit + 1
+
+
+    # Original
+    # for value in data:
+    #     if value == 0:
+    #         size = size + 1
+    #     elif value > 0:
+    #         size = size + math.ceil(value / upper_limit)
+    #         if value % upper_limit == 0:
+    #             size = size + 1
+    #     else:
+    #         size = size + math.ceil(value / lower_limit)
+    #         if value % lower_limit == 0:
+    #             size = size + 1
 
     return size
 
