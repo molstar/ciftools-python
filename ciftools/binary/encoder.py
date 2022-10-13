@@ -360,15 +360,15 @@ class StringArray(BinaryCIFEncoder):
 # @jit(nopython=False, forceobj=True)
 def _pack_strings(data: List[str], indices: list, strings: List[str], offsets: List[int]) -> None:
     acc_len = 0
-    # str_map: Dict[str, int] = dict()
+    str_map: Dict[str, int] = dict()
 
-    _packing_loop(data, indices, strings, offsets, acc_len)
+    _packing_loop(data, indices, strings, offsets, str_map, acc_len)
 
 
 
 # @jit(nopython=False, forceobj=True)
 # @jit(nopython=True)
-def _packing_loop(data: List[str], indices: list, strings: List[str], offsets: List[int], acc_len):
+def _packing_loop(data: List[str], indices: list, strings: List[str], offsets: List[int], str_map: Dict[str, int], acc_len):
     # Slower
     # data = np.array(data)
     # for i, s in np.ndenumerate(data):
