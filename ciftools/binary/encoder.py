@@ -306,9 +306,36 @@ class StringArray(BinaryCIFEncoder):
     def encode(self, data: Union[np.ndarray, List[str]]) -> EncodedCIFData:
         strings: List[str] = []
         offsets = [0]
-        indices = np.empty(len(data), dtype="<i4")
+        # indices = np.empty(len(data), dtype="<i4")
+        indices = [None] * len(data)
 
         _pack_strings(
+            data,
+            indices,
+            strings,
+            offsets,
+        )
+
+        encoded_offsets = _OFFSET_ENCODER.encode(np.array(offsets, dtype="<i4"))
+        encoded_data = _DATA_ENCODER.encode(np.array(indices, dtype='<i4'))
+
+        encoding: StringArrayEncoding = {
+            "dataEncoding": encoded_data["encoding"],
+            "kind": EncodingEnun.StringArray,
+            "stringData": "".join(strings),
+            "offsetEncoding": encoded_offsets["encoding"],
+            "offsets": encoded_offsets["data"],  # type: ignore
+        }
+
+        return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
+
+    def encode_not_optimized(self, data: Union[np.ndarray, List[str]]) -> EncodedCIFData:
+        # list of strings
+        strings: List[str] = []
+        offsets = [0]
+        indices = np.empty(len(data), dtype="<i4")
+
+        _pack_strings_not_optimized(
             data,
             indices,
             strings,
@@ -330,8 +357,69 @@ class StringArray(BinaryCIFEncoder):
 
 
 # TODO: benchmark if JIT helps here
-@jit(nopython=False, forceobj=True)
-def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
+# @jit(nopython=False, forceobj=True)
+def _pack_strings(data: List[str], indices: list, strings: List[str], offsets: List[int]) -> None:
+    acc_len = 0
+    str_map: Dict[str, int] = dict()
+
+    _packing_loop(data, indices, strings, offsets, str_map, acc_len)
+
+
+
+# @jit(nopython=False, forceobj=True)
+# @jit(nopython=True)
+def _packing_loop(data: List[str], indices: list, strings: List[str], offsets: List[int], str_map: Dict[str, int], acc_len):
+    # Slower
+    # data = np.array(data)
+    # for i, s in np.ndenumerate(data):
+    #     # handle null strings.
+    #     if not s:
+    #         indices[i] = -1
+    #         continue
+
+    #     index = str_map.get(s)
+    #     if index is None:
+    #         # increment the length
+    #         acc_len += len(s)
+
+    #         # store the string and index
+    #         index = len(strings)
+    #         strings.append(s)
+    #         str_map[s] = index
+
+    #         # write the offset
+    #         offsets.append(acc_len)
+
+    #     indices[i] = index
+
+    # Original loop
+    # https://medium.com/@giorgiosgl1997/python-fastest-way-to-iterate-a-list-6ea5348243bb
+    # For loop + enumerate seems fastest
+    for i, s in enumerate(data):
+        # handle null strings.
+        if not s:
+            indices[i] = -1
+            continue
+
+        index = str_map.get(s)
+        if index is None:
+            # increment the length
+            acc_len += len(s)
+
+            # store the string and index
+            index = len(strings)
+            strings.append(s)
+            # strings += s,
+            str_map[s] = index
+
+            # write the offset
+            offsets.append(acc_len)
+            # offsets += acc_len,
+
+        indices[i] = index
+
+
+def _pack_strings_not_optimized(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
     acc_len = 0
     str_map: Dict[str, int] = dict()
 
