@@ -1,15 +1,15 @@
 import unittest
 
 testmodules = [
-    "byte_array",
-    "delta",
-    "fixed_point",
+    # "byte_array",
+    # "delta",
+    # "fixed_point",
     "integer_packing",
-    "interval_quantization",
-    "run_length",
-    "string_array",
-    "_decoding",
-    "_encoding",
+    # "interval_quantization",
+    # "run_length",
+    # "string_array",
+    # "_decoding",
+    # "_encoding",
 ]
 
 suite = unittest.TestSuite()
