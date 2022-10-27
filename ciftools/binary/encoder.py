@@ -360,24 +360,35 @@ class StringArray(BinaryCIFEncoder):
 
         return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
 
-@jit(nopython=True)
+# @jit(nopython=True)
 def _pack_strings(data: List[str]) -> Tuple[str, np.ndarray, np.ndarray]:
-    print(data)
+    # strings = set(data)
+    # # mapping of strings to numbers
+    # str_map = {s: i for i, s in enumerate(strings)}
+    # string_data = "".join(strings)
+
+    # indices = np.array([str_map[s] for s in data], dtype='<i4')
+    # offset_data = np.empty(len(strings) + 1, dtype='<i4')
+    # offset_data[0] = 0
+    # # np.cumsum([len(s) for s in strings], out=offset_data[1:])
+    # # NOTE: this also result in errors
+    # # print(f'Strings: {strings}')
+    # # NOTE: this not
+    # # print('Strings', strings)
+    # # temp = np.array([len(s) for s in strings])
+    # # print(temp)
+    
+    # offset_data[1:] = np.cumsum(np.array([len(s) for s in strings]))
+    # return string_data, indices, 
     strings = set(data)
-    print(strings)
-    # mapping of strings to numbers
     str_map = {s: i for i, s in enumerate(strings)}
-    print(str_map)
     string_data = "".join(strings)
-    print(string_data)
 
     indices = np.array([str_map[s] for s in data], dtype='<i4')
-    print(indices)
     offset_data = np.empty(len(strings) + 1, dtype='<i4')
     offset_data[0] = 0
-    # np.cumsum([len(s) for s in strings], out=offset_data[1:])
-    offset_data[1:] = np.cumsum(np.array([len(s) for s in strings]))
-    print(offset_data)
+    np.cumsum([len(s) for s in strings], out=offset_data[1:])
+
     return string_data, indices, offset_data
 
 
