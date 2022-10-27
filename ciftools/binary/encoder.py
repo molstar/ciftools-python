@@ -1,3 +1,4 @@
+import itertools
 import math
 import sys
 from typing import Any, Dict, List, Protocol, Tuple, Union
@@ -304,16 +305,20 @@ _DATA_ENCODER = ComposeEncoders(DELTA, RUN_LENGTH, INTEGER_PACKING)
 
 class StringArray(BinaryCIFEncoder):
     def encode(self, data: Union[np.ndarray, List[str]]) -> EncodedCIFData:
-        strings: List[str] = []
-        offsets = [0]
-        indices = np.empty(len(data), dtype="<i4")
+        # strings: List[str] = []
+        # offsets = [0]
+        # indices = np.empty(len(data), dtype="<i4")
 
-        _pack_strings(
-            data,
-            indices,
-            strings,
-            offsets,
-        )
+        # _pack_strings(
+        #     data,
+        #     indices,
+        #     strings,
+        #     offsets,
+        # )
+
+        # string_data = "".join(strings)
+
+        string_data, indices, offsets = _pack_strings(data)
 
         encoded_offsets = _OFFSET_ENCODER.encode(np.array(offsets, dtype="<i4"))
         encoded_data = _DATA_ENCODER.encode(indices)
@@ -321,17 +326,64 @@ class StringArray(BinaryCIFEncoder):
         encoding: StringArrayEncoding = {
             "dataEncoding": encoded_data["encoding"],
             "kind": EncodingEnun.StringArray,
-            "stringData": "".join(strings),
+            "stringData": string_data,
             "offsetEncoding": encoded_offsets["encoding"],
             "offsets": encoded_offsets["data"],  # type: ignore
         }
 
         return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
 
+    def encode_not_optimized(self, data: Union[np.ndarray, List[str]]) -> EncodedCIFData:
+        strings: List[str] = []
+        offsets = [0]
+        indices = np.empty(len(data), dtype="<i4")
+
+        _pack_strings_old(
+            data,
+            indices,
+            strings,
+            offsets,
+        )
+
+        string_data = "".join(strings)
+
+        encoded_offsets = _OFFSET_ENCODER.encode(np.array(offsets, dtype="<i4"))
+        encoded_data = _DATA_ENCODER.encode(indices)
+
+        encoding: StringArrayEncoding = {
+            "dataEncoding": encoded_data["encoding"],
+            "kind": EncodingEnun.StringArray,
+            "stringData": string_data,
+            "offsetEncoding": encoded_offsets["encoding"],
+            "offsets": encoded_offsets["data"],  # type: ignore
+        }
+
+        return EncodedCIFData(data=encoded_data["data"], encoding=[encoding])
+
+@jit(nopython=True)
+def _pack_strings(data: List[str]) -> Tuple[str, np.ndarray, np.ndarray]:
+    print(data)
+    strings = set(data)
+    print(strings)
+    # mapping of strings to numbers
+    str_map = {s: i for i, s in enumerate(strings)}
+    print(str_map)
+    string_data = "".join(strings)
+    print(string_data)
+
+    indices = np.array([str_map[s] for s in data], dtype='<i4')
+    print(indices)
+    offset_data = np.empty(len(strings) + 1, dtype='<i4')
+    offset_data[0] = 0
+    # np.cumsum([len(s) for s in strings], out=offset_data[1:])
+    offset_data[1:] = np.cumsum(np.array([len(s) for s in strings]))
+    print(offset_data)
+    return string_data, indices, offset_data
+
 
 # TODO: benchmark if JIT helps here
-@jit(nopython=False, forceobj=True)
-def _pack_strings(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
+# @jit(nopython=False, forceobj=True)
+def _pack_strings_old(data: List[str], indices: np.ndarray, strings: List[str], offsets: List[int]) -> None:
     acc_len = 0
     str_map: Dict[str, int] = dict()
 
