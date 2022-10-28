@@ -1,3 +1,6 @@
+from numba import jit
+from numba.typed import Dict
+from numba.core import types
 import numpy as np
 from ciftools.binary.data_types import DataType
 from ciftools.binary.encoded_data import EncodedCIFData
@@ -47,12 +50,12 @@ def _decode_delta(data: np.ndarray, encoding: DeltaEncoding) -> np.ndarray:
     return np.cumsum(result, out=result)
 
 
-# TODO: JIT
-def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
-    upper_limit = 0x7F if encoding["byteCount"] == 1 else 0x7FFF
+@jit(nopython=True)
+def _decode_integer_packing_signed(data: np.ndarray, encoding_byte_count, encoding_src_size) -> np.ndarray:
+    upper_limit = 0x7F if encoding_byte_count == 1 else 0x7FFF
     lower_limit = -upper_limit - 1
     n = len(data)
-    output = np.zeros(encoding["srcSize"], dtype="i4")
+    output = np.zeros(encoding_src_size, dtype="i4")
     i = 0
     j = 0
     while i < n:
@@ -69,21 +72,29 @@ def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEnc
     return output
 
 
-# TODO: JIT
-def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
-    upper_limit = 0xFF if encoding["byteCount"] == 1 else 0xFFFF
+@jit(nopython=True)
+def _decode_integer_packing_unsigned(data: np.ndarray, encoding_byte_count, encoding_src_size) -> np.ndarray:
+    upper_limit = 0xFF if encoding_byte_count == 1 else 0xFFFF
     n = len(data)
-    output = np.zeros(encoding["srcSize"], dtype="i4")
+    output = np.zeros(encoding_src_size, dtype="i4")
     i = 0
     j = 0
+    print(data)
     while i < n:
         value = 0
+        # 255
         t = data[i]
+        # yes
         while t == upper_limit:
+            # 255
             value += t
+            # 1
             i += 1
+            # 145
             t = data[i]
+        # 255 + 145 = 400
         value += t
+        # 400
         output[j] = value
         i += 1
         j += 1
@@ -93,10 +104,24 @@ def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingE
 def _decode_integer_packing(data: np.ndarray, encoding: IntegerPackingEncoding) -> np.ndarray:
     if len(data) == encoding["srcSize"]:
         return data
+
+    # d = dict()
+    # for k, v in encoding.items():
+    #     d[k] = v
+
+    
+    # d1 = Dict.empty(
+    #     key_type=types.py2_string_type,
+    #     value_type=types.int64,
+    # )
+
+    # for k, v in encoding.items():
+    #     d1[k] = v
+
     if encoding["isUnsigned"]:
-        return _decode_integer_packing_unsigned(data, encoding)
+        return _decode_integer_packing_unsigned(data, encoding["byteCount"], encoding["srcSize"])
     else:
-        return _decode_integer_packing_signed(data, encoding)
+        return _decode_integer_packing_signed(data, encoding["byteCount"], encoding["srcSize"])
 
 
 def _decode_string_array(data: np.ndarray, encoding: StringArrayEncoding) -> np.ndarray:
