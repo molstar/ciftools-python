@@ -8,6 +8,7 @@ class DataTypeEnum(IntEnum):
     Int8 = 1
     Int16 = 2
     Int32 = 3
+    Int64 = 8
     Uint8 = 4
     Uint16 = 5
     Uint32 = 6
@@ -20,6 +21,7 @@ class DataType:
         DataTypeEnum.Int8.value: "i1",
         DataTypeEnum.Int16.value: "i2",
         DataTypeEnum.Int32.value: "i4",
+        DataTypeEnum.Int64.value: "i8",
         DataTypeEnum.Uint8.value: "u1",
         DataTypeEnum.Uint16.value: "u2",
         DataTypeEnum.Uint32.value: "u4",
