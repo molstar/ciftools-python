@@ -2,6 +2,7 @@ import unittest
 
 import msgpack
 import numpy as np
+
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoder import BYTE_ARRAY, DELTA, ComposeEncoders
 

@@ -1,8 +1,10 @@
 import math
 import sys
-from typing import Any, Dict, List, Protocol, Tuple, Union
+from typing import Any, List, Protocol, Tuple, Union
 
 import numpy as np
+from numba import jit
+
 from ciftools.binary.data_types import DataType, DataTypeEnum
 from ciftools.binary.encoded_data import EncodedCIFData
 from ciftools.binary.encoding_types import (
@@ -15,12 +17,10 @@ from ciftools.binary.encoding_types import (
     RunLengthEncoding,
     StringArrayEncoding,
 )
-from numba import jit
 
 
 class BinaryCIFEncoder(Protocol):
-    def encode(self, data: Any) -> EncodedCIFData:
-        ...
+    def encode(self, data: Any) -> EncodedCIFData: ...
 
 
 class ComposeEncoders(BinaryCIFEncoder):
@@ -109,7 +109,6 @@ class FixedPoint(BinaryCIFEncoder):
 
 class IntegerPacking(BinaryCIFEncoder):
     def encode(self, data: np.ndarray) -> EncodedCIFData:
-
         # TODO: must be 32bit integer?
         packing = _determine_packing(data)
         if packing.bytesPerElement == 4:
@@ -325,8 +324,8 @@ def _pack_strings(data: List[str]) -> Tuple[str, np.ndarray, np.ndarray]:
     str_map = {s: i for i, s in enumerate(strings)}
     string_data = "".join(strings)
 
-    indices = np.array([str_map[s] for s in data], dtype='<i4')
-    offset_data = np.empty(len(strings) + 1, dtype='<i4')
+    indices = np.array([str_map[s] for s in data], dtype="<i4")
+    offset_data = np.empty(len(strings) + 1, dtype="<i4")
     offset_data[0] = 0
     np.cumsum([len(s) for s in strings], out=offset_data[1:])
 

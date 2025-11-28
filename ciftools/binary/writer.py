@@ -2,6 +2,7 @@ from typing import Any, List, Optional
 
 import msgpack
 import numpy as np
+
 from ciftools.binary.encoded_data import (
     EncodedCIFCategory,
     EncodedCIFColumn,
@@ -86,14 +87,14 @@ def _encode_field(field: CIFFieldDesc, data: List[_DataWrapper], total_count: in
         category_array = field.value_array and field.value_array(d)
         if category_array is not None:
             if len(category_array) != category.count:
-                raise ValueError(f"provided values array must have the same length as the category count field")
+                raise ValueError("provided values array must have the same length as the category count field")
 
             array[offset : offset + category.count] = category_array  # type: ignore
 
             category_mask = field.presence_array and field.presence_array(d)
             if category_mask is not None:
                 if len(category_mask) != category.count:
-                    raise ValueError(f"provided mask array must have the same length as the category count field")
+                    raise ValueError("provided mask array must have the same length as the category count field")
                 mask[offset : offset + category.count] = category_mask
 
             offset += category.count

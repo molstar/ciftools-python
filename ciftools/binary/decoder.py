@@ -1,4 +1,5 @@
 import numpy as np
+
 from ciftools.binary.data_types import DataType
 from ciftools.binary.encoded_data import EncodedCIFData
 from ciftools.binary.encoding_types import (
