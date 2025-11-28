@@ -1,8 +1,10 @@
 import unittest
-import urllib.request
+from pathlib import Path
 
 from ciftools.models.data import CIFValuePresenceEnum
 from ciftools.serialization import loads
+
+test_folder = Path(__file__).parent / "fixtures"
 
 
 class TestEncodings_Decoding(unittest.TestCase):
@@ -10,7 +12,8 @@ class TestEncodings_Decoding(unittest.TestCase):
         # TODO: set assert expectations
 
         print("mmCIF test")
-        data = urllib.request.urlopen("https://models.rcsb.org/1tqn.bcif").read()
+        bcif_path = test_folder / "1tqn.bcif"
+        data = bcif_path.read_bytes()
         parsed = loads(data, lazy=False)
 
         atom_site = parsed["1TQN"].atom_site
@@ -32,9 +35,8 @@ class TestEncodings_Decoding(unittest.TestCase):
         # print([[f"_{c.name}.{f}" for f in c.field_names] for c in parsed[0].categories.values()])
 
         print("Volume Data test")
-        data = urllib.request.urlopen(
-            "https://ds.litemol.org/x-ray/1tqn/box/-22.367,-33.367,-21.634/-7.106,-10.042,-0.937?detail=1"
-        ).read()
+        bcif_path = test_folder / "x-ray_1tqn-cartn_-22.4_-33.4_-21.6_-7.1_-10_-0.9_d1.bcif"
+        data = bcif_path.read_bytes()
         parsed = loads(data)
 
         print([b.header for b in parsed.data_blocks])

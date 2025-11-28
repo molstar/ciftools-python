@@ -2,13 +2,13 @@ import unittest
 
 import msgpack
 import numpy as np
+
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoder import BYTE_ARRAY, DELTA, ComposeEncoders, FixedPoint
 
 
 class TestEncodings_FixedPoint(unittest.TestCase):
     def test(self):
-
         test_suite = [
             (np.random.rand(100) * 1000, 1),
             (np.random.rand(100) * 1000, 2),
@@ -26,7 +26,6 @@ class TestEncodings_FixedPoint(unittest.TestCase):
 
 class TestEncodings_FixedPointDelta(unittest.TestCase):
     def test(self):
-
         test_suite = [
             (np.random.rand(100) * 1000, 1),
             (np.random.rand(100) * 1000, 2),

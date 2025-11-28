@@ -1,4 +1,4 @@
-**/tests/**/*.bcif
+tests/*.bcif
 
 ### VisualStudioCode template
 .vscode/*
@@ -227,4 +227,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-

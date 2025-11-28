@@ -1,4 +1,5 @@
 import msgpack
+
 from ciftools.binary.data import BinaryCIFFile
 from ciftools.binary.writer import BinaryCIFWriter
 from ciftools.models.data import CIFFile

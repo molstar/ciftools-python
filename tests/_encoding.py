@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List
 
 import numpy as np
+
 from ciftools.binary.encoder import DELTA, INTEGER_PACKING, ComposeEncoders, FixedPoint
 from ciftools.models.writer import CIFCategoryDesc
 from ciftools.models.writer import CIFFieldDesc as Field
@@ -103,7 +104,6 @@ class VolumeCategory(CIFCategoryDesc):
 
 class TestEncodings_Encoding(unittest.TestCase):
     def test(self):
-
         # test
         test_data = prepare_test_data(5, 3)
         # print("Original data: " + str(test_data.__dict__))

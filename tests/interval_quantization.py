@@ -2,6 +2,7 @@ import unittest
 
 import msgpack
 import numpy as np
+
 from ciftools.binary.data_types import DataTypeEnum
 from ciftools.binary.decoder import decode_cif_data
 from ciftools.binary.encoder import BYTE_ARRAY, ComposeEncoders, IntervalQuantization
@@ -9,7 +10,6 @@ from ciftools.binary.encoder import BYTE_ARRAY, ComposeEncoders, IntervalQuantiz
 
 class TestEncodings_IntervalQuantization(unittest.TestCase):
     def test(self):
-
         test_suite = [
             (np.random.rand(100) * 100, 100, DataTypeEnum.Uint8),
             (np.random.rand(100) * 100, 2**8, DataTypeEnum.Uint8),

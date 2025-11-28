@@ -1,20 +1,39 @@
 [project]
 name = "ciftools"
-version = "0.2.0"
+version = "0.2.2"
 authors = [
-  { name="Ravi Jose Tristao Ramos", email="souoravi@gmail.com" },
   { name="David Sehnal", email="david.sehnal@gmail.com" },
+  { name="Ravi Jose Tristao Ramos", email="souoravi@gmail.com" },
 ]
 description = "A library for handling BinaryCIF files."
 readme = "README.md"
-license = { file="LICENSE" }
-requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9,<3.14"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "msgpack>=1.0.3",
+    "numba>=0.56.2",
+    "numpy>=1.11.1",
+]
 
-[tool.black]
+[dependency-groups]
+dev = [
+    "pre-commit>=3.0.0",
+]
+
+[tool.ruff]
+target-version = "py39"
 line-length = 120
-target-version = ['py39']
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
