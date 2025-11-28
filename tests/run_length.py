@@ -9,7 +9,7 @@ from ciftools.binary.encoder import BYTE_ARRAY, RUN_LENGTH, ComposeEncoders
 class TestEncodings_RunLength(unittest.TestCase):
     def test(self):
 
-        suite = [np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12), np.arange(10)]
+        suite = [np.array([-3] * 9 + [1] * 10 + [2] * 11 + [3] * 12, dtype=np.int32), np.arange(10, dtype=np.int32)]
 
         for test_arr in suite:
             encoder = ComposeEncoders(RUN_LENGTH, BYTE_ARRAY)

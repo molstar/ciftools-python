@@ -8,7 +8,7 @@ from ciftools.binary.encoder import BYTE_ARRAY, DELTA, ComposeEncoders
 
 class TestEncodings_Delta(unittest.TestCase):
     def test(self):
-        test_arr = np.array([1, 1, 2, 2, 10, -10])
+        test_arr = np.array([1, 1, 2, 2, 10, -10], dtype=np.int32)
 
         encoder = ComposeEncoders(DELTA, BYTE_ARRAY)
 

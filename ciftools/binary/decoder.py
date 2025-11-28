@@ -59,10 +59,10 @@ def _decode_integer_packing_signed(data: np.ndarray, encoding: IntegerPackingEnc
         value = 0
         t = data[i]
         while t == upper_limit or t == lower_limit:
-            value += t
+            value += int(t)
             i += 1
             t = data[i]
-        value += t
+        value += int(t)
         output[j] = value
         i += 1
         j += 1
@@ -80,10 +80,10 @@ def _decode_integer_packing_unsigned(data: np.ndarray, encoding: IntegerPackingE
         value = 0
         t = data[i]
         while t == upper_limit:
-            value += t
+            value += int(t)
             i += 1
             t = data[i]
-        value += t
+        value += int(t)
         output[j] = value
         i += 1
         j += 1

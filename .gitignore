@@ -1,4 +1,4 @@
-**/tests/**/*.bcif
+tests/*.bcif
 
 ### VisualStudioCode template
 .vscode/*
